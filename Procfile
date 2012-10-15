@@ -1,1 +1,1 @@
-web: target/start -Dconfig.resource=production.conf
+web: target/start -Dhttp.port=${PORT} -Dconfig.resource=production.conf
