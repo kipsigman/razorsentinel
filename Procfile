@@ -1,1 +1,1 @@
-web: target/start -Dhttp.port=${PORT} -DapplyEvolutions.default=true -Ddb.default.url=${CLEARDB_DATABASE_URL} -Ddb.default.driver=com.mysql.jdbc.Driver
+web: target/start -Dhttp.port=${PORT} -DapplyEvolutions.default=true -Ddb.default.url=jdbc:mysql://bbc36f83ddbd62:ff5c1c02@us-cdbr-east-02.cleardb.com/heroku_7c0ab5bfc1e9701?reconnect=true -Ddb.default.driver=com.mysql.jdbc.Driver

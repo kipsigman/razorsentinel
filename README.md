@@ -1,6 +1,4 @@
-This is your new Play 2.0 application
+News application on Play 2.0
 =====================================
 
-This file will be packaged with your application, when using `play dist`.
-
-Heroku info: http://murmuring-coast-1166.herokuapp.com/ | git@heroku.com:murmuring-coast-1166.git
+Heroku info: http://stormy-taiga-9359.herokuapp.com

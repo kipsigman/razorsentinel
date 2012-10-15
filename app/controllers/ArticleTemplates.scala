@@ -50,7 +50,6 @@ object ArticleTemplates extends Controller with Auth with AuthConfigImpl {
   }
   
   def create = authorizedAction(Administrator) { user => implicit request =>
-    println("What the heck is going on?")
     // val dummyArticleTemplate = ArticleTemplate(anorm.NotAssigned, "", "")
     Ok(html.articleTemplate.create(articleTemplateForm))
   }
