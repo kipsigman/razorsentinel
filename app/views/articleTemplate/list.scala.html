@@ -1,0 +1,12 @@
+@(articleTemplates: List[ArticleTemplate])(implicit flash: Flash, lang: Lang)
+@main("Article Templates") {
+  <h2>Article Templates</h2>
+  <dl class="articleTemplates">
+    @for(articleTemplate <- articleTemplates) {
+    <dt><a href="@controllers.routes.ArticleTemplates.edit(articleTemplate.id.get)">@articleTemplate.headline</a></dt>
+    }
+  </dl>
+  <p>
+    <a href="@controllers.routes.ArticleTemplates.create()" class="btn"><i class="icon-plus"></i> @Messages("articleTemplate.new.command")</a>
+</p>
+}

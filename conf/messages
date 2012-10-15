@@ -1,0 +1,14 @@
+application.name=News App
+
+# Article Template
+id=ID
+headline=Headline
+body=Body
+articleTemplate.details = Article Template: {0}
+articleTemplate.form = Article Template
+articleTemplate.new = (new)
+articleTemplate.new.command = New
+articleTemplate.new.submit = Add
+articleTemplate.new.success = Successfully added Article Template.
+
+validation.errors=Please correct the errors in the form.

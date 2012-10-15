@@ -1,0 +1,24 @@
+# Play / SBT
+dist
+logs
+project/boot
+project/plugins/target
+project/project
+project/target
+target
+tmp
+.target
+.history
+/out
+/RUNNING_PID
+
+# Eclipse / Idea
+bin
+.settings
+.cache
+.project
+.classpath
+.scala_dependencies
+/.idea_modules
+/.idea
+/*.iml

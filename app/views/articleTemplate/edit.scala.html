@@ -1,0 +1,18 @@
+@(id: Long, articleTemplateForm: Form[ArticleTemplate])(implicit flash: Flash, lang: Lang)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages("articleTemplate.form")) {
+  <h2>@Messages("articleTemplate.form")</h2>
+  @helper.form(action = routes.ArticleTemplates.update(id)) {
+    <fieldset>
+      
+      @helper.inputText(articleTemplateForm("headline"))
+      @helper.textarea(articleTemplateForm("body"))
+    </fieldset>
+    <p><input type="submit" class="btn primary" value='@Messages("articleTemplate.new.submit")'>
+    <a href="@routes.ArticleTemplates.list()" class="btn">Cancel</a> 
+    </p>
+  } 
+}

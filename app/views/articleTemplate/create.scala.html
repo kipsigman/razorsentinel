@@ -1,0 +1,25 @@
+@(articleTemplateForm: Form[ArticleTemplate])(implicit flash: Flash, lang: Lang)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages("articleTemplate.form")) {
+    
+    <h1>Add an AT</h1>
+    
+    @form(routes.ArticleTemplates.save()) {
+        
+        <fieldset>
+            @inputText(articleTemplateForm("headline"), '_label -> "Headline")
+            @textarea(articleTemplateForm("body"), '_label -> "Body")
+            
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" value="Create" class="btn primary"> or 
+            <a href="@routes.ArticleTemplates.list()" class="btn">Cancel</a> 
+        </div>
+        
+    }
+    
+}
