@@ -5,6 +5,8 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 
+import models.User
+
 /**
  * This is an Auth controller using basic Play authentication.
  * @author kip
@@ -16,14 +18,10 @@ object AuthController extends Controller {
       "email" -> text,
       "password" -> text
     ) verifying ("Invalid email or password", result => result match {
-      case (email, password) => check(email, password)
+      case (email, password) => User.authenticate(email, password).isDefined
     })
   )
   
-  def check(username: String, password: String) = {
-    (username == "kip.sigman@gmail.com" && password == "1234")  
-  }
-
   /**
    * Login page.
    */
@@ -37,7 +35,7 @@ object AuthController extends Controller {
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.login(formWithErrors)),
-      user => Redirect(routes.Application.index).withSession(Security.username -> user._1)
+      user => Redirect(routes.ArticleTemplateController.list).withSession(Security.username -> user._1)
     )
   }
 
@@ -68,9 +66,9 @@ trait Secured {
    * This method shows how you could wrap the withAuth method to also fetch your user
    * You will need to implement UserDAO.findOneByUsername
    */
-//  def withUser(f: User => Request[AnyContent] => Result) = withAuth { username => implicit request =>
-//    UserDAO.findOneByUsername(username).map { user =>
-//      f(user)(request)
-//    }.getOrElse(onUnauthorized(request))
-//  }
+  def withUser(f: User => Request[AnyContent] => Result) = withAuth { username => implicit request =>
+    User.findByEmail(username).map { user =>
+      f(user)(request)
+    }.getOrElse(onUnauthorized(request))
+  }
 }

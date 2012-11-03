@@ -2,33 +2,20 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET     /                       controllers.Application.index
-
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file           controllers.Assets.at(path="/public", file)
+GET  /assets/*file                controllers.Assets.at(path="/public", file)
+
+# Home page
+GET  /                            controllers.Application.index
 
 # Authentication
-GET     /login1                              controllers.AuthController.login
-POST    /login1                              controllers.AuthController.authenticate
-GET     /logout1                             controllers.AuthController.logout
+GET  /login                       controllers.AuthController.login
+POST /login                       controllers.AuthController.authenticate
+GET  /logout                      controllers.AuthController.logout
 
-# Authentication2
-GET     /login                              controllers.AuthController2.login
-POST    /login                              controllers.AuthController2.authenticate
-GET     /logout                             controllers.AuthController2.logout
 
 # ArticleTemplates
-# List
-GET     /articleTemplates           controllers.ArticleTemplates.list
-
-# Add
-GET     /articleTemplates/new       controllers.ArticleTemplates.create
-POST    /articleTemplates           controllers.ArticleTemplates.save
-
-# Edit existing
-GET     /articleTemplates/:id       controllers.ArticleTemplates.edit(id:Long)
-POST    /articleTemplates/:id       controllers.ArticleTemplates.update(id:Long)
-
-# Delete
-POST   /articleTemplates/:id/delete  controllers.ArticleTemplates.delete(id:Long)
+GET  /articleTemplates            controllers.ArticleTemplateController.list
+GET  /articleTemplates/new        controllers.ArticleTemplateController.create
+GET  /articleTemplates/:id/edit   controllers.ArticleTemplateController.edit(id:Long)
+POST /articleTemplates            controllers.ArticleTemplateController.save

@@ -1,12 +1,18 @@
-@(message: String)(implicit flash: Flash, lang: Lang)
+@()(implicit request: Request[Any], flash: Flash, lang: Lang)
 
-@main("News Home") {
+@import play.api.Play.current
+
+@mainPublic(Messages("application.name")) {
     
-  <h2>
-    Welcome to News!
-  </h2>
-  <ul>
-    <li><a href="/articleTemplates">Article Templates</a></li>
-  </ul>
+    <ul>
+      <li><a href="@routes.ArticleTemplateController.list()">Article Templates</a></li>
+    </ul>
     
+    <p>
+    Debug Info
+    <ul>
+      <li>Date/Time: @(new java.util.Date().format("yyyy-MM-dd HH:mm z"))</li>
+      <li>Environment: @current.configuration.getString("environment")</li>
+    </ul>
+    </p>
 }

@@ -1,18 +1,18 @@
-@(id: Long, articleTemplateForm: Form[ArticleTemplate])(implicit flash: Flash, lang: Lang)
+@(articleTemplateForm: Form[ArticleTemplate])(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
 
+@import tags._
 @import helper._
-@import helper.twitterBootstrap._
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
 
-@main(Messages("articleTemplate.form")) {
-  <h2>@Messages("articleTemplate.form")</h2>
-  @helper.form(action = routes.ArticleTemplates.update(id)) {
+@mainSecured("ArticleTemplate") {
+  <h2>ArticleTemplate</h2>
+  @form(action = routes.ArticleTemplateController.save()) {
     <fieldset>
+      <input type="hidden" name="id" value="@articleTemplateForm("id").value" />
+      @inputText(articleTemplateForm("headline"), '_label -> "Headline")
+      @textarea(articleTemplateForm("body"), '_label -> "Body")
       
-      @helper.inputText(articleTemplateForm("headline"))
-      @helper.textarea(articleTemplateForm("body"))
     </fieldset>
-    <p><input type="submit" class="btn primary" value='@Messages("articleTemplate.new.submit")'>
-    <a href="@routes.ArticleTemplates.list()" class="btn">Cancel</a> 
-    </p>
-  } 
+    @submitAndCancel(routes.ArticleTemplateController.list())
+  }
 }
