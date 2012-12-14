@@ -4,13 +4,13 @@
 @import helper._
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
 
-@mainSecured("ArticleTemplate") {
+@mainAdmin("ArticleTemplate") {
   <h2>ArticleTemplate</h2>
   @form(action = routes.ArticleTemplateController.save()) {
     <fieldset>
       <input type="hidden" name="id" value="@articleTemplateForm("id").value" />
-      @inputText(articleTemplateForm("headline"), '_label -> "Headline")
-      @textarea(articleTemplateForm("body"), '_label -> "Body")
+      @inputText(articleTemplateForm("headline"), '_label -> "Headline", 'class -> "span6")
+      @textarea(articleTemplateForm("body"), '_label -> "Body", 'class -> "span8", 'rows -> 40)
       
     </fieldset>
     @submitAndCancel(routes.ArticleTemplateController.list())

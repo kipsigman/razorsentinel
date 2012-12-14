@@ -1,4 +1,4 @@
-@(loginForm: Form[(String, String)])(implicit flash: Flash, lang: Lang)
+@(loginForm: Form[Option[User]])(implicit request: Request[Any], flash: Flash, lang: Lang)
 
 @import helper._
 @import helper.twitterBootstrap._

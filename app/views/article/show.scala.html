@@ -1,0 +1,8 @@
+@(article: Article)(implicit request: Request[Any], flash: Flash, lang: Lang)
+
+@mainPublic("Article") {
+  
+  <h3>@article.headline</h3>
+  @Html(article.body)
+  
+}

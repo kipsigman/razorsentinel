@@ -1,0 +1,8 @@
+@()(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
+
+@import play.api.Play.current
+
+@mainAdmin(Messages("application.name")) {
+    
+    <h2>Welcome to @Messages("application.name")</h2>
+}

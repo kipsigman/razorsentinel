@@ -1,0 +1,25 @@
+@(articleTemplates: List[ArticleTemplate])(implicit request: Request[Any], flash: Flash, lang: Lang)
+@mainPublic("Article Templates") {
+  <h2>Article Templates</h2>
+  
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Headline</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+
+    @for(articleTemplate <- articleTemplates) {
+      <tr>
+        <td>@articleTemplate.id</td>
+        <td>@articleTemplate.headline</td>
+        <td><a href="@routes.ArticleController.create(articleTemplate.id)" class="btn btn-small"><i class="icon-pencil"></i></a></td>
+      </tr>
+    }
+
+    </tbody>
+  </table>
+}

@@ -1,0 +1,18 @@
+@(articleTemplate: ArticleTemplate)(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
+
+@mainAdmin("ArticleTemplate") {
+  <div class="row">
+    <div class="span11"><h3>@articleTemplate.headline</h3></div>
+    <div class="span1"><a href="@routes.ArticleTemplateController.edit(articleTemplate.id)" class="btn"><i class="icon-pencil"></i></a></div>
+  </div>
+  
+  @Html(articleTemplate.body)
+  
+  <br/><br/>
+  <h4>Tags</h4>
+  <ul>
+  @for(tag <- articleTemplate.tags) {
+    <li>@tag</li>
+  }
+  </ul>
+}

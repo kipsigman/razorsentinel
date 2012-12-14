@@ -1,21 +1,37 @@
 package models
 
-case class User(id: Long, email: String, password: String) extends IdEntity
+import java.util.TimeZone
 
-object User {
+import org.mindrot.jbcrypt.BCrypt
+import org.squeryl.PrimitiveTypeMode.__thisDsl
+import org.squeryl.PrimitiveTypeMode.from
+import org.squeryl.PrimitiveTypeMode.inTransaction
+import org.squeryl.PrimitiveTypeMode.orderByArg2OrderByExpression
+import org.squeryl.PrimitiveTypeMode.select
+import org.squeryl.PrimitiveTypeMode.string2ScalarString
+import org.squeryl.PrimitiveTypeMode.typedExpression2OrderByArg
+import models.Permission._
+
+case class User(id: Long, name: String, email: String, password: String, permission: Permission) extends IdEntity {
+  
+  def this() = this(Entity.UnpersistedId, "", "", "", Permission.Administrator)
   
   /**
-   * Retrieve a User from email.
+   * Returns default TimeZone for the User. May be implemented as a persisted property in the future.
    */
-  def findByEmail(email: String): Option[User] = {
-    if (email == "kip.sigman@gmail.com")
-      Some(User(1, "kip.sigman@gmail.com", "1234"))
-    else
-      None
-  }
-  
-  def authenticate(email: String, password: String): Option[User] = {
-    findByEmail(email).filter { user => user.password == password }
+  def timeZone = TimeZone.getTimeZone("US/Eastern")
+}
+
+object User extends Dao(NewsSchema.userTable){
+
+  def authenticate(email: String, password: String): Option[User] = inTransaction {
+    findByEmail(email).filter { user => BCrypt.checkpw(password, user.password) }
   }
 
+  def findByEmail(email: String): Option[User] = inTransaction {
+    this.table.where(user => user.email === email).headOption
+  }
+  
+  def nameById(id: Long) = findById(id).map(user => user.name).getOrElse("")
+  
 }

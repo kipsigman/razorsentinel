@@ -9,13 +9,27 @@ GET  /assets/*file                controllers.Assets.at(path="/public", file)
 GET  /                            controllers.Application.index
 
 # Authentication
-GET  /login                       controllers.AuthController.login
-POST /login                       controllers.AuthController.authenticate
-GET  /logout                      controllers.AuthController.logout
+GET     /login                      controllers.AuthController.login
+POST    /login                      controllers.AuthController.authenticate
+GET     /logout                     controllers.AuthController.logout
 
+# Admin
+GET     /admin                            controllers.Application.indexAdmin
+GET     /admin/users                      controllers.UserController.list
+GET     /admin/users/new                  controllers.UserController.create
+GET     /admin/users/:id/edit             controllers.UserController.edit(id:Long)
+POST    /admin/users                      controllers.UserController.save
+POST    /admin/users/:id                  controllers.UserController.update(id:Long)
 
 # ArticleTemplates
-GET  /articleTemplates            controllers.ArticleTemplateController.list
-GET  /articleTemplates/new        controllers.ArticleTemplateController.create
-GET  /articleTemplates/:id/edit   controllers.ArticleTemplateController.edit(id:Long)
-POST /articleTemplates            controllers.ArticleTemplateController.save
+GET  /admin/articleTemplates            controllers.ArticleTemplateController.list
+GET  /admin/articleTemplates/new        controllers.ArticleTemplateController.create
+GET  /admin/articleTemplates/:id/show   controllers.ArticleTemplateController.show(id:Long)
+GET  /admin/articleTemplates/:id/edit   controllers.ArticleTemplateController.edit(id:Long)
+POST /admin/articleTemplates            controllers.ArticleTemplateController.save
+
+# Public
+GET  /articleTemplates                    controllers.ArticleController.listArticleTemplates
+POST /articles/updateTag                  controllers.ArticleController.updateTag
+GET  /articles/new/:templateId            controllers.ArticleController.create(templateId:Long)
+GET  /articles/:seoAlias                  controllers.ArticleController.show(seoAlias:String)

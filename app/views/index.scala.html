@@ -4,15 +4,5 @@
 
 @mainPublic(Messages("application.name")) {
     
-    <ul>
-      <li><a href="@routes.ArticleTemplateController.list()">Article Templates</a></li>
-    </ul>
-    
-    <p>
-    Debug Info
-    <ul>
-      <li>Date/Time: @(new java.util.Date().format("yyyy-MM-dd HH:mm z"))</li>
-      <li>Environment: @current.configuration.getString("environment")</li>
-    </ul>
-    </p>
+    <h2>Welcome to @Messages("application.name")</h2>
 }

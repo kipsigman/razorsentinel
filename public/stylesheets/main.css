@@ -1,0 +1,10 @@
+.table-editable .edit-toggle {
+	visibility: hidden;
+	float: right;
+}
+.table-editable td:hover .edit-toggle {
+    visibility: visible;
+}
+.small {
+	font-size: 85%;
+}

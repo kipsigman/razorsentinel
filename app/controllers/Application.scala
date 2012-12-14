@@ -6,9 +6,10 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import models._
+import models.Permission._
 
 
-object Application extends Controller {
+object Application extends SecureController {
 
   /**
    * Health check handler for Amazon load balancer
@@ -20,6 +21,10 @@ object Application extends Controller {
   
   def index = Action {implicit request =>
       Ok(views.html.index())
+  }
+  
+  def indexAdmin = authorizedAction(Administrator) { implicit user => implicit request =>
+      Ok(views.html.indexAdmin())
   }
 
 }

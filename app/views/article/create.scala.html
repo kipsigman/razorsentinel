@@ -1,0 +1,26 @@
+@(article: Article, articleTemplate: ArticleTemplate)(implicit request: Request[Any], flash: Flash, lang: Lang)
+
+@headerIncludes = {
+<link href="@routes.Assets.at("stylesheets/bootstrap-editable.css")" rel="stylesheet">
+<script src="@routes.Assets.at("javascripts/bootstrap-editable.min.js")"></script>
+<script src="@routes.Assets.at("javascripts/article.js")"></script>
+}
+
+@mainPublic("Article", headerIncludes) {
+  
+  <input id="articleId" type="hidden" name="articleId" value="@article.id" />
+  <input id="articleTemplateId" type="hidden" name="articleTemplateId" value="@article.articleTemplateId" />
+  <h4>@Html(articleTemplate.headlineEdit)</h4>
+  @Html(articleTemplate.bodyEdit)
+  <p>
+    <br/><br/>
+    <div id="shareArticleDraft">
+      <h4>Share</h4>
+      <span class="text-error">Replace all tags in article headline and body in order to generate a share link for your article.</span>
+    </div>
+    <div id="shareArticlePublished">
+        <h4>Share</h4>
+        <input type="text" id="articleUrl" name="articleUrl" class="span8"/>
+    </div>
+  </p>
+}

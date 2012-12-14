@@ -1,5 +1,5 @@
 @(articleTemplates: List[ArticleTemplate])(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
-@mainSecured("Article Templates") {
+@mainAdmin("Article Templates") {
   <h2>Article Templates</h2>
   
   <table class="table table-striped table-hover">
@@ -15,7 +15,7 @@
     @for(articleTemplate <- articleTemplates) {
       <tr>
         <td>@articleTemplate.id</td>
-        <td>@articleTemplate.headline</td>
+        <td><a href="@routes.ArticleTemplateController.show(articleTemplate.id)">@articleTemplate.headline</a></td>
         <td><a href="@routes.ArticleTemplateController.edit(articleTemplate.id)" class="btn btn-small"><i class="icon-pencil"></i></a></td>
       </tr>
     }

@@ -10,11 +10,16 @@ import org.squeryl.Table
  */
 object NewsSchema extends Schema {
 
+  val userTable = table[User]("user")
   val articleTemplateTable = table[ArticleTemplate]("article_template")
+  val articleTable = table[Article]("article")
   
-  on(articleTemplateTable) { t =>
-    declare {
-      t.id is (autoIncremented)
-    }
-  }
+  val userToArticleTemplates =
+    oneToManyRelation(userTable, articleTemplateTable).
+      via((u,at) => u.id === at.userId)
+      
+  val articleTemplateToArticles =
+    oneToManyRelation(articleTemplateTable, articleTable).
+      via((at,a) => at.id === a.articleTemplateId)
+  
 }
