@@ -16,8 +16,7 @@ $(document).ready(function() {
             }
         },
         success: function(data, textStatus, jqXHR) {
-            console.log($('#articleId'));
-            $('#articleId').val(data.articleId);
+            // $('#articleId').val(data.articleId);
             if (data.status == "PUBLISHED") {
                 // Set article URL in div
                 $('#articleUrl')[0].value = data.url;

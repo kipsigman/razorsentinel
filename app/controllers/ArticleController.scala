@@ -56,7 +56,7 @@ object ArticleController extends Controller {
   
   def create(articleTemplateId: Long) = Action { implicit request =>
     val articleTemplate = ArticleTemplate.findById(articleTemplateId).get
-    val article = Article(Entity.UnpersistedId, articleTemplate.id, None)
+    val article = Article.save(Article(Entity.UnpersistedId, articleTemplate.id, None))
     Ok(views.html.article.create(article, articleTemplate))
   }
   
