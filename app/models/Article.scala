@@ -1,5 +1,6 @@
 package models
 
+import collection.SortedSet
 import play.api.libs.json._
 import play.api.mvc.{AnyContent,Request}
 import org.squeryl.annotations.Column
@@ -13,7 +14,8 @@ case class Article(
   @Column("article_template_id")
   articleTemplateId: Long,
   @Column("tag_replacements")
-  tagReplacements: Option[String]) extends IdEntity {
+  tagReplacements: Option[String],
+  publish: Boolean) extends IdEntity {
   
   lazy val articleTemplate: StatefulManyToOne[ArticleTemplate] = 
     NewsSchema.articleTemplateToArticles.rightStateful(this)
@@ -26,22 +28,8 @@ case class Article(
     val newTagReplacements = Json.toJson(newTrm).toString
     
     // Copy to this and create a new version
-    this.copy(tagReplacements = Some(newTagReplacements))
-  }
-  
-  private def tagReplacementMap: Map[String,String] = {
-    tagReplacements match {
-      case None => Nil.toMap
-      case Some(tagReplacementsDefined) => {
-        val json: JsValue = Json.parse(tagReplacementsDefined)
-        val map: Map[String,String] = json.as[Map[String,String]]
-        map
-      }
-    }
-  }
-  
-  def tagReplacementSet: Set[TagReplacement] = {
-    tagReplacementMap.map(item => TagReplacement(item._1, item._2)).toSet
+    val articleWithReplacement = this.copy(tagReplacements = Some(newTagReplacements))
+    articleWithReplacement
   }
   
   def body: String = {
@@ -56,7 +44,7 @@ case class Article(
     })
   }
   
-  def isPublished = {
+  def allTagsReplaced = {
     (tagReplacementSet.size == articleTemplate.one.get.tags.size)
   }
   
@@ -64,6 +52,29 @@ case class Article(
     Article.UrlPrefix + Strings.formatSeo(headline) + "-" + id
   }
   
+  def tagReplacementSet: Set[TagReplacement] = {
+    val tagReplacementList = tagReplacementMap.map(item => TagReplacement(item._1, item._2)).toList
+
+//    val ordering = new Ordering[TagReplacement] { 
+//      def compare(x:TagReplacement,y:TagReplacement): Int = x.tag compare y.tag 
+//    }
+//    
+//    val aSet: SortedSet[TagReplacement] = SortedSet(tagReplacementList: _*)(ordering)
+//    aSet
+    
+    tagReplacementList.toSet
+  }
+  
+  private def tagReplacementMap: Map[String,String] = {
+    tagReplacements match {
+      case None => Nil.toMap
+      case Some(tagReplacementsDefined) => {
+        val json: JsValue = Json.parse(tagReplacementsDefined)
+        val map: Map[String,String] = json.as[Map[String,String]]
+        map
+      }
+    }
+  }
 }
 
 object Article extends Dao(NewsSchema.articleTable) {
@@ -90,5 +101,12 @@ object Article extends Dao(NewsSchema.articleTable) {
   
   def absoluteUrl(request: Request[AnyContent], article: Article): String = inTransaction {
     Urls.absoluteUrl(request, article.relativeUrl)
+  }
+  
+  override def save(article: Article) = inTransaction {
+    if (article.allTagsReplaced)
+      table.insertOrUpdate(article.copy(publish = true))
+    else
+      table.insertOrUpdate(article)
   }
 }

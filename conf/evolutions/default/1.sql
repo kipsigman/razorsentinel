@@ -26,6 +26,7 @@ CREATE TABLE article (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     article_template_id INT UNSIGNED NOT NULL,
 	tag_replacements TEXT,
+	publish BOOLEAN NOT NULL DEFAULT 0,
 	PRIMARY KEY (id),
 	CONSTRAINT fk_article_article_template_id FOREIGN KEY(article_template_id) REFERENCES article_template(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

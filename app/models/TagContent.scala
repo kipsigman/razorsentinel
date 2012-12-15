@@ -1,19 +1,15 @@
 package models
 
-trait TagContent {
-  
+object TagContent {
   val TagRegex = """\{([\w]*)\}""".r
   
-  def tags: Set[String] = {
-    collection.SortedSet.empty[String] ++ (TagRegex.findAllIn(headline).toList ::: TagRegex.findAllIn(body).toList)
+  def contentHtmlInlineEdit(content: String): String = {
+    TagContent.TagRegex.replaceAllIn(content, tagMatch => wrapTagForEdit(tagMatch))
   }
   
-  def hasTags: Boolean = {
-    !tags.isEmpty
+  private def wrapTagForEdit(tagMatch: scala.util.matching.Regex.Match) = {
+    "<a href=\"#\" class=\"field-editable\" data-type=\"text\" data-name=\"" + tagMatch.toString + "\" data-value=\"" + tagMatch.group(1) + "\">" + tagMatch.toString + "</a>"
   }
-  
-  def headline: String
-  def body: String
 }
 
 case class TagReplacement(tag: String, replacement: String) {

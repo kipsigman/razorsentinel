@@ -19,7 +19,7 @@ object ArticleController extends Controller {
     )
     // Binding
     {(pk, articleTemplateId, name, value) => {
-      val article = if (pk > 0) Article.findById(pk).get else Article(Entity.UnpersistedId, articleTemplateId, None)
+      val article = if (pk > 0) Article.findById(pk).get else Article(Entity.UnpersistedId, articleTemplateId, None, false)
       article.addTagReplacement(TagReplacement(name, value))
       }
     }
@@ -35,9 +35,9 @@ object ArticleController extends Controller {
         val articleId = Article.save(article).id
         val savedArticle = Article.findByIdInflated(articleId)
         val url = Article.absoluteUrl(request, savedArticle)
-        if (savedArticle.isPublished) {
+        if (savedArticle.publish) {
           // All tags replaced, give URL for sharing
-          val json = Json.toJson(Map("status" -> "PUBLISHED", "url" -> url, "id" -> savedArticle.id.toString))
+          val json = Json.toJson(Map("status" -> "PUBLISH", "url" -> url, "id" -> savedArticle.id.toString))
           Ok(json)
         } else {
           // Not completely customized
@@ -56,7 +56,7 @@ object ArticleController extends Controller {
   
   def create(articleTemplateId: Long) = Action { implicit request =>
     val articleTemplate = ArticleTemplate.findById(articleTemplateId).get
-    val article = Article.save(Article(Entity.UnpersistedId, articleTemplate.id, None))
+    val article = Article.save(Article(Entity.UnpersistedId, articleTemplate.id, None, false))
     Ok(views.html.article.create(article, articleTemplate))
   }
   

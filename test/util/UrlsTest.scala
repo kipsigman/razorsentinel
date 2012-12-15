@@ -12,7 +12,7 @@ class UrlsTest extends Specification {
       val relativeUrl = "/articles/kip-sigman-voted-most-worthless-employee-99"
       val headers = FakeHeaders(Map(play.api.http.HeaderNames.HOST -> List("www.news.com")))
       val request = FakeRequest[AnyContent]("GET", "http://www.news.com/articles/updateTag", headers, AnyContentAsEmpty)
-      println("host="+request.host)
+      // println("host="+request.host)
       
       Urls.absoluteUrl(request, relativeUrl) must equalTo("http://www.news.com/articles/kip-sigman-voted-most-worthless-employee-99")
     }

@@ -8,10 +8,8 @@ Admin login: kip.sigman@gmail.com/savings123
 
 
 TODO:
-News app
 ---------------
-- Persist Article.publish
 - Finish ArticleTest
-- Add images to ArticleTemplate
-- Choose domain
 - UI for public site
+- Choose domain
+- Add images to ArticleTemplate

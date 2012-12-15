@@ -10,15 +10,15 @@
   
   <input id="articleId" type="hidden" name="articleId" value="@article.id" />
   <input id="articleTemplateId" type="hidden" name="articleTemplateId" value="@article.articleTemplateId" />
-  <h4>@Html(articleTemplate.headlineEdit)</h4>
-  @Html(articleTemplate.bodyEdit)
+  <h4>@Html(models.TagContent.contentHtmlInlineEdit(articleTemplate.headline))</h4>
+  @Html(models.TagContent.contentHtmlInlineEdit(articleTemplate.body))
   <p>
     <br/><br/>
     <div id="shareArticleDraft">
       <h4>Share</h4>
       <span class="text-error">Replace all tags in article headline and body in order to generate a share link for your article.</span>
     </div>
-    <div id="shareArticlePublished">
+    <div id="shareArticlePublish">
         <h4>Share</h4>
         <input type="text" id="articleUrl" name="articleUrl" class="span8"/>
     </div>

@@ -35,15 +35,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="@routes.Application.indexAdmin()">@Messages("application.name")</a>
+          <a class="brand" href="@routes.Application.index()">@Messages("application.name")</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
               @user.name <a href="@routes.AuthController.logout()">Logout</a>
             </p>
             <ul class="nav">
-              <li@if(request.uri == routes.Application.indexAdmin().toString){ class="active"}><a href="@routes.Application.indexAdmin()"><i class="icon-home"></i> Home</a></li>
+              <li@if(request.uri == routes.Application.indexAdmin().toString){ class="active"}><a href="@routes.Application.indexAdmin()"><i class="icon-home"></i> Admin Home</a></li>
               <li@if(request.uri.contains("/articleTemplates")){ class="active"}><a href="@routes.ArticleTemplateController.list()"><i class="icon-list"></i> Article Templates</a></li>
-              <li@if(request.uri.contains("/users")){ class="active"}><a href="@routes.UserController.list()"><i class="icon-list"></i> Users</a></li>
+              <li@if(request.uri.contains("/users")){ class="active"}><a href="@routes.UserController.list()"><i class="icon-user"></i> Users</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>

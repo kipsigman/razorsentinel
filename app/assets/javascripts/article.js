@@ -16,23 +16,22 @@ $(document).ready(function() {
             }
         },
         success: function(data, textStatus, jqXHR) {
+            // Update all other tags of the same name
+            var tagName = $(this)[0].getAttribute('data-name');
+            var tagValue = textStatus;
+            var tags = $('[data-name="' + tagName + '"]');
+            tags.html(tagValue);
+            
+            // Show sharing info if article is published
             // $('#articleId').val(data.articleId);
-            if (data.status == "PUBLISHED") {
+            if (data.status == "PUBLISH") {
                 // Set article URL in div
                 $('#articleUrl')[0].value = data.url;
-                console.log(data.status,data.url);
                 $('#shareArticleDraft').hide();
-                $('#shareArticlePublished').show();
+                $('#shareArticlePublish').show();
             }
         }
     });
-    $('.field-editable').on('update', function(e, editable) {
-        // Update all other tags of the same name
-        var tagName = this.getAttribute('data-name');
-        var tagValue = $(this).html();
-        var tags = $('[data-name="' + tagName + '"]');
-        tags.html(tagValue);
-    });
     $('#shareArticleDraft').show();
-    $('#shareArticlePublished').hide();
+    $('#shareArticlePublish').hide();
 });
