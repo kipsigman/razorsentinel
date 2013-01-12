@@ -8,7 +8,7 @@ object TagContent {
   }
   
   private def wrapTagForEdit(tagMatch: scala.util.matching.Regex.Match) = {
-    "<a href=\"#\" class=\"field-editable\" data-type=\"text\" data-name=\"" + tagMatch.toString + "\" data-value=\"" + tagMatch.group(1) + "\">" + tagMatch.toString + "</a>"
+    "<a href=\"#\" class=\"field-editable\" data-type=\"text\" data-name=\"" + tagMatch.toString + "\" data-value=\"" + tagMatch.group(1) + "\" data-placement=\"right\" data-inputclass=\"input-large\">" + tagMatch.toString + "</a>"
   }
 }
 
