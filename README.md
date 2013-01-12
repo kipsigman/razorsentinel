@@ -8,8 +8,9 @@ Deploy
 -----------
 $ git add -A .
 $ git commit -m "a message..."
+$ git push origin master
 $ git push heroku master
-$ git push
+
 
 
 Features
