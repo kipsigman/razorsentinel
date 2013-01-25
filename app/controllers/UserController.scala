@@ -2,14 +2,12 @@ package controllers
 
 import org.mindrot.jbcrypt.BCrypt
 import play.api.data.Form
-import play.api.data.Forms.email
-import play.api.data.Forms.mapping
-import play.api.data.Forms.longNumber
-import play.api.data.Forms.number
-import play.api.data.Forms.nonEmptyText
-import play.api.data.Forms.text
-import play.api.data.Forms.tuple
-import se.radley.plugin.enumeration.form.enum
+import play.api.data.Forms._
+import play.api.data.format.Formatter
+import play.api.data.{FormError, Forms, Mapping}
+import play.api.mvc._
+
+
 import models._
 import models.Permission._
 
@@ -102,5 +100,35 @@ object UserController extends SecureController {
       }
     )
   } // end save
+  
+  /**
+   * COPIED FROM https://github.com/leon/play-enumeration
+   * 
+   * Constructs a simple mapping for a text field (mapped as `scala.Enumeration`)
+   *
+   * For example:
+   * {{{
+   *   Form("status" -> enum(Status))
+   * }}}
+   *
+   * @param enum the Enumeration#Value
+   */
+  def enum[E <: Enumeration](enum: E): Mapping[E#Value] = Forms.of(enumFormat(enum))
+
+  /**
+   * Default formatter for `scala.Enumeration`
+   *
+   */
+  def enumFormat[E <: Enumeration](enum: E): Formatter[E#Value] = new Formatter[E#Value] {
+    def bind(key: String, data: Map[String, String]) = {
+      play.api.data.format.Formats.stringFormat.bind(key, data).right.flatMap { s =>
+        scala.util.control.Exception.allCatch[E#Value]
+          .either(enum.withName(s))
+          .left.map(e => Seq(FormError(key, "Invalid value", Nil)))
+      }
+    }
+    def unbind(key: String, value: E#Value) = Map(key -> value.toString)
+  }
 
 }
+

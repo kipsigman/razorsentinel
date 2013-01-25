@@ -5,6 +5,10 @@ import org.squeryl.Table
 
 abstract class Dao[T<:IdEntity](val table: Table[T]) {
   
+  def delete(id :Long): Unit = inTransaction {
+    this.table.deleteWhere(_.id === id)
+  }
+  
   def findById(id: Long): Option[T] = inTransaction {table.lookup(id)}
   
   def findAll: List[T] = inTransaction {
@@ -17,4 +21,4 @@ abstract class Dao[T<:IdEntity](val table: Table[T]) {
     table.insertOrUpdate(entity)
   }
   
-}
+} // end Dao

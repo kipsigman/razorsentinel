@@ -22,7 +22,7 @@ case class User(id: Long, name: String, email: String, password: String, permiss
   def timeZone = TimeZone.getTimeZone("US/Eastern")
 }
 
-object User extends Dao(NewsSchema.userTable){
+object User extends Dao[User](NewsSchema.userTable){
 
   def authenticate(email: String, password: String): Option[User] = inTransaction {
     findByEmail(email).filter { user => BCrypt.checkpw(password, user.password) }

@@ -1,13 +1,14 @@
 package models
 
 import collection.SortedSet
-import play.api.libs.json._
+import play.api.libs.json.{Json,JsValue}
 import play.api.mvc.{AnyContent,Request}
 import org.squeryl.annotations.Column
 import org.squeryl.annotations.Transient
 import org.squeryl.dsl.StatefulManyToOne
 import org.squeryl.PrimitiveTypeMode.inTransaction
-import util.{Strings,Urls}
+import util.Strings
+import util.Urls
 
 case class Article(
   id: Long,
@@ -77,7 +78,7 @@ case class Article(
   }
 }
 
-object Article extends Dao(NewsSchema.articleTable) {
+object Article extends Dao[Article](NewsSchema.articleTable) {
   
   val UrlPrefix = "/articles/"
     

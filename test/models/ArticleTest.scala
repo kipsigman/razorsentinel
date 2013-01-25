@@ -7,11 +7,11 @@ import play.api.test.Helpers._
 /**
  * @author kip
  */
-class ArticleTest extends Specification {
+class ArticleTest extends Specification with test.BaseTest {
   
   "addTagReplacement" should {
     "put data into tagReplacements field" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+      running(fakeApp) {
         val user = User.save(User(Entity.UnpersistedId, "Kip", "kip.sigman@gmail.com", "passwd", Permission.Administrator))
         val headline = "{city} - {firstname} {lastname} is the worst bowler."
         val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
@@ -35,7 +35,7 @@ class ArticleTest extends Specification {
   
   "relativeUrl" should {
     "make headline into an seo url path with id" in {
-      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+      running(fakeApp) {
         val user = User.save(User(Entity.UnpersistedId, "Kip", "kip.sigman@gmail.com", "passwd", Permission.Administrator))
         val headline = "{city} - {firstname} {lastname} is the worst bowler."
         val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."

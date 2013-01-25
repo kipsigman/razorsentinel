@@ -16,6 +16,5 @@ trait IdEntity extends KeyedEntity[Long] {
 }
 
 object Entity {
-  
   val UnpersistedId: Long = -1
 }

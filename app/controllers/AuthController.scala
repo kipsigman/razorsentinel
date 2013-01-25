@@ -1,7 +1,8 @@
 package controllers
 
-import jp.t2v.lab.play20.auth.AuthConfig
-import jp.t2v.lab.play20.auth.LoginLogout
+import jp.t2v.lab.play20.auth.{AuthConfig,CookieIdContainer,IdContainer,LoginLogout}
+import models.Permission._
+import models.User
 import play.api.data.Form
 import play.api.data.Forms.email
 import play.api.data.Forms.mapping
@@ -9,10 +10,9 @@ import play.api.data.Forms.nonEmptyText
 import play.api.mvc.Action
 import play.api.mvc.Controller
 import play.api.mvc.PlainResult
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.api.mvc.Results.{Forbidden,Redirect,Unauthorized}
-import models.Permission._
-import models.User
+
 
 /**
  * Flows for login/logout and security definitions.
@@ -102,36 +102,33 @@ trait AuthConfigImpl extends AuthConfig {
   /**
    * Where to redirect the user after a successful login.
    */
-  def loginSucceeded[A](request: Request[A]): PlainResult = {
-    
-    request.session.get("access_uri").map(accessUri => {
-      request.session - "access_uri"
-      Redirect(accessUri)  
-    }).getOrElse(Redirect(routes.Application.indexAdmin))
+  def loginSucceeded(request: RequestHeader): PlainResult = {
+    val uri = request.session.get("access_uri").getOrElse(routes.Application.index.url.toString)
+    request.session - "access_uri"
+    Redirect(uri)
   }
 
   /**
    * Where to redirect the user after logging out
    */
-  def logoutSucceeded[A](request: Request[A]): PlainResult = Redirect(routes.AuthController.login)
+  def logoutSucceeded(request: RequestHeader): PlainResult = Redirect(routes.AuthController.login)
   
   /**
    * If the user is not logged in and tries to access a protected resource then redirct them as follows:
    */
-  def authenticationFailed[A](request: Request[A]): PlainResult = {
+  def authenticationFailed(request: RequestHeader): PlainResult = {
     // Check for request type. If AJAX request return an Unauthorized.
     // Otherwise redirect to login page.
     request.headers.get("X-Requested-With") match {
-      case Some("XMLHttpRequest") => Unauthorized("Authentication failed")
+      case Some("XMLHttpRequest") => Unauthorized("Unauthorized. User session may have expired.")
       case _ => Redirect(routes.AuthController.login).withSession("access_uri" -> request.uri) 
     }
   }
   
-
   /**
    * If authorization failed (usually incorrect password) redirect the user as follows:
    */
-  def authorizationFailed[A](request: Request[A]): PlainResult = Forbidden("no permission")
+  def authorizationFailed(request: RequestHeader): PlainResult = Forbidden("no permission")
   
   /**
    * A function that determines what `Authority` a user has.
@@ -143,4 +140,10 @@ trait AuthConfigImpl extends AuthConfig {
       case _ => false
     }
 
+  /**
+   * Overriding for "Stateless" implementation. See https://github.com/t2v/play20-auth for more info.
+   * @param request
+   * @return
+   */
+  override lazy val idContainer: IdContainer[Id] = new CookieIdContainer[Id]
 }

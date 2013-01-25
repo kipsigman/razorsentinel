@@ -8,15 +8,17 @@ object ApplicationBuild extends Build {
   val appVersion = "1.0-SNAPSHOT"
 
   val appDependencies = Seq(
-    "jp.t2v" % "play20.auth_2.9.1" % "0.3",
+    jdbc,
+    "jp.t2v" %% "play21.auth" % "0.6",
     "org.mindrot" % "jbcrypt" % "0.3m",
-    "org.squeryl" %% "squeryl" % "0.9.5-5",
+    "org.squeryl" %% "squeryl" % "0.9.5-6",
     "mysql" % "mysql-connector-java" % "5.1.21",
-    "se.radley" %% "play-plugins-enumeration" % "1.0.1"
+    "com.h2database" % "h2" % "1.2.127" % "test"
   )
   
-  val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings( // Add your own project settings here
-      resolvers += "t2v.jp repo" at "http://www.t2v.jp/maven-repo/"
+  val main = play.Project(appName, appVersion, appDependencies).settings(
+    // Add your own project settings here
+    // resolvers += "t2v.jp repo" at "http://www.t2v.jp/maven-repo/"
   )
 
 }

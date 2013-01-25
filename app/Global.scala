@@ -35,5 +35,5 @@ object Global extends GlobalSettings {
         Session.create(DB.getConnection()(app), new MySQLAdapter) )
     }
   }
-
+  
 }

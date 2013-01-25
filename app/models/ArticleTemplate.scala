@@ -21,4 +21,4 @@ case class ArticleTemplate(
   
 }
 
-object ArticleTemplate extends Dao(NewsSchema.articleTemplateTable)
+object ArticleTemplate extends Dao[ArticleTemplate](NewsSchema.articleTemplateTable)

@@ -10,7 +10,7 @@ class UrlsTest extends Specification {
     "make relativeUrl into a url friendly path" in {
       
       val relativeUrl = "/articles/kip-sigman-voted-most-worthless-employee-99"
-      val headers = FakeHeaders(Map(play.api.http.HeaderNames.HOST -> List("www.news.com")))
+      val headers = FakeHeaders(Seq(play.api.http.HeaderNames.HOST -> List("www.news.com")))
       val request = FakeRequest[AnyContent]("GET", "http://www.news.com/articles/updateTag", headers, AnyContentAsEmpty)
       // println("host="+request.host)
       
