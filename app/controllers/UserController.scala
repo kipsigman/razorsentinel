@@ -14,7 +14,7 @@ import models.Permission._
 /**
  * @author kip
  */
-object UserController extends SecureController {
+object UserController extends BaseController {
   
   val newUserForm = Form(
     mapping(

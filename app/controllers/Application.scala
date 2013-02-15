@@ -9,7 +9,7 @@ import models._
 import models.Permission._
 
 
-object Application extends SecureController {
+object Application extends BaseController {
 
   /**
    * Health check handler for Amazon load balancer

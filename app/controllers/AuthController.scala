@@ -12,6 +12,7 @@ import play.api.mvc.Controller
 import play.api.mvc.PlainResult
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results.{Forbidden,Redirect,Unauthorized}
+import reflect.{ClassTag, classTag}
 
 
 /**
@@ -86,7 +87,7 @@ trait AuthConfigImpl extends AuthConfig {
    * A `ClassManifest` is used to retrieve an id from the Cache API.
    * Use something like this:
    */
-  val idManifest: ClassManifest[Id] = classManifest[Id]
+  val idTag: ClassTag[Id] = classTag[Id]
 
   /**
    * The session timeout in seconds

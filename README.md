@@ -24,9 +24,6 @@ Authentication/Authorization: https://github.com/t2v/play20-auth
 TODO:
 ---------------
 - x-editable to pop up edit windows to the right so they don't appear off screen
-- Upgrade to Play 2.1/Scala 2.10
-- Upgrade to new Play 20 Auth
-- Use stateless sessions for Auth: https://github.com/t2v/play20-auth (search for stateless)
 - Versioning of UI assets
 - UI for public site to look like news
 - Choose domain

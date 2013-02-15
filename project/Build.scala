@@ -9,7 +9,7 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     jdbc,
-    "jp.t2v" %% "play21.auth" % "0.6",
+    "jp.t2v" %% "play21.auth" % "0.7",
     "org.mindrot" % "jbcrypt" % "0.3m",
     "org.squeryl" %% "squeryl" % "0.9.5-6",
     "mysql" % "mysql-connector-java" % "5.1.21",

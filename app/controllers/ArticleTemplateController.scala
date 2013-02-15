@@ -10,7 +10,7 @@ import models.Permission._
 /**
  * Manage Article Templates
  */
-object ArticleTemplateController extends SecureController { 
+object ArticleTemplateController extends BaseController { 
   
   def form(user: User) = Form[ArticleTemplate](
     mapping(
