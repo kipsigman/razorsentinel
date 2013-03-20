@@ -15,7 +15,7 @@ import play.api.test.FakeApplication
  * 
  * @author kip
  */
-trait BaseTest {
+trait BaseSpec {
   
   def fakeApp = FakeApplication(additionalConfiguration = inMemoryDatabase() + (("evolutionplugin", "disabled")))
   

@@ -1,6 +1,8 @@
 $(document).ready(function() {
     $('.field-editable').editable({
+        type: 'text',
         placement: 'bottom',
+        inputclass: 'input-large',
         pk: $('#articleId')[0].value,
         params: {articleTemplateId:$('#articleTemplateId')[0].value},
         url: '/articles/updateTag',

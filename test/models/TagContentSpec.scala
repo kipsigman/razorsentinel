@@ -10,7 +10,7 @@ import play.api.test.Helpers._
 /**
  * @author kip
  */
-class TagContentTest extends Specification {
+class TagContentSpec extends Specification {
   
   "TagContent" should {
     "contentHtmlInlineEdit wrap tags in editable HTML" in {

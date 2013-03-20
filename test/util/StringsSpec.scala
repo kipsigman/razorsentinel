@@ -2,7 +2,7 @@ package util
 
 import org.specs2.mutable._
 
-class StringsTest extends Specification {
+class StringsSpec extends Specification {
   
   "formatSeo" should {
     "make string into a url friendly path" in {

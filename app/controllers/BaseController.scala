@@ -6,6 +6,8 @@ package controllers
 import jp.t2v.lab.play20.auth.Auth
 import play.api.mvc.Controller
 import play.api.mvc.Flash
+import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.api.mvc.Results
 
 /**
@@ -15,5 +17,7 @@ import play.api.mvc.Results
  * @author kip
  */
 trait BaseController extends Controller with Auth with AuthConfigImpl {
+  
+  def notFound(implicit request: RequestHeader, flash: Flash) = NotFound(views.html.notFound())
   
 }

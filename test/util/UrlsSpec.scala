@@ -4,7 +4,7 @@ import org.specs2.mutable._
 import play.api.mvc.{AnyContent,AnyContentAsEmpty,Request}
 import play.api.test._
 
-class UrlsTest extends Specification {
+class UrlsSpec extends Specification {
   
   "absoluteUrl" should {
     "make relativeUrl into a url friendly path" in {
@@ -15,6 +15,14 @@ class UrlsTest extends Specification {
       // println("host="+request.host)
       
       Urls.absoluteUrl(request, relativeUrl) must equalTo("http://www.news.com/articles/kip-sigman-voted-most-worthless-employee-99")
+    }
+  }
+  
+  "isValidUrl" should {
+    "match valid URL" in {
+      Urls.isValidUrl("http://www.thesith.com/vader.html") must beTrue
+      Urls.isValidUrl("www.thesith.com/vader.html") must beFalse
+      Urls.isValidUrl("xxx http://www.thesith.com/vader.html") must beFalse
     }
   }
 

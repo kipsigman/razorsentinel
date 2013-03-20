@@ -6,12 +6,13 @@ import play.api.{Application, GlobalSettings}
 import play.api.mvc._
 import play.api.mvc.Results._
 import play.api.Play
+import controllers.BaseController
 import models.NewsSchema
 
 /**
  * @author kip
  */
-object Global extends GlobalSettings {
+object Global extends GlobalSettings with BaseController {
   
   override def onStart(app: Application) {
 
@@ -34,6 +35,12 @@ object Global extends GlobalSettings {
       SessionFactory.concreteFactory = Some(() =>
         Session.create(DB.getConnection()(app), new MySQLAdapter) )
     }
+  }
+  
+  override def onHandlerNotFound(request: RequestHeader): Result = {
+    implicit val aRequest = request
+    implicit val flash = request.flash
+    notFound
   }
   
 }

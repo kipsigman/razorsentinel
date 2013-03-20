@@ -7,7 +7,7 @@ import play.api.test.Helpers._
 /**
  * @author kip
  */
-class ArticleTest extends Specification with test.BaseTest {
+class ArticleSpec extends Specification with test.BaseSpec {
   
   "addTagReplacement" should {
     "put data into tagReplacements field" in {

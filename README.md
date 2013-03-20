@@ -1,4 +1,4 @@
-News application on Play 2.0
+News application on Play 2.1.0
 =====================================
 Heroku info: http://stormy-taiga-9359.herokuapp.com
 Old Procfile:
@@ -23,8 +23,8 @@ Authentication/Authorization: https://github.com/t2v/play20-auth
 
 TODO:
 ---------------
-- x-editable to pop up edit windows to the right so they don't appear off screen
 - Versioning of UI assets
 - UI for public site to look like news
 - Choose domain
 - Add images to ArticleTemplate
+- URL shortner for article links
