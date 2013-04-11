@@ -16,7 +16,7 @@ class TagContentSpec extends Specification {
     "contentHtmlInlineEdit wrap tags in editable HTML" in {
       val content = "Local Company declares {firstname} {lastname} Most Worthless Employee"
       val contentForEditable = TagContent.contentHtmlInlineEdit(content)
-      contentForEditable must equalTo("""Local Company declares <a href="#" class="field-editable" data-type="text" data-name="{firstname}" data-value="firstname" data-placement="right" data-inputclass="input-large">{firstname}</a> <a href="#" class="field-editable" data-type="text" data-name="{lastname}" data-value="lastname" data-placement="right" data-inputclass="input-large">{lastname}</a> Most Worthless Employee""")
+      contentForEditable must equalTo("""Local Company declares <a href="#" class="field-editable" data-type="text" data-name="{firstname}" data-value="firstname">{firstname}</a> <a href="#" class="field-editable" data-type="text" data-name="{lastname}" data-value="lastname">{lastname}</a> Most Worthless Employee""")
     }
   }
   
