@@ -14,10 +14,6 @@ object NewsSchema extends Schema {
   val articleTemplateTable = table[ArticleTemplate]("article_template")
   val articleTable = table[Article]("article")
   
-  val userToArticleTemplates =
-    oneToManyRelation(userTable, articleTemplateTable).
-      via((u,at) => u.id === at.userId)
-      
   val articleTemplateToArticles =
     oneToManyRelation(articleTemplateTable, articleTable).
       via((at,a) => at.id === a.articleTemplateId)

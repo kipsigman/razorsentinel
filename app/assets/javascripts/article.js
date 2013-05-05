@@ -5,7 +5,7 @@ $(document).ready(function() {
         inputclass: 'input-large',
         pk: $('#articleId')[0].value,
         params: {articleTemplateId:$('#articleTemplateId')[0].value},
-        url: '/articles/updateTag',
+        url: jsRoutes.controllers.ArticleController.updateTag().url,
         validate: function(value) {
             if($.trim(value) == '') 
                 return 'This field is required';

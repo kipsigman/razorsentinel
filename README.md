@@ -11,6 +11,9 @@ $ git commit -m "a message..."
 $ git push origin master
 $ git push heroku master
 
+DB
+------------
+mysql --host us-cdbr-east-02.cleardb.com --port=3306 --user=bbc36f83ddbd62 --password=ff5c1c02 --database=heroku_7c0ab5bfc1e9701
 
 
 Features
@@ -28,3 +31,9 @@ TODO:
 - Choose domain
 - Add images to ArticleTemplate
 - URL shortner for article links
+
+DROP TABLE IF EXISTS article;
+DROP TABLE IF EXISTS article_template;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS play_evolutions;
+

@@ -1,6 +1,13 @@
 package models
 
-import org.squeryl.PrimitiveTypeMode._
+import scala.language.postfixOps
+import org.squeryl.PrimitiveTypeMode.__thisDsl
+import org.squeryl.PrimitiveTypeMode.from
+import org.squeryl.PrimitiveTypeMode.inTransaction
+import org.squeryl.PrimitiveTypeMode.long2ScalarLong
+import org.squeryl.PrimitiveTypeMode.orderByArg2OrderByExpression
+import org.squeryl.PrimitiveTypeMode.select
+import org.squeryl.PrimitiveTypeMode.typedExpression2OrderByArg
 import org.squeryl.Table
 
 abstract class Dao[T<:IdEntity](val table: Table[T]) {

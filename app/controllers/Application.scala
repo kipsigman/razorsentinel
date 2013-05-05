@@ -26,5 +26,14 @@ object Application extends BaseController {
   def indexAdmin = authorizedAction(Administrator) { implicit user => implicit request =>
       Ok(views.html.indexAdmin())
   }
+  
+  def javascriptRoutes = Action { implicit request =>
+    import routes.javascript._
+    Ok(
+      Routes.javascriptRouter("jsRoutes")(
+        ArticleController.updateTag
+      )
+    ).as("text/javascript")
+  }
 
 }

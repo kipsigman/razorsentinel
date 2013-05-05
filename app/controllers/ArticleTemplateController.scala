@@ -27,7 +27,7 @@ object ArticleTemplateController extends BaseController {
           articleTemplate.copy(headline = headline, body = body)
         } else {
           // New Entity
-          ArticleTemplate(Entity.UnpersistedId, user.id, headline, body)
+          ArticleTemplate(Entity.UnpersistedId, headline, body)
         }
       }
     }

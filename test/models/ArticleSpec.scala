@@ -15,7 +15,7 @@ class ArticleSpec extends Specification with test.BaseSpec {
         val user = User.save(User(Entity.UnpersistedId, "Kip", "kip.sigman@gmail.com", "passwd", Permission.Administrator))
         val headline = "{city} - {firstname} {lastname} is the worst bowler."
         val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
-        val articleTemplate = ArticleTemplate.save(ArticleTemplate(Entity.UnpersistedId, user.id, headline, body))
+        val articleTemplate = ArticleTemplate.save(ArticleTemplate(Entity.UnpersistedId, headline, body))
         
         val articleId = Article.save(Article(Entity.UnpersistedId, articleTemplate.id, None, false)).id
         var article = Article.findByIdInflated(articleId)
@@ -39,7 +39,7 @@ class ArticleSpec extends Specification with test.BaseSpec {
         val user = User.save(User(Entity.UnpersistedId, "Kip", "kip.sigman@gmail.com", "passwd", Permission.Administrator))
         val headline = "{city} - {firstname} {lastname} is the worst bowler."
         val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
-        val articleTemplate = ArticleTemplate.save(ArticleTemplate(Entity.UnpersistedId, user.id, headline, body))
+        val articleTemplate = ArticleTemplate.save(ArticleTemplate(Entity.UnpersistedId, headline, body))
         
         val articleId = Article.save(Article(Entity.UnpersistedId, articleTemplate.id, None, false)).id
         var article = Article.findByIdInflated(articleId)
