@@ -1,5 +1,6 @@
 package models
 
+import scala.concurrent.Future
 import collection.SortedSet
 import play.api.libs.json.{Json,JsValue}
 import play.api.mvc.{AnyContent,Request}
@@ -100,8 +101,9 @@ object Article extends Dao[Article](NewsSchema.articleTable) {
     article
   }
   
-  def absoluteUrl(request: Request[AnyContent], article: Article): String = inTransaction {
-    Urls.absoluteUrl(request, article.relativeUrl)
+  def preparedUrl(request: Request[AnyContent], article: Article): Future[String] = inTransaction {
+    val absoluteUrl = Urls.absoluteUrl(request, article.relativeUrl)
+    Urls.shortenUrl(absoluteUrl)
   }
   
   override def save(article: Article) = inTransaction {

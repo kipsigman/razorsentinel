@@ -5,6 +5,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.json.Json
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import models._
 import util.Urls
 
@@ -34,17 +35,20 @@ object ArticleController extends Controller {
       article => {
         val articleId = Article.save(article).id
         val savedArticle = Article.findByIdInflated(articleId)
-        val url = Article.absoluteUrl(request, savedArticle)
-        if (savedArticle.publish) {
-          // All tags replaced, give URL for sharing
-          val json = Json.toJson(Map("status" -> "PUBLISH", "url" -> url, "id" -> savedArticle.id.toString))
-          Ok(json)
-        } else {
-          // Not completely customized
-          val json = Json.toJson(Map("status" -> "DRAFT", "url" -> url, "articleId" -> savedArticle.id.toString))
-          Ok(json)  
+        val articleUrlFuture = Article.preparedUrl(request, savedArticle)
+        Async {
+          articleUrlFuture.map(url => {
+            if (savedArticle.publish) {
+              // All tags replaced, give URL for sharing
+              val json = Json.toJson(Map("status" -> "PUBLISH", "url" -> url, "id" -> savedArticle.id.toString))
+              Ok(json)
+            } else {
+              // Not completely customized
+              val json = Json.toJson(Map("status" -> "DRAFT", "url" -> url, "articleId" -> savedArticle.id.toString))
+              Ok(json)  
+            }
+          })
         }
-        
       }
     )
   }

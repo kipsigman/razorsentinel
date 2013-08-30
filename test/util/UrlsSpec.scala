@@ -1,7 +1,10 @@
 package util
 
 import org.specs2.mutable._
-import play.api.mvc.{AnyContent,AnyContentAsEmpty,Request}
+
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.mvc.AnyContent
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test._
 
 class UrlsSpec extends Specification {
@@ -25,5 +28,28 @@ class UrlsSpec extends Specification {
       Urls.isValidUrl("xxx http://www.thesith.com/vader.html") must beFalse
     }
   }
-
+  
+//  "shortenUrl" should {
+//    "return a shortened url" in {
+//      val shortUrlFuture = Urls.shortenUrl("http://www.thesith.com/vader.html")
+//      shortUrlFuture.map(_ must equalTo("http://goo.gl/tZChR"))
+//       
+//    }
+//  }
+  
+  "urlDecode" should {
+    "decode string in URL" in {
+      Urls.urlDecode("some+crap+to+be+in+a+querystring%3F%26") must equalTo("some crap to be in a querystring?&")
+      Urls.urlDecode("http%3A%2F%2Fwww.thesith.com%2Fvader.html") must equalTo("http://www.thesith.com/vader.html")
+    }
+  }
+  
+  "urlEncode" should {
+    "encode string for URL" in {
+      Urls.urlEncode("some crap to be in a querystring?&") must equalTo("some+crap+to+be+in+a+querystring%3F%26")
+      Urls.urlEncode("http://www.thesith.com/vader.html") must equalTo("http%3A%2F%2Fwww.thesith.com%2Fvader.html")
+      Urls.urlDecode(Urls.urlEncode("http://www.thesith.com/vader.html")) must equalTo("http://www.thesith.com/vader.html")
+    }
+  }
+  
 }

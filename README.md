@@ -26,14 +26,11 @@ Authentication/Authorization: https://github.com/t2v/play20-auth
 
 TODO:
 ---------------
-- Versioning of UI assets
+- Versioning/compression of UI assets
 - UI for public site to look like news
 - Choose domain
 - Add images to ArticleTemplate
 - URL shortner for article links
+- Test async functions
 
-DROP TABLE IF EXISTS article;
-DROP TABLE IF EXISTS article_template;
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS play_evolutions;
-
+http://bitly.com/a/R_97aa7fa4b2760462c394b5d07000660a
