@@ -91,7 +91,7 @@ object Article extends Dao[Article](NewsSchema.articleTable) {
       val id = seoAlias.substring(lastDash+1).toLong
       findById(id)  
     } catch {
-      case _ => None
+      case _ : Throwable => None
     }
   }
   

@@ -28,27 +28,26 @@ object ArticleController extends Controller {
     {article => Some(article.id, article.articleTemplateId, "{tag}", "replace")}
   )
   
-  def updateTag = Action { implicit request =>
+  def updateTag = Action.async { implicit request =>
     
     updateTagForm.bindFromRequest.fold(
-      formWithErrors => BadRequest("Bad data"),
+      formWithErrors => scala.concurrent.Future(BadRequest("Bad data")),
       article => {
         val articleId = Article.save(article).id
         val savedArticle = Article.findByIdInflated(articleId)
         val articleUrlFuture = Article.preparedUrl(request, savedArticle)
-        Async {
-          articleUrlFuture.map(url => {
-            if (savedArticle.publish) {
-              // All tags replaced, give URL for sharing
-              val json = Json.toJson(Map("status" -> "PUBLISH", "url" -> url, "id" -> savedArticle.id.toString))
-              Ok(json)
-            } else {
-              // Not completely customized
-              val json = Json.toJson(Map("status" -> "DRAFT", "url" -> url, "articleId" -> savedArticle.id.toString))
-              Ok(json)  
-            }
-          })
-        }
+        
+        articleUrlFuture.map(url => {
+          if (savedArticle.publish) {
+            // All tags replaced, give URL for sharing
+            val json = Json.toJson(Map("status" -> "PUBLISH", "url" -> url, "id" -> savedArticle.id.toString))
+            Ok(json)
+          } else {
+            // Not completely customized
+            val json = Json.toJson(Map("status" -> "DRAFT", "url" -> url, "articleId" -> savedArticle.id.toString))
+            Ok(json)  
+          }
+        })
       }
     )
   }

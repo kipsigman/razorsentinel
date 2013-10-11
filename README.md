@@ -26,11 +26,9 @@ Authentication/Authorization: https://github.com/t2v/play20-auth
 
 TODO:
 ---------------
-- Versioning/compression of UI assets
 - UI for public site to look like news
-- Choose domain
 - Add images to ArticleTemplate
-- URL shortner for article links
+- Switch datastore to Mongodb
 - Test async functions
-
-http://bitly.com/a/R_97aa7fa4b2760462c394b5d07000660a
+- Choose domain
+- Versioning/compression of UI assets

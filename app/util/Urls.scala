@@ -67,8 +67,6 @@ object Urls {
     val shortUrlFuture = WS.url(googleApiUrl).post(json).map(response => {
       (response.json \ "id").as[String]
     })
-    shortUrlFuture.map(s => println("shortUrl=" + s))
-    Thread.sleep(1000)
     shortUrlFuture
   }
   

@@ -1,6 +1,6 @@
 package controllers
 
-import jp.t2v.lab.play20.auth.{AuthConfig,CookieIdContainer,IdContainer,LoginLogout}
+import jp.t2v.lab.play2.auth.{AuthConfig,CookieIdContainer,IdContainer,LoginLogout}
 import models.Permission._
 import models.User
 import play.api.data.Form
@@ -9,7 +9,7 @@ import play.api.data.Forms.mapping
 import play.api.data.Forms.nonEmptyText
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import play.api.mvc.PlainResult
+import play.api.mvc.Result
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results.{Forbidden,Redirect,Unauthorized}
 import reflect.{ClassTag, classTag}
@@ -103,7 +103,7 @@ trait AuthConfigImpl extends AuthConfig {
   /**
    * Where to redirect the user after a successful login.
    */
-  def loginSucceeded(request: RequestHeader): PlainResult = {
+  def loginSucceeded(request: RequestHeader): Result = {
     val uri = request.session.get("access_uri").getOrElse(routes.Application.index.url.toString)
     request.session - "access_uri"
     Redirect(uri)
@@ -112,12 +112,12 @@ trait AuthConfigImpl extends AuthConfig {
   /**
    * Where to redirect the user after logging out
    */
-  def logoutSucceeded(request: RequestHeader): PlainResult = Redirect(routes.AuthController.login)
+  def logoutSucceeded(request: RequestHeader): Result = Redirect(routes.AuthController.login)
   
   /**
    * If the user is not logged in and tries to access a protected resource then redirct them as follows:
    */
-  def authenticationFailed(request: RequestHeader): PlainResult = {
+  def authenticationFailed(request: RequestHeader): Result = {
     // Check for request type. If AJAX request return an Unauthorized.
     // Otherwise redirect to login page.
     request.headers.get("X-Requested-With") match {
@@ -129,7 +129,7 @@ trait AuthConfigImpl extends AuthConfig {
   /**
    * If authorization failed (usually incorrect password) redirect the user as follows:
    */
-  def authorizationFailed(request: RequestHeader): PlainResult = Forbidden("no permission")
+  def authorizationFailed(request: RequestHeader): Result = Forbidden("no permission")
   
   /**
    * A function that determines what `Authority` a user has.

@@ -1,8 +1,10 @@
+import scala.concurrent.Future
 import org.squeryl.adapters.{H2Adapter,MySQLAdapter}
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.PrimitiveTypeMode._
 import play.api.db.DB
 import play.api.{Application, GlobalSettings}
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc._
 import play.api.mvc.Results._
 import play.api.Play
@@ -37,10 +39,10 @@ object Global extends GlobalSettings with BaseController {
     }
   }
   
-  override def onHandlerNotFound(request: RequestHeader): Result = {
+  override def onHandlerNotFound(request: RequestHeader): Future[SimpleResult] = {
     implicit val aRequest = request
     implicit val flash = request.flash
-    notFound
+    Future(notFound)
   }
   
 }

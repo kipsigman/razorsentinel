@@ -1,9 +1,6 @@
-/*
- * Copyright (C) 2012 Savings.com, Inc. All rights reserved.
- */
 package controllers
 
-import jp.t2v.lab.play20.auth.Auth
+import jp.t2v.lab.play2.auth.Auth
 import play.api.mvc.Controller
 import play.api.mvc.Flash
 import play.api.mvc.Request
