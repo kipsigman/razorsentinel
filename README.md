@@ -18,17 +18,21 @@ mysql --host us-cdbr-east-02.cleardb.com --port=3306 --user=bbc36f83ddbd62 --pas
 
 Features
 ------------
-UI Inline editing: X-editable 1.4.0 http://vitalets.github.com/x-editable/
+UI: Twitter Bootstrap
+UI Inline editing: X-editable 1.5.0 http://vitalets.github.com/x-editable/
 ORM: Squeryl
-Authentication/Authorization: https://github.com/t2v/play20-auth
+Authentication/Authorization: https://github.com/t2v/play2-auth
 
 
 
 TODO:
 ---------------
-- UI for public site to look like news
-- Add images to ArticleTemplate
+- UI
+  - Twitter Bootstrap 3 field constructor (need custom)
+  - New template for public pages (look like a news site)
+  - Versioning/compression of UI assets
 - Switch datastore to Mongodb
+- Add images to ArticleTemplate
 - Test async functions
 - Choose domain
-- Versioning/compression of UI assets
+

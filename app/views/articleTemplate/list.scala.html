@@ -15,8 +15,8 @@
     @for(articleTemplate <- articleTemplates) {
       <tr>
         <td>@articleTemplate.id</td>
-        <td><a href="@routes.ArticleTemplateController.show(articleTemplate.id)">@articleTemplate.headline</a></td>
-        <td><a href="@routes.ArticleTemplateController.edit(articleTemplate.id)" class="btn btn-small"><i class="icon-pencil"></i></a></td>
+        <td>@articleTemplate.headline</td>
+        <td><a href="@routes.ArticleTemplateController.edit(articleTemplate.id)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
       </tr>
     }
 
@@ -24,6 +24,6 @@
   </table>
   
   <div id="addNew">
-    <a href="@routes.ArticleTemplateController.create()" class="btn" title="Add"><i class="icon-plus"></i></a>
+    <a href="@routes.ArticleTemplateController.create()" class="btn btn-default btn-sm" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
   </div>
 }

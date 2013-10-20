@@ -2,20 +2,20 @@
 
 @import tags._
 @import helper._
-@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) } 
+@import helper.twitterBootstrap._
 
 @mainAdmin("Create New User") {
   <h2>Create New User</h2>
-  @helper.form(action = routes.UserController.save()) {
+  @helper.form(action = routes.UserController.save(), 'role -> "form") {
     <fieldset>
       <input type="hidden" name="id" value="@newUserForm("id").value" />
-      @helper.inputText(newUserForm("name"), '_label -> "Name")
-      @helper.inputText(newUserForm("email"), '_label -> "Email Address")
-      @helper.inputPassword(newUserForm("password"), '_label -> "Password")
+      @helper.inputText(newUserForm("name"), '_label -> "Name", 'class -> "form-control")
+      @helper.inputText(newUserForm("email"), '_label -> "Email Address", 'class -> "form-control")
+      @helper.inputPassword(newUserForm("password"), '_label -> "Password", 'class -> "form-control")
       @select(newUserForm("permission"), 
               models.Permission.displayValues, 
               '_label -> "Permissions", '_default -> "-- Select --",
-              '_showConstraints -> false)
+              '_showConstraints -> false, 'class -> "form-control")
     </fieldset>
     @submitAndCancel(routes.UserController.list())
   }
