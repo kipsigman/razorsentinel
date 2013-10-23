@@ -2,15 +2,15 @@
 
 @import tags._
 @import helper._
-@import helper.twitterBootstrap._
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
 
 @mainAdmin("ArticleTemplate") {
   <h2>ArticleTemplate</h2>
-  @form(action = routes.ArticleTemplateController.save(), 'role -> "form") {
+  @form(action = routes.ArticleTemplateController.save(), 'class -> "form-horizontal", 'role -> "form") {
     <fieldset>
       <input type="hidden" name="id" value="@articleTemplateForm("id").value" />
-      @inputText(articleTemplateForm("headline"), '_label -> "Headline", 'class -> "form-control")
-      @textarea(articleTemplateForm("body"), '_label -> "Body", 'class -> "form-control", 'rows -> 30)
+      @inputText(articleTemplateForm("headline"), '_label -> "Headline", 'inputDivClass -> "col-md-8")
+      @textarea(articleTemplateForm("body"), '_label -> "Body", 'inputDivClass -> "col-md-8", 'rows -> 30)
       
     </fieldset>
     @submitAndCancel(routes.ArticleTemplateController.list())

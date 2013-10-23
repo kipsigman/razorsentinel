@@ -2,11 +2,11 @@
 
 @import tags._
 @import helper._
-@import helper.twitterBootstrap._
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
 
 @mainAdmin("Edit User") {
   <h2>Edit User</h2>
-  @helper.form(action = routes.UserController.update(id), 'role -> "form") {
+  @helper.form(action = routes.UserController.update(id), 'class -> "form-horizontal", 'role -> "form") {
     <fieldset>
       <input type="hidden" name="id" value="@userForm("id").value" />
       @helper.inputText(userForm("name"), '_label -> "Name", 'class -> "form-control")
