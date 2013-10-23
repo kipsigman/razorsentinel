@@ -9,7 +9,7 @@
   @helper.form(action = routes.UserController.save(), 'class -> "form-horizontal", 'role -> "form") {
     <fieldset>
       <input type="hidden" name="id" value="@newUserForm("id").value" />
-      @helper.inputText(newUserForm("name"), '_label -> "Name")
+      @helper.inputText(newUserForm("name"), '_label -> "Name", 'class -> "kipper")
       @helper.inputText(newUserForm("email"), '_label -> "Email Address")
       @helper.inputPassword(newUserForm("password"), '_label -> "Password")
       @select(newUserForm("permission"), 
