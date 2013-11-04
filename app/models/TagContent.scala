@@ -14,6 +14,7 @@ object TagContent {
 
 case class TagReplacement(tag: String, replacement: String) {
   
+  // First escape brackets so regex doesn't think they are special characters
   val regex = tag.replace("{", "\\{").replace("}", "\\}").r
   
   def replace(str: String): String = {
