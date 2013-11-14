@@ -1,17 +1,21 @@
 package models
 
 import org.specs2.mutable._
+import org.specs2.runner._
+import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
 
 /**
  * @author kip
  */
-class ArticleSpec extends Specification with test.BaseSpec {
+@RunWith(classOf[JUnitRunner])
+class ArticleSpec extends Specification {
+  
+  def fakeApp = FakeApplication(additionalConfiguration = inMemoryDatabase() + (("evolutionplugin", "disabled")))
   
   "addTagReplacement" should {
-    "put data into tagReplacements field" in {
-      running(fakeApp) {
+    "put data into tagReplacements field" in new WithApplication(fakeApp) {
         val user = User.save(User(Entity.UnpersistedId, "Kip", "kip.sigman@gmail.com", "passwd", Permission.Administrator))
         val headline = "{city} - {firstname} {lastname} is the worst bowler."
         val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
@@ -29,13 +33,11 @@ class ArticleSpec extends Specification with test.BaseSpec {
         article = article.addTagReplacement(TagReplacement("{lastname}","Sigman"))
         article.tagReplacements.get must equalTo("""{"{firstname}":"Kip","{lastname}":"Sigman"}""")
         article.tagReplacementSet.size must equalTo(2)
-      }
     }
   }
   
   "relativeUrl" should {
-    "make headline into an seo url path with id" in {
-      running(fakeApp) {
+    "make headline into an seo url path with id" in new WithApplication(fakeApp) {
         val user = User.save(User(Entity.UnpersistedId, "Kip", "kip.sigman@gmail.com", "passwd", Permission.Administrator))
         val headline = "{city} - {firstname} {lastname} is the worst bowler."
         val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
@@ -52,7 +54,6 @@ class ArticleSpec extends Specification with test.BaseSpec {
         val inflatedArticle = Article.findByIdInflated(articleId)
         inflatedArticle.publish must beTrue
         inflatedArticle.relativeUrl must equalTo("/articles/santa-barbara-kip-sigman-is-the-worst-bowler-1")
-      }
     }
   }
 

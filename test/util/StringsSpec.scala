@@ -1,7 +1,10 @@
 package util
 
 import org.specs2.mutable._
+import org.specs2.runner._
+import org.junit.runner._
 
+@RunWith(classOf[JUnitRunner])
 class StringsSpec extends Specification {
   
   "formatSeo" should {

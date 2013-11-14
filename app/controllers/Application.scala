@@ -5,6 +5,7 @@ import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import models._
 import models.Permission._
 

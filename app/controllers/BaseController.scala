@@ -1,6 +1,6 @@
 package controllers
 
-import jp.t2v.lab.play2.auth.Auth
+import jp.t2v.lab.play2.auth.AuthElement
 import play.api.mvc.Controller
 import play.api.mvc.Flash
 import play.api.mvc.Request
@@ -13,7 +13,7 @@ import play.api.mvc.Results
  * 
  * @author kip
  */
-trait BaseController extends Controller with Auth with AuthConfigImpl {
+trait BaseController extends Controller with AuthElement with AuthConfigImpl {
   
   def notFound(implicit request: RequestHeader, flash: Flash) = NotFound(views.html.notFound())
   

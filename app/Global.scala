@@ -21,6 +21,7 @@ object Global extends GlobalSettings with BaseController {
     // if play is being run in test mode, configure Squeryl to run using the H2 dialect because we want our tests to 
     // run using an in memory database 
     if (Play.isTest(app)) {
+      
       // Squeryl SessionFactory
       SessionFactory.concreteFactory = Some(() =>
         Session.create(DB.getConnection()(app), new H2Adapter) )      

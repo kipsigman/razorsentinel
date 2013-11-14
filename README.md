@@ -13,14 +13,15 @@ Architecture
 
 TODO
 ---------------
+- Move TagContent.wrapTagForEdit into a view layer macro 
 - UI
   - Make article page no index for search engines (privacy concerns for subjects of satire)
   - New template for public pages (look like a news site)
   - Link to customize this article on article page
   - Versioning/compression of UI assets
-- Move TagContent.wrapTagForEdit into a view layer macro
 - Switch datasource to Mongodb
 - Add images to ArticleTemplate
+- Add crowdsourced article templates
 - Test async functions
 - Choose domain
 

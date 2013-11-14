@@ -1,8 +1,6 @@
 # Play / SBT
 dist
 logs
-project/boot
-project/plugins/target
 project/project
 project/target
 target
@@ -14,11 +12,10 @@ tmp
 
 # Eclipse / Idea
 bin
-.settings
-.cache
-.project
-.classpath
-.scala_dependencies
+/.cache
+/.project
+/.classpath
+/.settings
 /.idea_modules
 /.idea
 /*.iml

@@ -1,12 +1,15 @@
 package util
 
 import org.specs2.mutable._
+import org.specs2.runner._
+import org.junit.runner._
 
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.AnyContent
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test._
 
+@RunWith(classOf[JUnitRunner])
 class UrlsSpec extends Specification {
   
   "absoluteUrl" should {
