@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2012 Savings.com, Inc. All rights reserved.
- */
 package models
 
 import org.specs2.mutable._
