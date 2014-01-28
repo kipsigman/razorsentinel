@@ -24,8 +24,9 @@ object Application extends BaseController {
       Ok(views.html.index())
   }
   
-  def indexAdmin = authorizedAction(Administrator) { implicit user => implicit request =>
-      Ok(views.html.indexAdmin())
+  def indexAdmin = StackAction(AuthorityKey -> Administrator) { implicit request =>
+    // val user = loggedIn
+    Ok(views.html.indexAdmin())
   }
   
   def javascriptRoutes = Action { implicit request =>

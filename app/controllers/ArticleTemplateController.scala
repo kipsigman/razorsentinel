@@ -36,33 +36,33 @@ object ArticleTemplateController extends BaseController {
     {articleTemplate => Some(articleTemplate.id, articleTemplate.headline, articleTemplate.body)}
   )
   
-  def list = authorizedAction(Administrator) { implicit user => implicit request =>
-
-  	val articleTemplates: List[ArticleTemplate] = ArticleTemplate.findAll
+  def list = StackAction(AuthorityKey -> Administrator) { implicit request =>
+    val articleTemplates: List[ArticleTemplate] = ArticleTemplate.findAll
     Ok(views.html.articleTemplate.list(articleTemplates))
   }
   
-  def create = authorizedAction(Administrator) { implicit user => implicit request =>
+  def create = StackAction(AuthorityKey -> Administrator) { implicit request =>
+    val user = loggedIn
     val theForm = form(user).fill(new ArticleTemplate() )
     Ok(views.html.articleTemplate.edit(theForm))
   }
 
-  def edit(id: Long) = authorizedAction(Administrator) { implicit user => implicit request =>
-
+  def edit(id: Long) = StackAction(AuthorityKey -> Administrator) { implicit request =>
+    val user = loggedIn
     ArticleTemplate.findById(id).map { articleTemplate =>
       val theForm = form(user).fill(articleTemplate)
       Ok(views.html.articleTemplate.edit(theForm))
     }.getOrElse(NotFound)
   }
   
-  def show(id: Long) = authorizedAction(Administrator) { implicit user => implicit request =>
+  def show(id: Long) = StackAction(AuthorityKey -> Administrator) { implicit request =>
     ArticleTemplate.findById(id).map { articleTemplate =>
       Ok(views.html.articleTemplate.show(articleTemplate))
     }.getOrElse(NotFound)
   }
   
-  def save = authorizedAction(Administrator) { implicit user => implicit request =>
-    
+  def save = StackAction(AuthorityKey -> Administrator) { implicit request =>
+    val user = loggedIn
     form(user).bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.articleTemplate.edit(formWithErrors)),
       articleTemplate => {

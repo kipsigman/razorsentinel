@@ -4,7 +4,6 @@ version := "1.0-SNAPSHOT"
 
 libraryDependencies ++= Seq(
   jdbc,
-  anorm,
   cache,
   "jp.t2v" %% "play2-auth"      % "0.11.0",
   "jp.t2v" %% "play2-auth-test" % "0.11.0" % "test",

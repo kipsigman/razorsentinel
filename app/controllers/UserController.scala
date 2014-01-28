@@ -55,26 +55,23 @@ object UserController extends BaseController {
     {user => Some(user.id, user.name, user.email, user.permission) }
   )
   
-  def list = authorizedAction(Administrator) { implicit user => implicit request =>
-
-  	val users: Seq[User] = User.findAll
+  def list = StackAction(AuthorityKey -> Administrator) { implicit request =>
+    val users: Seq[User] = User.findAll
     Ok(views.html.user.list(users))
   }
   
-  def create = authorizedAction(Administrator) { implicit user => implicit request =>
-
+  def create = StackAction(AuthorityKey -> Administrator) { implicit request =>
     Ok(views.html.user.create(newUserForm.fill(new User())))
   }
   
-  def edit(id: Long) = authorizedAction(Administrator) { implicit user => implicit request =>
-    
+  def edit(id: Long) = StackAction(AuthorityKey -> Administrator) { implicit request =>
     Ok(views.html.user.edit(id, editUserForm.fill(User.findById(id).get)))
   }
   
   /**
    * Handles both saving a NEW user
    */
-  def save = authorizedAction(Administrator) { implicit user => implicit request =>
+  def save = StackAction(AuthorityKey -> Administrator) { implicit request =>
   	
     def hashPW(user: User) = user.copy(password=BCrypt.hashpw(user.password, BCrypt.gensalt()))
     
@@ -91,7 +88,7 @@ object UserController extends BaseController {
   /**
    * Handles saving an EXISTING user
    */
-  def update(id: Long) = authorizedAction(Administrator) { implicit user => implicit request =>
+  def update(id: Long) = StackAction(AuthorityKey -> Administrator) { implicit request =>
 
     editUserForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.user.edit(id, formWithErrors)),      

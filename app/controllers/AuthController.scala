@@ -157,12 +157,11 @@ trait AuthConfigImpl extends AuthConfig {
    * Whether use the secure option or not use it in the cookie.
    * However default is false, I strongly recommend using true in a production.
    */
-  override lazy val cookieSecureOption: Boolean = play.api.Play.current.configuration.getBoolean("auth.cookie.secure").getOrElse(true)
+  override lazy val cookieSecureOption: Boolean = false//play.api.Play.isProd(play.api.Play.current)
   
   /**
-   * Overriding for "Stateless" implementation. See https://github.com/t2v/play20-auth for more info.
-   * @param request
-   * @return
+   * Overriding for "Stateless" implementation. See https://github.com/t2v/play2-auth for more info.
    */
   override lazy val idContainer: IdContainer[Id] = new CookieIdContainer[Id]
+  
 }
