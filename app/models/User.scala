@@ -3,13 +3,7 @@ package models
 import java.util.TimeZone
 
 import org.mindrot.jbcrypt.BCrypt
-import org.squeryl.PrimitiveTypeMode.__thisDsl
-import org.squeryl.PrimitiveTypeMode.from
-import org.squeryl.PrimitiveTypeMode.inTransaction
-import org.squeryl.PrimitiveTypeMode.orderByArg2OrderByExpression
-import org.squeryl.PrimitiveTypeMode.select
-import org.squeryl.PrimitiveTypeMode.string2ScalarString
-import org.squeryl.PrimitiveTypeMode.typedExpression2OrderByArg
+import org.squeryl.PrimitiveTypeMode._
 import models.Permission._
 
 case class User(id: Long, name: String, email: String, password: String, permission: Permission) extends IdEntity {

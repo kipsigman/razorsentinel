@@ -1,5 +1,7 @@
 package controllers
 
+import javax.inject.{Inject, Singleton}
+
 import play.api._
 import play.api.mvc._
 import play.api.data._
@@ -7,9 +9,11 @@ import play.api.data.Forms._
 import play.api.libs.json.Json
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import models._
+import services.NewsService
 import util.Urls
 
-object ArticleController extends Controller {
+@Singleton
+class ArticleController @Inject() (newsService: NewsService) extends Controller {
   
   val updateTagForm: Form[Article] = Form[Article](
     mapping(

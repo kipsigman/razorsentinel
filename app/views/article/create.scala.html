@@ -1,4 +1,4 @@
-@(article: Article, articleTemplate: ArticleTemplate)(implicit request: Request[Any], flash: Flash, lang: Lang)
+@(article: Article, articleTemplate: ArticleTemplate)(implicit request: RequestHeader)
 
 @headerIncludes = {
 <link href="@routes.Assets.at("stylesheets/bootstrap-editable.css")" rel="stylesheet">

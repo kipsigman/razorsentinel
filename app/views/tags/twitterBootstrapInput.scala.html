@@ -1,16 +1,16 @@
 @(elements: helper.FieldElements)
 
-    <div class="form-group @if(elements.hasErrors) {has-error}">
-        <label for="@elements.id" class="col-md-2 control-label">@elements.label</label>
-        <div class="@elements.args.toMap.get('inputDivClass).getOrElse("col-md-5")">
-    @if(elements.input.toString().contains("class=")) {
-    	    @Html(elements.input.toString().replaceFirst("(class=[\"'])", "$1form-control "))
-    } else {
-            @Html(elements.input.toString().replaceFirst("(<\\w+ )", "$1class=\"form-control\" "))
+@*
+ * Generate input according twitter bootstrap rules
+ * Note that this file is needed for twitter bootstrap 2, the helper is for bootstrap 1.
+ *@
+<div class="form-group @if(elements.hasErrors) {has-error}">
+  <label class="control-label" for="@elements.id">@elements.label</label>
+  <div class="controls">
+    @elements.input
+    <p class="help-block">@elements.infos.mkString(", ")</p>
+    @if(elements.hasErrors) {
+    <p class="help-block">@elements.errors.mkString(", ")</p>
     }
-            <span class="help-block text-muted">@elements.infos.mkString(", ")</span>
-	@if(elements.hasErrors) {
-            <span class="help-block">@elements.errors.mkString(", ")</span>
-    }
-        </div>
-    </div>
+  </div>
+</div>

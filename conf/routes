@@ -2,37 +2,36 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Javascript routing
-GET     /assets/javascripts/routes.js    controllers.Application.javascriptRoutes
-
-# Map static resources from the /public folder to the /assets URL path
-GET  /assets/*file                controllers.Assets.at(path="/public", file)
+# Static assets
+GET  /assets/*file                    controllers.Assets.at(path="/public", file)
+GET  /webjars/*file                   controllers.WebJarAssets.at(file)
+GET  /javascriptRoutes                @controllers.Application.javascriptRoutes
 
 # Home page
-GET  /                            controllers.Application.index
+GET  /                                @controllers.Application.index
 
 # Authentication
-GET     /login                      controllers.AuthController.login
-POST    /login                      controllers.AuthController.authenticate
-GET     /logout                     controllers.AuthController.logout
+GET  /login                           controllers.AuthController.login
+POST /login                           controllers.AuthController.authenticate
+GET  /logout                          controllers.AuthController.logout
 
 # Admin
-GET     /admin                            controllers.Application.indexAdmin
-GET     /admin/users                      controllers.UserController.list
-GET     /admin/users/new                  controllers.UserController.create
-GET     /admin/users/:id/edit             controllers.UserController.edit(id:Long)
-POST    /admin/users                      controllers.UserController.save
-POST    /admin/users/:id                  controllers.UserController.update(id:Long)
+GET  /admin                           @controllers.Application.indexAdmin
+GET  /admin/users                     @controllers.UserController.list
+GET  /admin/users/new                 @controllers.UserController.create
+GET  /admin/users/:id/edit            @controllers.UserController.edit(id:Long)
+POST /admin/users                     @controllers.UserController.save
+POST /admin/users/:id                 @controllers.UserController.update(id:Long)
 
 # ArticleTemplates
-GET  /admin/articleTemplates            controllers.ArticleTemplateController.list
-GET  /admin/articleTemplates/new        controllers.ArticleTemplateController.create
-GET  /admin/articleTemplates/:id/show   controllers.ArticleTemplateController.show(id:Long)
-GET  /admin/articleTemplates/:id/edit   controllers.ArticleTemplateController.edit(id:Long)
-POST /admin/articleTemplates            controllers.ArticleTemplateController.save
+GET  /admin/articleTemplates          @controllers.ArticleTemplateController.list
+GET  /admin/articleTemplates/new      @controllers.ArticleTemplateController.create
+GET  /admin/articleTemplates/:id/show @controllers.ArticleTemplateController.show(id:Long)
+GET  /admin/articleTemplates/:id/edit @controllers.ArticleTemplateController.edit(id:Long)
+POST /admin/articleTemplates          @controllers.ArticleTemplateController.save
 
 # Public
-GET  /articleTemplates                    controllers.ArticleController.listArticleTemplates
-POST /articles/updateTag                  controllers.ArticleController.updateTag
-GET  /articles/new/:templateId            controllers.ArticleController.create(templateId:Long)
-GET  /articles/:seoAlias                  controllers.ArticleController.show(seoAlias:String)
+GET  /articleTemplates                @controllers.ArticleController.listArticleTemplates
+POST /articles/updateTag              @controllers.ArticleController.updateTag
+GET  /articles/new/:templateId        @controllers.ArticleController.create(templateId:Long)
+GET  /articles/:seoAlias              @controllers.ArticleController.show(seoAlias:String)

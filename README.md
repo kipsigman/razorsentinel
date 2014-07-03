@@ -15,12 +15,12 @@ TODO
 ---------------
 - Switch datasource to Mongodb or another DB with an async driver
 - Move TagContent.wrapTagForEdit into a view layer macro
-- Add cleanup job for abandoned articles
 - UI
   - Make article page no index for search engines (privacy concerns for subjects of satire)
   - New template for public pages (look like a news site)
   - Link to customize this article on article page
   - Versioning/compression of UI assets
+- Add cleanup job for abandoned articles
 - Add images to ArticleTemplate
 - Add crowdsourced article templates
 - Choose domain

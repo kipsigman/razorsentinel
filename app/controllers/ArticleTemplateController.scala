@@ -1,5 +1,7 @@
 package controllers
 
+import javax.inject.{Inject, Singleton}
+
 import play.api._
 import play.api.mvc._
 import play.api.data._
@@ -7,11 +9,10 @@ import play.api.data.Forms._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import models._
 import models.Permission._
+import services.NewsService
 
-/**
- * Manage Article Templates
- */
-object ArticleTemplateController extends BaseController { 
+@Singleton
+class ArticleTemplateController @Inject() (newsService: NewsService) extends BaseController { 
   
   def form(user: User) = Form[ArticleTemplate](
     mapping(

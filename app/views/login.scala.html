@@ -1,21 +1,32 @@
-@(loginForm: Form[Option[User]])(implicit request: Request[Any], flash: Flash, lang: Lang)
+@(form: Form[Option[User]])(implicit request: RequestHeader)
 
-@import helper._
-@import helper.twitterBootstrap._
+@implicitField = @{ helper.FieldConstructor(tags.twitterBootstrapInput.f) }
 
 @mainPublic("Login") {
   <h2>Log in</h2>
   
-  @loginForm.globalError.map { error =>
+  @form.globalError.map { error =>
       <p class="error">
         @error.message
       </p>
     }
     
-  @helper.form(routes.AuthController.authenticate) {
+  @helper.form(action = routes.AuthController.authenticate, 'class -> "form", 'role -> "form") {
     <fieldset>
-      @inputText(loginForm("email"), '_help -> "")
-      @inputPassword(loginForm("password"), '_help -> "")
+      @if(form.hasGlobalErrors) {
+        <p class="text-error">
+        @for(error <- form.globalErrors) {
+          <span class="label important">@error.message</span>
+        }
+        </p>
+      }
+
+      @helper.inputText(form("email"), '_label -> "", '_help -> "", 'placeholder -> "Email", 'class -> "form-control input-lg")
+      @helper.inputPassword(form("password"), '_label -> "", '_help -> "", 'placeholder -> "Password", 'class -> "form-control input-lg")
+      
+      
+      
+      
     </fieldset>
     <p>
         <input type="submit" class="btn primary" value='Login'>

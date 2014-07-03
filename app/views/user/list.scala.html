@@ -1,4 +1,4 @@
-@(users: Seq[User])(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
+@(users: Seq[User])(implicit request: RequestHeader, user: User)
 @mainAdmin("Users") {
   <h2>Users</h2>
   

@@ -1,4 +1,4 @@
-@(newUserForm: Form[User])(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
+@(newUserForm: Form[User])(implicit request: RequestHeader, user: User)
 
 @import tags._
 @import helper._

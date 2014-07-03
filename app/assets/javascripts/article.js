@@ -7,7 +7,7 @@ $(document).ready(function() {
         params: {articleTemplateId:$('#articleTemplateId')[0].value},
         url: jsRoutes.controllers.ArticleController.updateTag().url,
         validate: function(value) {
-            if($.trim(value) == '') 
+            if($.trim(value) === '') 
                 return 'This field is required';
         },
         success: function(response, newValue) {

@@ -1,4 +1,4 @@
-@(articleTemplate: ArticleTemplate)(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
+@(articleTemplate: ArticleTemplate)(implicit request: RequestHeader, user: User)
 
 @mainAdmin("ArticleTemplate") {
   <div class="row">

@@ -1,4 +1,4 @@
-@(articleTemplates: List[ArticleTemplate])(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
+@(articleTemplates: List[ArticleTemplate])(implicit request: RequestHeader, user: User)
 @mainAdmin("Article Templates") {
   <h2>Article Templates</h2>
   

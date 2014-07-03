@@ -11,7 +11,7 @@ import play.api.data.Forms.nonEmptyText
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import play.api.mvc.SimpleResult
+import play.api.mvc.Result
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results.{Forbidden,Redirect,Unauthorized}
 import reflect.{ClassTag, classTag}
@@ -37,7 +37,7 @@ object AuthController extends Controller with LoginLogout with AuthConfigImpl {
 /**
    * Return the `gotoLogoutSucceeded` method's result in the logout action.
    *
-   * Since the `gotoLogoutSucceeded` returns `Future[SimpleResult]`,
+   * Since the `gotoLogoutSucceeded` returns `Future[Result]`,
    * you can add a procedure like the following.
    *
    *   gotoLogoutSucceeded.map(_.flashing(
@@ -53,7 +53,7 @@ object AuthController extends Controller with LoginLogout with AuthConfigImpl {
   /**
    * Return the `gotoLoginSucceeded` method's result in the login action.
    *
-   * Since the `gotoLoginSucceeded` returns `Future[SimpleResult]`,
+   * Since the `gotoLoginSucceeded` returns `Future[Result]`,
    * you can add a procedure like the `gotoLogoutSucceeded`.
    */
   def authenticate = Action.async { implicit request =>
@@ -109,7 +109,7 @@ trait AuthConfigImpl extends AuthConfig {
   /**
    * Where to redirect the user after a successful login.
    */
-  def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[SimpleResult] =
+  def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
     Future.successful({
       val uri = request.session.get("access_uri").getOrElse(routes.Application.index.url.toString)
       request.session - "access_uri"
@@ -119,13 +119,13 @@ trait AuthConfigImpl extends AuthConfig {
   /**
    * Where to redirect the user after logging out
    */
-  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[SimpleResult] =
+  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
     Future.successful(Redirect(routes.AuthController.login))
 
   /**
    * If the user is not logged in and tries to access a protected resource then redirct them as follows:
    */
-  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[SimpleResult] = {
+  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
     Future.successful{
       // Check for request type. If AJAX request return an Unauthorized.
       // Otherwise redirect to login page.
@@ -139,7 +139,7 @@ trait AuthConfigImpl extends AuthConfig {
   /**
    * If authorization failed (usually incorrect password) redirect the user as follows:
    */
-  def authorizationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[SimpleResult] = 
+  def authorizationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = 
     Future.successful(Forbidden("no permission"))
 
   /**

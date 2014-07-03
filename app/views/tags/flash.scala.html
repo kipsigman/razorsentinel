@@ -1,0 +1,13 @@
+@()(implicit f:Flash)
+
+@f.data.map {
+  case ("error", value) => {
+    <p class="bg-danger">@value</p>
+  }
+  case ("info", value) => {
+    <p class="bg-info">@value</p>
+  }
+  case ("success", value) => {
+  <p class="bg-success">@value</p>
+  }
+}

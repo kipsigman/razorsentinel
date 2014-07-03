@@ -1,8 +1,8 @@
-@(id: Long, userForm: Form[User])(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
+@(id: Long, userForm: Form[User])(implicit request: RequestHeader, user: User)
 
 @import tags._
 @import helper._
-@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
+@implicitField = @{ helper.FieldConstructor(twitterBootstrapInput.f) }
 
 @mainAdmin("Edit User") {
   <h2>Edit User</h2>

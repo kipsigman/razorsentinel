@@ -1,8 +1,8 @@
-@(articleTemplateForm: Form[ArticleTemplate])(implicit request: Request[Any], flash: Flash, lang: Lang, user: User)
+@(articleTemplateForm: Form[ArticleTemplate])(implicit request: RequestHeader, user: User)
 
 @import tags._
 @import helper._
-@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
+@implicitField = @{ helper.FieldConstructor(twitterBootstrapInput.f) }
 
 @mainAdmin("ArticleTemplate") {
   <h2>ArticleTemplate</h2>

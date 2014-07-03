@@ -1,5 +1,7 @@
 package controllers
 
+import javax.inject.{Inject, Singleton}
+
 import org.mindrot.jbcrypt.BCrypt
 import play.api.data.Form
 import play.api.data.Forms._
@@ -8,14 +10,12 @@ import play.api.data.{FormError, Forms, Mapping}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc._
 
-
 import models._
 import models.Permission._
+import services.NewsService
 
-/**
- * @author kip
- */
-object UserController extends BaseController {
+@Singleton
+class UserController @Inject() (newsService: NewsService) extends BaseController {
   
   val newUserForm = Form(
     mapping(
