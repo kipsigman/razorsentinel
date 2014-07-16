@@ -1,21 +1,30 @@
-@(id: Long, userForm: Form[User])(implicit request: RequestHeader, user: User)
+@(id: Long, form: Form[User])(implicit request: RequestHeader, user: User)
 
 @import tags._
-@import helper._
 @implicitField = @{ helper.FieldConstructor(twitterBootstrapInput.f) }
 
 @mainAdmin("Edit User") {
   <h2>Edit User</h2>
   @helper.form(action = routes.UserController.update(id), 'class -> "form-horizontal", 'role -> "form") {
+  
+    @if(form.hasGlobalErrors) {
+        <p class="text-error">
+      @for(error <- form.globalErrors) {
+          <span class="label important">@error.message</span>
+      }
+        </p>
+    }
+  
     <fieldset>
-      <input type="hidden" name="id" value="@userForm("id").value" />
-      @helper.inputText(userForm("name"), '_label -> "Name", 'class -> "form-control")
-      @helper.inputText(userForm("email"), '_label -> "Email Address", 'class -> "form-control")
-      @select(userForm("permission"), 
+      <input type="hidden" name="id" value="@form("id").value" />
+      @helper.inputText(form("name"), '_label -> "Name", '_help -> "", 'class -> "form-control", 'placeholder -> "Name")
+      @helper.inputText(form("email"), '_label -> "Email Address", 'type -> "email", '_help -> "", 'class -> "form-control", 'placeholder -> "Email")
+      @helper.select(form("permission"), 
               models.Permission.displayValues, 
               '_label -> "Permissions", '_default -> "-- Select --",
               '_showConstraints -> false, 'class -> "form-control")
+      
     </fieldset>
-    @submitAndCancel(routes.UserController.list())
+    @submitAndCancel(routes.ArticleTemplateController.list())
   }
 }

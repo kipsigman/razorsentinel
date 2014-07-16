@@ -11,8 +11,8 @@
       </p>
     }
     
-  @helper.form(action = routes.AuthController.authenticate, 'class -> "form", 'role -> "form") {
-    <fieldset>
+  @helper.form(action = routes.AuthController.authenticate, 'class -> "form-horizontal", 'role -> "form") {
+  
       @if(form.hasGlobalErrors) {
         <p class="text-error">
         @for(error <- form.globalErrors) {
@@ -20,16 +20,13 @@
         }
         </p>
       }
-
-      @helper.inputText(form("email"), '_label -> "", '_help -> "", 'placeholder -> "Email", 'class -> "form-control input-lg")
-      @helper.inputPassword(form("password"), '_label -> "", '_help -> "", 'placeholder -> "Password", 'class -> "form-control input-lg")
-      
-      
-      
-      
+  
+    <fieldset>
+      @helper.inputText(form("email"), '_label -> "Email", 'type -> "email", '_help -> "", 'class -> "form-control", 'placeholder -> "Email", 'autocomplete -> "email")
+      @helper.inputPassword(form("password"), '_label -> "Password", '_help -> "", 'placeholder -> "Password", 'class -> "form-control")
     </fieldset>
     <p>
-        <input type="submit" class="btn primary" value='Login'>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </p>
   } 
 }

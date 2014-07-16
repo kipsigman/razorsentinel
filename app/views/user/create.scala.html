@@ -1,22 +1,31 @@
-@(newUserForm: Form[User])(implicit request: RequestHeader, user: User)
+@(form: Form[User])(implicit request: RequestHeader, user: User)
 
 @import tags._
-@import helper._
-@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
+@implicitField = @{ helper.FieldConstructor(twitterBootstrapInput.f) }
 
 @mainAdmin("Create New User") {
   <h2>Create New User</h2>
   @helper.form(action = routes.UserController.save(), 'class -> "form-horizontal", 'role -> "form") {
+  
+    @if(form.hasGlobalErrors) {
+        <p class="text-error">
+      @for(error <- form.globalErrors) {
+          <span class="label important">@error.message</span>
+      }
+        </p>
+    }
+  
     <fieldset>
-      <input type="hidden" name="id" value="@newUserForm("id").value" />
-      @helper.inputText(newUserForm("name"), '_label -> "Name", 'class -> "kipper")
-      @helper.inputText(newUserForm("email"), '_label -> "Email Address")
-      @helper.inputPassword(newUserForm("password"), '_label -> "Password")
-      @select(newUserForm("permission"), 
+      <input type="hidden" name="id" value="@form("id").value" />
+      @helper.inputText(form("name"), '_label -> "Name", '_help -> "", 'class -> "form-control", 'placeholder -> "Name")
+      @helper.inputText(form("email"), '_label -> "Email Address", 'type -> "email", '_help -> "", 'class -> "form-control", 'placeholder -> "Email")
+      @helper.inputPassword(form("password"), '_label -> "Password", '_help -> "", 'placeholder -> "Password", 'class -> "form-control")
+      @helper.select(form("permission"), 
               models.Permission.displayValues, 
               '_label -> "Permissions", '_default -> "-- Select --",
-              '_showConstraints -> false)
+              '_showConstraints -> false, 'class -> "form-control")
+      
     </fieldset>
-    @submitAndCancel(routes.UserController.list())
+    @submitAndCancel(routes.ArticleTemplateController.list())
   }
 }

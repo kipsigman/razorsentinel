@@ -10,7 +10,7 @@ CREATE TABLE user (
 
 -- kip
 INSERT INTO user(name, email, password, permission)
-VALUES('Kip', 'kip.sigman@gmail.com', '$2a$10$sLvKkWVeU1AOBU2HxexONO4kWKf50rt58Fqpf0Dx86Md56li0W5u2', 1);
+VALUES('Kip', 'kip.sigman@gmail.com', '$2a$10$9EvqA.d4mboTg/GJ8hople9cz8qeXXLGjMFWPGs1H1FtDfALxXU1y', 1);
 
 CREATE TABLE article_template (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
