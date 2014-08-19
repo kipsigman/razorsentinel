@@ -37,7 +37,8 @@ class Application @Inject() (newsService: NewsService) extends BaseController {
     import routes.javascript._
     Ok(
       Routes.javascriptRouter("jsRoutes")(
-        routes.javascript.ArticleController.updateTag
+        routes.javascript.ArticleController.updateTag,
+        routes.javascript.Assets.at
       )
     ).as("text/javascript")
   }
