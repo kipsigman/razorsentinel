@@ -1,32 +1,35 @@
-@(form: Form[Option[User]])(implicit request: RequestHeader)
+@(form: Form[_])(implicit request: RequestHeader)
 
-@implicitField = @{ helper.FieldConstructor(tags.twitterBootstrapInput.f) }
+@implicitFieldConstructor = @{
+  helper.FieldConstructor(tags.bootstrapFieldConstructor.f)
+}
 
 @mainPublic("Login") {
-  <h2>Log in</h2>
-  
-  @form.globalError.map { error =>
-      <p class="error">
-        @error.message
+  <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        
+  @helper.form(action = routes.AuthController.authenticate(), 'class -> "form-horizontal", 'role -> "form") {
+    
+    @if(form.hasGlobalErrors) {
+      <p>
+        <ul>
+      @for(error <- form.globalErrors) {
+          <li><span class="text-danger">@error.message</span></li>
+      }
+        </ul>
       </p>
     }
+          
+          @helper.inputText(form("email"), '_label -> "Email", 'type -> "email", '_help -> "", 'class -> "form-control", 'placeholder -> "Email", 'autocomplete -> "email")
+          @helper.inputPassword(form("password"), '_label -> "Password", '_help -> "", 'placeholder -> "Password", 'class -> "form-control")
     
-  @helper.form(action = routes.AuthController.authenticate, 'class -> "form-horizontal", 'role -> "form") {
-  
-      @if(form.hasGlobalErrors) {
-        <p class="text-error">
-        @for(error <- form.globalErrors) {
-          <span class="label important">@error.message</span>
-        }
-        </p>
-      }
-  
-    <fieldset>
-      @helper.inputText(form("email"), '_label -> "Email", 'type -> "email", '_help -> "", 'class -> "form-control", 'placeholder -> "Email", 'autocomplete -> "email")
-      @helper.inputPassword(form("password"), '_label -> "Password", '_help -> "", 'placeholder -> "Password", 'class -> "form-control")
-    </fieldset>
-    <p>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </p>
-  } 
+    <div class="form-group">
+      <div class="col-sm-10 col-sm-offset-2">
+        <button type="submit" class="btn btn-primary">Sign in</button>
+      </div>
+    </div>
+    
+  }
+      </div>
+  </div>
 }

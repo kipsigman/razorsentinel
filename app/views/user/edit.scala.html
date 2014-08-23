@@ -1,10 +1,12 @@
 @(id: Long, form: Form[User])(implicit request: RequestHeader, user: User)
 
 @import tags._
-@implicitField = @{ helper.FieldConstructor(twitterBootstrapInput.f) }
+@implicitFieldConstructor = @{helper.FieldConstructor(tags.bootstrapFieldConstructor.f)}
 
 @mainAdmin("Edit User") {
   <h2>Edit User</h2>
+  <div class="row">
+    <div class="col-md-12">
   @helper.form(action = routes.UserController.update(id), 'class -> "form-horizontal", 'role -> "form") {
   
     @if(form.hasGlobalErrors) {
@@ -15,7 +17,6 @@
         </p>
     }
   
-    <fieldset>
       <input type="hidden" name="id" value="@form("id").value" />
       @helper.inputText(form("name"), '_label -> "Name", '_help -> "", 'class -> "form-control", 'placeholder -> "Name")
       @helper.inputText(form("email"), '_label -> "Email Address", 'type -> "email", '_help -> "", 'class -> "form-control", 'placeholder -> "Email")
@@ -23,8 +24,9 @@
               models.Permission.displayValues, 
               '_label -> "Permissions", '_default -> "-- Select --",
               '_showConstraints -> false, 'class -> "form-control")
-      
-    </fieldset>
-    @submitAndCancel(routes.ArticleTemplateController.list())
+    
+    @submitAndCancel(routes.UserController.list())
   }
+    </div>
+  </div>
 }

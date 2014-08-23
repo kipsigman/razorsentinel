@@ -14,12 +14,10 @@ libraryDependencies ++= Seq(
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.squeryl" %% "squeryl" % "0.9.5-7",
   "mysql" % "mysql-connector-java" % "5.1.32",
-  "com.h2database" % "h2" % "1.4.179" % "test",
-  "org.webjars" %% "webjars-play" % "2.3.0",
+  "com.h2database" % "h2" % "1.4.181" % "test",
   "org.webjars" % "jquery" % "2.1.1",
-  "org.webjars" % "bootstrap" % "3.1.1",
-  "org.webjars" % "font-awesome" % "4.1.0",
-  "org.scalatestplus" %% "play" % "1.1.0" % "test"
+  "org.webjars" % "bootstrap" % "3.2.0",
+  "org.scalatestplus" %% "play" % "1.2.0" % "test"
 )     
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)

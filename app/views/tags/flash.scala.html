@@ -1,13 +1,13 @@
-@()(implicit f:Flash)
+@(f: Flash)
 
 @f.data.map {
   case ("error", value) => {
-    <p class="bg-danger">@value</p>
+    <div class="alert alert-danger" role="alert">@value</div>
   }
   case ("info", value) => {
-    <p class="bg-info">@value</p>
+    <div class="alert alert-info" role="alert">@value</div>
   }
   case ("success", value) => {
-  <p class="bg-success">@value</p>
+    <div class="alert alert-success" role="alert">@value</div>
   }
 }

@@ -13,7 +13,9 @@
       </tr>
     </thead>
     <tbody>
-
+      <tr>
+        <td colspan="5"><a href="@routes.UserController.create()" class="btn btn-default btn-sm" title="Add"><span class="glyphicon glyphicon-plus"></span></a></td>
+      </tr>
     @for(aUser <- users) {
       <tr>
         <td>@aUser.id</td>
@@ -26,7 +28,4 @@
     </tbody>
   </table>
   
-  <p>
-    <a href="@routes.UserController.create()" class="btn btn-default btn-sm" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
-</p>
 }

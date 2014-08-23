@@ -11,19 +11,18 @@
       </tr>
     </thead>
     <tbody>
-
+      <tr>
+        <td colspan="3"><a href="@routes.ArticleTemplateController.create()" class="btn btn-default btn-sm" title="Add"><span class="glyphicon glyphicon-plus"></span></a></td>
+      </tr>
     @for(articleTemplate <- articleTemplates) {
       <tr>
         <td>@articleTemplate.id</td>
         <td>@articleTemplate.headline</td>
-        <td><a href="@routes.ArticleTemplateController.edit(articleTemplate.id)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
+        <td><a href="@routes.ArticleTemplateController.edit(articleTemplate.id)" class="btn btn-default btn-sm" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a></td>
       </tr>
     }
 
     </tbody>
   </table>
   
-  <div id="addNew">
-    <a href="@routes.ArticleTemplateController.create()" class="btn btn-default btn-sm" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
-  </div>
 }

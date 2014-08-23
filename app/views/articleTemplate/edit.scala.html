@@ -1,28 +1,32 @@
 @(form: Form[ArticleTemplate])(implicit request: RequestHeader, user: User)
 
 @import tags._
-@implicitField = @{ helper.FieldConstructor(twitterBootstrapInput.f) }
+@implicitFieldConstructor = @{helper.FieldConstructor(tags.bootstrapFieldConstructor.f)}
 
 @mainAdmin("ArticleTemplate") {
   <h2>ArticleTemplate</h2>
+  <div class="row">
+    <div class="col-md-12">
   
   @helper.form(action = routes.ArticleTemplateController.save(), 'class -> "form-horizontal", 'role -> "form") {
   
     @if(form.hasGlobalErrors) {
-        <p class="text-error">
+      <p>
+        <ul>
       @for(error <- form.globalErrors) {
-          <span class="label important">@error.message</span>
+          <li><span class="text-danger">@error.message</span></li>
       }
-        </p>
+        </ul>
+      </p>
     }
-  
-    <fieldset>
+    
       <input type="hidden" name="id" value="@form("id").value" />
-      @helper.inputText(form("headline"), '_label -> "Headline", '_help -> "", 'class -> "form-control", 'placeholder -> "Headline")
-      @helper.textarea(form("body"), '_label -> "Body", '_help -> "", 'class -> "form-control", 'placeholder -> "Body", 'rows -> 20)
+      @helper.inputText(form("headline"), '_label -> "Headline", '_help -> "", 'class -> "form-control")
+      @helper.textarea(form("body"), '_label -> "Body", '_help -> "", 'rows -> 20, 'class -> "form-control")
       
-    </fieldset>
     @submitAndCancel(routes.ArticleTemplateController.list())
   }
+    </div>
+  </div>
   
 }
