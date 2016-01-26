@@ -1,8 +1,7 @@
-@()(implicit request: RequestHeader)
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
 @import play.api.Play.current
 
-@mainPublic(Messages("application.name")) {
-    
-    <h2>Welcome to @Messages("application.name")</h2>
+@main(Messages("section.home")) {
+    <h2>@Messages("section.home")</h2>
 }

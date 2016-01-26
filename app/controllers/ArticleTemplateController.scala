@@ -1,77 +1,82 @@
 package controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
+import javax.inject.Singleton
 
-import play.api._
-import play.api.mvc._
-import play.api.data._
-import play.api.data.Forms._
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import models._
-import models.Permission._
-import services.NewsService
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import com.mohiva.play.silhouette.api.Environment
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+
+import play.api.data.Form
+import play.api.data.Forms.mapping
+import play.api.data.Forms.nonEmptyText
+import play.api.data.Forms.number
+import play.api.data.Forms.optional
+import play.api.i18n.Messages
+import play.api.i18n.MessagesApi
+import play.api.mvc.Action
+
+import models.ArticleTemplate
+import models.NewsRepository
+import models.User
 
 @Singleton
-class ArticleTemplateController @Inject() (newsService: NewsService) extends BaseController { 
-  
-  def form(user: User) = Form[ArticleTemplate](
+class ArticleTemplateController @Inject() (
+  messagesApi: MessagesApi,
+  env: Environment[User, CookieAuthenticator],
+  newsRepository: NewsRepository)(implicit ec: ExecutionContext) extends BaseController(messagesApi, env) {
+
+  private val form = Form[ArticleTemplate](
     mapping(
-      "id" -> longNumber,
+      "id" -> optional(number),
       "headline" -> nonEmptyText,
       "body" -> nonEmptyText
-    )
-    // Custom binding
-    { (id, headline, body) =>
-      {
-        if (id > 0) {
-          // Edit existing entity
-          val articleTemplate = ArticleTemplate.findById(id).get
-          articleTemplate.copy(headline = headline, body = body)
-        } else {
-          // New Entity
-          ArticleTemplate(Entity.UnpersistedId, headline, body)
-        }
-      }
-    }
-    // Custom unbinding
-    {articleTemplate => Some(articleTemplate.id, articleTemplate.headline, articleTemplate.body)}
+    )(ArticleTemplate.apply)(ArticleTemplate.unapply)
   )
-  
-  def list = StackAction(AuthorityKey -> Administrator) { implicit request =>
-    val articleTemplates: List[ArticleTemplate] = ArticleTemplate.findAll
-    Ok(views.html.articleTemplate.list(articleTemplates))
+
+  def list = SecuredAction.async { implicit request =>
+    newsRepository.findArticleTemplates.map(articleTemplates =>
+      Ok(views.html.articleTemplate.list(articleTemplates))
+    )
   }
-  
-  def create = StackAction(AuthorityKey -> Administrator) { implicit request =>
-    val user = loggedIn
-    val theForm = form(user).fill(new ArticleTemplate() )
+
+  def create = SecuredAction { implicit request =>
+    val theForm = form.fill(ArticleTemplate())
     Ok(views.html.articleTemplate.edit(theForm))
   }
 
-  def edit(id: Long) = StackAction(AuthorityKey -> Administrator) { implicit request =>
-    val user = loggedIn
-    ArticleTemplate.findById(id).map { articleTemplate =>
-      val theForm = form(user).fill(articleTemplate)
-      Ok(views.html.articleTemplate.edit(theForm))
-    }.getOrElse(NotFound)
+  def edit(id: Int) = SecuredAction.async { implicit request =>
+    for {
+      articleTemplateOption <- newsRepository.findArticleTemplateById(id)
+    } yield {
+      articleTemplateOption match {
+        case Some(articleTemplate) => Ok(views.html.articleTemplate.edit(form.fill(articleTemplate)))
+        case None => NotFound
+      }
+    }
   }
-  
-  def show(id: Long) = StackAction(AuthorityKey -> Administrator) { implicit request =>
-    ArticleTemplate.findById(id).map { articleTemplate =>
-      Ok(views.html.articleTemplate.show(articleTemplate))
-    }.getOrElse(NotFound)
+
+  def show(id: Int) = SecuredAction.async { implicit request =>
+    for {
+      articleTemplateOption <- newsRepository.findArticleTemplateById(id)
+    } yield {
+      articleTemplateOption match {
+        case Some(articleTemplate) => Ok(views.html.articleTemplate.show(articleTemplate))
+        case None => NotFound
+      }
+    }
   }
-  
-  def save = StackAction(AuthorityKey -> Administrator) { implicit request =>
-    val user = loggedIn
-    form(user).bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.articleTemplate.edit(formWithErrors)),
+
+  def save = SecuredAction.async { implicit request =>
+    form.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(views.html.articleTemplate.edit(formWithErrors))),
       articleTemplate => {
-        val savedArticleTemplate = ArticleTemplate.save(articleTemplate)
-        Redirect(routes.ArticleTemplateController.show(savedArticleTemplate.id)).flashing("success" -> "Article Template saved!")
+        newsRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
+          Redirect(routes.ArticleTemplateController.show(savedArticleTemplate.id.get)).flashing("success" -> Messages("articleTemplate.saved"))
+        )
       }
     )
   }
-  
 }
-            

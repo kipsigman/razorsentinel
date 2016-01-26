@@ -8,49 +8,21 @@ import play.api.test.Helpers._
 
 @RunWith(classOf[JUnitRunner])
 class ArticleSpec extends Specification {
-  
-  def fakeApp = FakeApplication(additionalConfiguration = inMemoryDatabase() + (("evolutionplugin", "disabled")))
-  
-  "addTagReplacement" should {
-    "put data into tagReplacements field" in new WithApplication(fakeApp) {
-        val user = User.save(User(Entity.UnpersistedId, "Kip", "kip.sigman@gmail.com", "passwd", Permission.Administrator))
-        val headline = "{city} - {firstname} {lastname} is the worst bowler."
-        val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
-        val articleTemplate = ArticleTemplate.save(ArticleTemplate(Entity.UnpersistedId, headline, body))
-        
-        val articleId = Article.save(Article(Entity.UnpersistedId, articleTemplate.id, None, false)).id
-        var article = Article.findByIdInflated(articleId)
-        
-        article = article.addTagReplacement(TagReplacement("{firstname}","Kip"))
-        article.tagReplacements.get must equalTo("""{"{firstname}":"Kip"}""")
-        article.tagReplacementSet.size must equalTo(1)
-        article.tagReplacementSet.head.tag must equalTo("{firstname}")
-        article.tagReplacementSet.head.replacement must equalTo("Kip")
-        
-        article = article.addTagReplacement(TagReplacement("{lastname}","Sigman"))
-        article.tagReplacements.get must equalTo("""{"{firstname}":"Kip","{lastname}":"Sigman"}""")
-        article.tagReplacementSet.size must equalTo(2)
-    }
-  }
-  
+
   "relativeUrl" should {
-    "make headline into an seo url path with id" in new WithApplication(fakeApp) {
-        val user = User.save(User(Entity.UnpersistedId, "Kip", "kip.sigman@gmail.com", "passwd", Permission.Administrator))
-        val headline = "{city} - {firstname} {lastname} is the worst bowler."
-        val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
-        val articleTemplate = ArticleTemplate.save(ArticleTemplate(Entity.UnpersistedId, headline, body))
-        
-        val articleId = Article.save(Article(Entity.UnpersistedId, articleTemplate.id, None, false)).id
-        var article = Article.findByIdInflated(articleId)
-        article = article.addTagReplacement(TagReplacement("{firstname}","Kip"))
-        article = article.addTagReplacement(TagReplacement("{lastname}","Sigman"))
-        article = Article.save(article)
-        article.publish must beFalse
-        article = article.addTagReplacement(TagReplacement("{city}","Santa Barbara"))
-        Article.save(article)
-        val inflatedArticle = Article.findByIdInflated(articleId)
-        inflatedArticle.publish must beTrue
-        inflatedArticle.relativeUrl must equalTo("/articles/santa-barbara-kip-sigman-is-the-worst-bowler-1")
+    "make headline into an seo url path with id" in {
+      val headline = "{city} - {firstname} {lastname} is the worst bowler."
+      val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
+      val articleTemplate = ArticleTemplate(Option(1), headline, body)
+      val article = Article(Option(88), articleTemplate.id.get, None, false).
+        addTagReplacement(TagReplacement("{firstname}", "Kip")).
+        addTagReplacement(TagReplacement("{lastname}", "Sigman"))
+
+      article.publish must beFalse
+
+      val completeArticle = article.addTagReplacement(TagReplacement("{city}", "Santa Barbara"))
+      val inflatedArticle = ArticleInflated(completeArticle, articleTemplate)
+      inflatedArticle.relativeUrl must equalTo("/articles/santa-barbara-kip-sigman-is-the-worst-bowler-88")
     }
   }
 

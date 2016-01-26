@@ -1,8 +1,6 @@
-@(article: Article)(implicit request: RequestHeader)
+@(articleInflated: ArticleInflated)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@mainPublic("Article") {
-  
-  <h3>@article.headline</h3>
-  @Html(article.body)
-  
+@main(articleInflated.headline) {
+  <h3>@articleInflated.headline</h3>
+  @Html(articleInflated.body)
 }

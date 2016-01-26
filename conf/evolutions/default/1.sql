@@ -1,17 +1,4 @@
 # --- !Ups
-CREATE TABLE user (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name varchar(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  permission INT UNSIGNED NOT NULL,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- kip
-INSERT INTO user(name, email, password, permission)
-VALUES('Kip', 'kip.sigman@gmail.com', '$2a$10$9EvqA.d4mboTg/GJ8hople9cz8qeXXLGjMFWPGs1H1FtDfALxXU1y', 1);
-
 CREATE TABLE article_template (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     headline VARCHAR(255) NOT NULL,
@@ -54,4 +41,3 @@ CREATE TABLE article (
 # --- !Downs
 DROP TABLE IF EXISTS article;
 DROP TABLE IF EXISTS article_template;
-DROP TABLE IF EXISTS user;

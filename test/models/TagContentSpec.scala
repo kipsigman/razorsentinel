@@ -11,7 +11,7 @@ import play.api.test.Helpers._
  */
 @RunWith(classOf[JUnitRunner])
 class TagContentSpec extends Specification {
-  
+
   "TagContent" should {
     "contentHtmlInlineEdit wrap tags in editable HTML" in {
       val content = "Local Company declares {firstname} {lastname} Most Worthless Employee"
@@ -19,7 +19,7 @@ class TagContentSpec extends Specification {
       contentForEditable must equalTo("""Local Company declares <a href="#" class="field-editable" data-type="text" data-name="{firstname}" data-value="firstname">{firstname}</a> <a href="#" class="field-editable" data-type="text" data-name="{lastname}" data-value="lastname">{lastname}</a> Most Worthless Employee""")
     }
   }
-  
+
   "TagReplacement" should {
     "replace repeated tags in text" in {
       val tag = "{firstname}"
@@ -28,5 +28,5 @@ class TagContentSpec extends Specification {
       tagReplacement.replace(str) must equalTo("Kip is the worst bowler. Kip really sucks.")
     }
   }
-  
+
 }

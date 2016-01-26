@@ -1,12 +1,15 @@
-@(article: Article, articleTemplate: ArticleTemplate)(implicit request: RequestHeader)
+@(article: Article, articleTemplate: ArticleTemplate)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@headerIncludes = {
+@cssIncludes = {
 <link href="@routes.Assets.at("stylesheets/bootstrap-editable.css")" rel="stylesheet">
+}
+
+@jsIncludes = {
 <script src="@routes.Assets.at("javascripts/bootstrap-editable.min.js")"></script>
 <script src="@routes.Assets.at("javascripts/article.js")"></script>
 }
 
-@mainPublic("Article", headerIncludes) {
+@main(Messages("Article"), cssIncludes, jsIncludes) {
   
   <input id="articleId" type="hidden" name="articleId" value="@article.id" />
   <input id="articleTemplateId" type="hidden" name="articleTemplateId" value="@article.articleTemplateId" />
@@ -15,12 +18,12 @@
   <p>
     <br/><br/>
     <div id="shareArticleDraft">
-      <h4>Share</h4>
-      <span class="text-error">Replace all tags in article headline and body in order to generate a share link for your article.</span>
+      <h4>@Messages("article.create.share")</h4>
+      <span class="text-error">@Messages("article.create.description")</span>
     </div>
     <div id="shareArticlePublish" class="form-group">
-      <h4>Share</h4>
-      <label class="sr-only" for="articleUrl">Share</label>
+      <h4>@Messages("article.create.share")</h4>
+      <label class="sr-only" for="articleUrl">@Messages("article.create.share")</label>
 	  <input type="text" class="form-control" id="articleUrl" name="articleUrl">
     </div>
   </p>

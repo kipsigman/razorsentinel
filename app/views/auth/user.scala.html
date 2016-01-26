@@ -1,0 +1,26 @@
+@()(implicit request: RequestHeader, messages: Messages, user: User)
+
+@mainSecured(Messages("home.title")) {
+    <div class="user col-md-6 col-md-offset-3">
+        <div class="row">
+            <hr class="col-md-12" />
+            <div class="col-md-4 text-right">
+                <img src="@user.avatarURL.getOrElse(routes.Assets.at("images/silhouette.png"))" height="40px" />
+            </div>
+            <hr class="col-md-12" />
+        </div>
+        <div class="row data">
+            <div class="col-md-12">
+                <div class="row">
+                    <p class="col-md-6"><strong>@Messages("user.first.name"):</strong></p><p class="col-md-6">@user.firstName.getOrElse("None")</p>
+                </div>
+                <div class="row">
+                    <p class="col-md-6"><strong>@Messages("user.last.name"):</strong></p><p class="col-md-6">@user.lastName.getOrElse("None")</p>
+                </div>
+                <div class="row">
+                    <p class="col-md-6"><strong>@Messages("user.email"):</strong></p><p class="col-md-6">@user.email.getOrElse("None")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}

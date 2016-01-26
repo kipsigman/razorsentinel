@@ -1,78 +1,106 @@
 package controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
+import javax.inject.Singleton
 
-import play.api._
-import play.api.mvc._
-import play.api.data._
-import play.api.data.Forms._
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import com.mohiva.play.silhouette.api.Environment
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+
+import play.api.data.Form
+import play.api.data.Forms.mapping
+import play.api.data.Forms.nonEmptyText
+import play.api.data.Forms.number
+import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.mvc.Action
+import play.api.mvc.RequestHeader
+
 import models._
-import services.NewsService
-import util.Urls
+import services.UrlService
 
 @Singleton
-class ArticleController @Inject() (newsService: NewsService) extends Controller {
-  
-  val updateTagForm: Form[Article] = Form[Article](
+class ArticleController @Inject() (
+  messagesApi: MessagesApi,
+  env: Environment[User, CookieAuthenticator],
+  newsRepository: NewsRepository,
+  urlService: UrlService)(implicit ec: ExecutionContext) extends BaseController(messagesApi, env) {
+
+  private case class UpdateTagData(
+    articleId: Int,
+    articleTemplateId: Int,
+    name: String,
+    value: String)
+
+  private val updateTagForm = Form[UpdateTagData](
     mapping(
-      "pk" -> longNumber,
-      "articleTemplateId" -> longNumber,
-      "name" -> text,
-      "value" -> text
-    )
-    // Binding
-    {(pk, articleTemplateId, name, value) => {
-      val article = if (pk > 0) Article.findById(pk).get else Article(Entity.UnpersistedId, articleTemplateId, None, false)
-      article.addTagReplacement(TagReplacement(name, value))
-      }
-    }
-    // Unbinding
-    {article => Some(article.id, article.articleTemplateId, "{tag}", "replace")}
+      "pk" -> number,
+      "articleTemplateId" -> number,
+      "name" -> nonEmptyText,
+      "value" -> nonEmptyText
+    )(UpdateTagData.apply)(UpdateTagData.unapply)
   )
-  
-  def updateTag = Action.async { implicit request =>
-    
+
+  def updateTag = UserAwareAction.async { implicit request =>
     updateTagForm.bindFromRequest.fold(
-      formWithErrors => scala.concurrent.Future(BadRequest("Bad data")),
-      article => {
-        val articleId = Article.save(article).id
-        val savedArticle = Article.findByIdInflated(articleId)
-        val articleUrlFuture = Article.preparedUrl(request, savedArticle)
-        
-        articleUrlFuture.map(url => {
-          if (savedArticle.publish) {
+      formWithErrors => Future(BadRequest("Bad data")),
+      data => {
+        logger.debug(s"data=$data")
+        for {
+          articleInflated <- newsRepository.addTagReplacement(data.articleId, TagReplacement(data.name, data.value))
+          url <- preparedUrl(request, articleInflated)
+        } yield {
+          if (articleInflated.article.publish) {
             // All tags replaced, give URL for sharing
-            val json = Json.toJson(Map("status" -> "PUBLISH", "url" -> url, "id" -> savedArticle.id.toString))
+            val json = Json.toJson(Map("status" -> "PUBLISH", "url" -> url, "id" -> articleInflated.article.id.get.toString))
             Ok(json)
           } else {
             // Not completely customized
-            val json = Json.toJson(Map("status" -> "DRAFT", "url" -> url, "articleId" -> savedArticle.id.toString))
-            Ok(json)  
+            val json = Json.toJson(Map("status" -> "DRAFT", "url" -> url, "articleId" -> articleInflated.article.id.get.toString))
+            Ok(json)
           }
-        })
+        }
       }
     )
   }
-  
-  def listArticleTemplates = Action { implicit request =>
-    val articleTemplates: List[ArticleTemplate] = ArticleTemplate.findAll
-    Ok(views.html.article.listArticleTemplates(articleTemplates))
+
+  def listArticleTemplates = UserAwareAction.async { implicit request =>
+    newsRepository.findArticleTemplates.map(articleTemplates =>
+      Ok(views.html.article.listArticleTemplates(articleTemplates))
+    )
   }
-  
-  def create(articleTemplateId: Long) = Action { implicit request =>
-    val articleTemplate = ArticleTemplate.findById(articleTemplateId).get
-    val article = Article.save(Article(Entity.UnpersistedId, articleTemplate.id, None, false))
-    Ok(views.html.article.create(article, articleTemplate))
+
+  def create(articleTemplateId: Int) = UserAwareAction.async { implicit request =>
+    newsRepository.findArticleTemplateById(articleTemplateId) flatMap {
+      case Some(articleTemplate) => {
+        val article = Article(None, articleTemplate.id.get, None, false)
+        newsRepository.saveArticle(article).map(savedArticle => {
+          Ok(views.html.article.create(savedArticle, articleTemplate))
+        })
+      }
+      case None => Future.successful(notFound)
+    }
   }
-  
-  def show(seoAlias: String) = Action { implicit request =>
-    
-    Article.findBySeoAlias(seoAlias).map(article => {
-      val inflatedArticle = Article.findByIdInflated(article.id)
-      Ok(views.html.article.show(inflatedArticle)) 
-    }).getOrElse(NotFound)
+
+  def show(seoAlias: String) = UserAwareAction.async { implicit request =>
+    newsRepository.findArticleBySeoAlias(seoAlias) flatMap {
+      case Some(article) => {
+        newsRepository.findArticleTemplateById(article.articleTemplateId) map {
+          case Some(at) => Ok(views.html.article.show(ArticleInflated(article, at)))
+          case None => notFound
+        }
+
+      }
+      case None => Future.successful(notFound)
+    }
   }
-  
+
+  private def preparedUrl(request: RequestHeader, articleInflated: ArticleInflated): Future[String] = {
+    val absoluteUrl = urlService.absoluteUrl(request, articleInflated.relativeUrl)
+    //urlService.shortenUrl(absoluteUrl)
+    Future.successful(absoluteUrl)
+  }
+
 }

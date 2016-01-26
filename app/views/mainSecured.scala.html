@@ -1,0 +1,3 @@
+@(title: String, headIncludes: Html = Html(""), jsIncludes: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages, user: models.User)
+
+@main(title, headIncludes, jsIncludes)(content)(request, messages, Option(user))

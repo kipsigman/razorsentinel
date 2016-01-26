@@ -1,167 +1,174 @@
 package controllers
 
-import scala.concurrent.{ExecutionContext, Future}
-import jp.t2v.lab.play2.auth.{AuthConfig,CookieIdContainer,IdContainer,LoginLogout}
-import models.Permission._
-import models.User
+import javax.inject.Inject
+import javax.inject.Singleton
+
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import com.mohiva.play.silhouette.api.Environment
+import com.mohiva.play.silhouette.api.LoginEvent
+import com.mohiva.play.silhouette.api.LoginInfo
+import com.mohiva.play.silhouette.api.LogoutEvent
+import com.mohiva.play.silhouette.api.SignUpEvent
+import com.mohiva.play.silhouette.api.Authenticator.Implicits._
+import com.mohiva.play.silhouette.api.exceptions.ProviderException
+import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
+import com.mohiva.play.silhouette.api.services.AvatarService
+import com.mohiva.play.silhouette.api.util.Clock
+import com.mohiva.play.silhouette.api.util.Credentials
+import com.mohiva.play.silhouette.api.util.PasswordHasher
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
+import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
+
+import com.typesafe.config.Config
+import net.ceedubs.ficus.Ficus._
+
 import play.api.data.Form
-import play.api.data.Forms.email
-import play.api.data.Forms.mapping
-import play.api.data.Forms.nonEmptyText
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.data.Forms._
+import play.api.i18n.Messages
+import play.api.i18n.MessagesApi
 import play.api.mvc.Action
-import play.api.mvc.Controller
-import play.api.mvc.Result
-import play.api.mvc.RequestHeader
-import play.api.mvc.Results.{Forbidden,Redirect,Unauthorized}
-import reflect.{ClassTag, classTag}
 
+import models.User
+import services.UserService
 
-/**
- * Flows for login/logout and security definitions.
- * @author kip
- */
-object AuthController extends Controller with LoginLogout with AuthConfigImpl {
+@Singleton
+class AuthController @Inject() (
+  messagesApi: MessagesApi,
+  env: Environment[User, CookieAuthenticator],
+  config: Config,
+  userService: UserService,
+  authInfoRepository: AuthInfoRepository,
+  credentialsProvider: CredentialsProvider,
+  avatarService: AvatarService,
+  passwordHasher: PasswordHasher,
+  clock: Clock)(implicit ec: ExecutionContext) extends BaseController(messagesApi, env) {
   
-  /** Your application's login form.  Alter it to fit your application */
-  val loginForm = Form {
-    mapping("email" -> email, "password" -> nonEmptyText)(User.authenticate)(_.map(u => (u.email, "")))
-      .verifying("Invalid email or password", result => result.isDefined)
+  def user = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.auth.user()))
   }
 
-  def login = Action { implicit request =>
-    Ok(views.html.login(loginForm))
+  def signIn = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(user) => Future.successful(Redirect(routes.Application.index()))
+      case None => Future.successful(Ok(views.html.auth.signIn(SignInForm.form)))
+    }
   }
   
-  
-/**
-   * Return the `gotoLogoutSucceeded` method's result in the logout action.
-   *
-   * Since the `gotoLogoutSucceeded` returns `Future[Result]`,
-   * you can add a procedure like the following.
-   *
-   *   gotoLogoutSucceeded.map(_.flashing(
-   *     "success" -> "You've been logged out"
-   *   ))
-   */
-  def logout = Action.async { implicit request =>
-    // do something...
-    gotoLogoutSucceeded
-  }
-  
-
-  /**
-   * Return the `gotoLoginSucceeded` method's result in the login action.
-   *
-   * Since the `gotoLoginSucceeded` returns `Future[Result]`,
-   * you can add a procedure like the `gotoLogoutSucceeded`.
-   */
-  def authenticate = Action.async { implicit request =>
-    loginForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.login(formWithErrors))),
-      user => gotoLoginSucceeded(user.get.id)
+  def signInPost = UserAwareAction.async { implicit request =>
+    SignInForm.form.bindFromRequest.fold(
+      form => Future.successful(BadRequest(views.html.auth.signIn(form))),
+      data => {
+        val credentials = Credentials(data.email, data.password)
+        credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
+          val result = Redirect(routes.Application.index())
+          userService.retrieve(loginInfo).flatMap {
+            case Some(user) =>
+              env.authenticatorService.create(loginInfo).map {
+                case authenticator if data.rememberMe =>
+                  authenticator.copy(
+                    expirationDateTime = clock.now + config.as[FiniteDuration]("silhouette.authenticator.rememberMe.authenticatorExpiry"),
+                    idleTimeout = config.getAs[FiniteDuration]("silhouette.authenticator.rememberMe.authenticatorIdleTimeout"),
+                    cookieMaxAge = config.getAs[FiniteDuration]("silhouette.authenticator.rememberMe.cookieMaxAge")
+                  )
+                case authenticator => authenticator
+              }.flatMap { authenticator =>
+                env.eventBus.publish(LoginEvent(user, request, request2Messages))
+                env.authenticatorService.init(authenticator).flatMap { v =>
+                  env.authenticatorService.embed(v, result)
+                }
+              }
+            case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
+          }
+        }.recover {
+          case e: ProviderException =>
+            Redirect(routes.AuthController.signIn()).flashing("error" -> Messages("sign.in.error.invalid"))
+        }
+      }
     )
   }
+
+  def signOut = SecuredAction.async { implicit request =>
+    val result = Redirect(routes.Application.index())
+    env.eventBus.publish(LogoutEvent(request.identity, request, request2Messages))
+
+    env.authenticatorService.discard(request.authenticator, result)
+  }
+
+  def signUp = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(user) => Future.successful(Redirect(routes.Application.index()))
+      case None => Future.successful(Ok(views.html.auth.signUp(SignUpForm.form)))
+    }
+  }
   
+  def signUpPost = UserAwareAction.async { implicit request =>
+    SignUpForm.form.bindFromRequest.fold(
+      form => Future.successful(BadRequest(views.html.auth.signUp(form))),
+      data => {
+        val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
+        userService.retrieve(loginInfo).flatMap {
+          case Some(user) =>
+            Future.successful(Redirect(routes.AuthController.signUp()).flashing("error" -> Messages("user.error.exists")))
+          case None =>
+            val authInfo = passwordHasher.hash(data.password)
+            val user = User(
+              None,
+              loginInfo = loginInfo,
+              firstName = Some(data.firstName),
+              lastName = Some(data.lastName),
+              email = Some(data.email),
+              avatarURL = None
+            )
+            for {
+              avatar <- avatarService.retrieveURL(data.email)
+              user <- userService.save(user.copy(avatarURL = avatar))
+              authInfo <- authInfoRepository.add(loginInfo, authInfo)
+              authenticator <- env.authenticatorService.create(loginInfo)
+              value <- env.authenticatorService.init(authenticator)
+              result <- env.authenticatorService.embed(value, Redirect(routes.Application.index()))
+            } yield {
+              env.eventBus.publish(SignUpEvent(user, request, request2Messages))
+              env.eventBus.publish(LoginEvent(user, request, request2Messages))
+              result
+            }
+        }
+      }
+    )
+  }
 }
 
-trait AuthConfigImpl extends AuthConfig {
+object SignInForm {
+  val form = Form(
+    mapping(
+      "email" -> email,
+      "password" -> nonEmptyText,
+      "rememberMe" -> boolean
+    )(Data.apply)(Data.unapply)
+  )
 
-  /**
-   * A type that is used to identify a user.
-   * `String`, `Int`, `Long` and so on.
-   */
-  type Id = Long
+  case class Data(
+    email: String,
+    password: String,
+    rememberMe: Boolean)
+}
 
-  /**
-   * A type that represents a user in your application.
-   * `User`, `Account` and so on.
-   */
-  type User = models.User
+object SignUpForm {
+  val form = Form(
+    mapping(
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText,
+      "email" -> email,
+      "password" -> nonEmptyText
+    )(Data.apply)(Data.unapply)
+  )
 
-  /**
-   * A type that is defined by every action for authorization.
-   * This sample uses the following trait:
-   *
-   * sealed trait Permission
-   * case object Administrator extends Permission
-   * case object NormalUser extends Permission
-   */
-  type Authority = Permission
-
-  /**
-   * A `ClassManifest` is used to retrieve an id from the Cache API.
-   * Use something like this:
-   */
-  val idTag: ClassTag[Id] = classTag[Id]
-
-  /**
-   * The session timeout in seconds
-   */
-  val sessionTimeoutInSeconds: Int = 3600
-
-  /**
-   * A function that returns a `User` object from an `Id`.
-   * You can alter the procedure to suit your application.
-   */
-  def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = Future.successful(models.User.findById(id))
-
-  /**
-   * Where to redirect the user after a successful login.
-   */
-  def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
-    Future.successful({
-      val uri = request.session.get("access_uri").getOrElse(routes.Application.index.url.toString)
-      request.session - "access_uri"
-      Redirect(uri)
-    })
-
-  /**
-   * Where to redirect the user after logging out
-   */
-  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
-    Future.successful(Redirect(routes.AuthController.login))
-
-  /**
-   * If the user is not logged in and tries to access a protected resource then redirct them as follows:
-   */
-  def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
-    Future.successful{
-      // Check for request type. If AJAX request return an Unauthorized.
-      // Otherwise redirect to login page.
-      request.headers.get("X-Requested-With") match {
-        case Some("XMLHttpRequest") => Unauthorized("Unauthorized. User session may have expired.")
-        case _ => Redirect(routes.AuthController.login).withSession("access_uri" -> request.uri) 
-      }
-    }
-  }
-
-  /**
-   * If authorization failed (usually incorrect password) redirect the user as follows:
-   */
-  def authorizationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = 
-    Future.successful(Forbidden("no permission"))
-
-  /**
-   * A function that determines what `Authority` a user has.
-   * You should alter this procedure to suit your application.
-   */
-  def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] = Future.successful {
-    (user.permission, authority) match {
-      case (Administrator, _)       => true
-      case _                        => false
-    }
-  }
-  
-  /**
-   * Whether use the secure option or not use it in the cookie.
-   * However default is false, I strongly recommend using true in a production.
-   */
-  override lazy val cookieSecureOption: Boolean = false//play.api.Play.isProd(play.api.Play.current)
-  
-  /**
-   * Overriding for "Stateless" implementation. See https://github.com/t2v/play2-auth for more info.
-   */
-  override lazy val idContainer: IdContainer[Id] = new CookieIdContainer[Id]
-  
+  case class Data(
+    firstName: String,
+    lastName: String,
+    email: String,
+    password: String)
 }

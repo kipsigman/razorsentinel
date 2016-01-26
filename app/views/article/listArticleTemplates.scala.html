@@ -1,22 +1,24 @@
-@(articleTemplates: List[ArticleTemplate])(implicit request: RequestHeader)
-@mainPublic("Article Templates") {
-  <h2>Article Templates</h2>
+@(articleTemplates: Seq[ArticleTemplate])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@main(Messages("section.articles")) {
+  <h2>@Messages("section.articles")</h2>
   
   <table class="table table-striped table-hover">
+    <!-- 
     <thead>
       <tr>
-        <th>Id</th>
-        <th>Headline</th>
+        <th>@Messages("articleTemplate.id")</th>
+        <th>@Messages("articleTemplate.headline")</th>
         <th></th>
       </tr>
     </thead>
+    -->
     <tbody>
 
     @for(articleTemplate <- articleTemplates) {
       <tr>
-        <td>@articleTemplate.id</td>
+        <!-- <td>@articleTemplate.id</td> -->
         <td>@articleTemplate.headline</td>
-        <td><a href="@routes.ArticleController.create(articleTemplate.id)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
+        <td><a href="@routes.ArticleController.create(articleTemplate.id.get)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
       </tr>
     }
 

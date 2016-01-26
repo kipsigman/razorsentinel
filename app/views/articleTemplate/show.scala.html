@@ -1,15 +1,19 @@
-@(articleTemplate: ArticleTemplate)(implicit request: RequestHeader, user: User)
+@(articleTemplate: ArticleTemplate)(implicit request: RequestHeader, messages: Messages, user: User)
 
-@mainAdmin("ArticleTemplate") {
+@headIncludes = {
+<meta name="robots" content="noindex">
+}
+
+@mainSecured(Messages("articleTemplate"), headIncludes) {
   <div class="row">
     <div class="span11"><h3>@articleTemplate.headline</h3></div>
-    <div class="span1"><a href="@routes.ArticleTemplateController.edit(articleTemplate.id)" class="btn"><i class="icon-pencil"></i></a></div>
+    <div class="span1"><a href="@routes.ArticleTemplateController.edit(articleTemplate.id.get)" class="btn"><i class="icon-pencil"></i></a></div>
   </div>
   
   @Html(articleTemplate.body)
   
   <br/><br/>
-  <h4>Tags</h4>
+  <h4>@Messages("articleTemplate.tags")</h4>
   <ul>
   @for(tag <- articleTemplate.tags) {
     <li>@tag</li>

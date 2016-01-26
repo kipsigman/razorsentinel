@@ -1,14 +1,46 @@
-application.name=News
+# General Errors
+error=Error!
+error.email = Valid email required
+error.http.notFound=404 Not Found
+error.required=This field is required
 
-# Article Template
-id=ID
-headline=Headline
-body=Body
-articleTemplate.details = Article Template: {0}
-articleTemplate.form = Article Template
-articleTemplate.new = (new)
-articleTemplate.new.command = New
-articleTemplate.new.submit = Add
-articleTemplate.new.success = Successfully added Article Template.
+# Sections
+section.admin=Admin
+section.admin.articleTemplates=Admin: Article Templates
+section.articles=Articles
+section.home=News
+navigation.toggle=Toggle navigation
 
-validation.errors=Please correct the errors in the form.
+# Article & Template
+article=Article
+article.create.description=Replace all tags in article headline and body in order to generate a share link for your article.
+article.create.share=Share
+
+articleTemplate=Article Template
+articleTemplate.body=Body
+articleTemplate.headline=Headline
+articleTemplate.id=ID
+articleTemplate.saved=Article Template saved
+articleTemplate.tags=Tags
+
+# User
+user.error.exists=There already exists a user with this email
+user.first.name=First name
+user.last.name=Last name
+user.email=Email
+user.password=Password
+
+# Auth
+sign.in=Sign in
+sign.in.description=Sign in with email and password
+sign.in.error.invalid=Invalid login credentials
+sign.in.now=Sign in now
+sign.out=Sign out
+sign.up=Sign up
+sign.up.description=Sign up for a new user account
+sign.up.now = Sign up now
+already.a.member = Already a member?
+not.a.member = Not a member?
+remember.me = Remember my login on this computer
+or.use.social = Or use your existing account on one of the following services to sign in:
+access.denied=Access denied

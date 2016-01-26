@@ -2,12 +2,28 @@
 
 @f.data.map {
   case ("error", value) => {
-    <div class="alert alert-danger" role="alert">@value</div>
+    <div class="col-md-6 col-md-offset-3 alert alert-danger alert-error">
+	  <a href="#" class="close" data-dismiss="alert">&times;</a>
+	  @value
+    </div>
   }
   case ("info", value) => {
-    <div class="alert alert-info" role="alert">@value</div>
+    <div class="col-md-6 col-md-offset-3 alert alert-info">
+	  <a href="#" class="close" data-dismiss="alert">&times;</a>
+	  @value
+    </div>
   }
   case ("success", value) => {
-    <div class="alert alert-success" role="alert">@value</div>
+  	<div class="col-md-6 col-md-offset-3 alert alert-success">
+	  <a href="#" class="close" data-dismiss="alert">&times;</a>
+	  @value
+    </div>
+  }
+  case ("warning", value) => {
+  	<div class="col-md-6 col-md-offset-3 alert alert-warning">
+	  <a href="#" class="close" data-dismiss="alert">&times;</a>
+	  @value
+    </div>
   }
 }
+

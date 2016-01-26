@@ -1,19 +1,24 @@
 package controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
+import javax.inject.Singleton
 
-import play.api._
-import play.api.mvc._
-import play.api.data._
-import play.api.data.Forms._
-import play.api.i18n.Messages
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import models._
-import models.Permission._
-import services.NewsService
+import scala.concurrent.ExecutionContext
+
+import com.mohiva.play.silhouette.api.Environment
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+
+import play.api.i18n.MessagesApi
+import play.api.mvc.Action
+import play.api.routing.JavaScriptReverseRouter
+
+import models.NewsRepository
+import models.User
 
 @Singleton
-class Application @Inject() (newsService: NewsService) extends BaseController {
+class Application @Inject() (
+  messagesApi: MessagesApi,
+  env: Environment[User, CookieAuthenticator])(implicit ec: ExecutionContext) extends BaseController(messagesApi, env) {
 
   /**
    * Health check handler for Amazon load balancer
@@ -23,20 +28,13 @@ class Application @Inject() (newsService: NewsService) extends BaseController {
     Ok("Healthy!")
   }
   
-  def index = Action {implicit request =>
-      Ok(views.html.index())
+  def index = UserAwareAction { implicit request =>
+    Ok(views.html.index())
   }
-  
-  def indexAdmin = StackAction(AuthorityKey -> Administrator) { implicit request =>
-    // val user = loggedIn
-    Ok(views.html.indexAdmin())
-  }
-  
-  
+
   def javascriptRoutes = Action { implicit request =>
-    import routes.javascript._
     Ok(
-      Routes.javascriptRouter("jsRoutes")(
+      JavaScriptReverseRouter("jsRoutes")(
         routes.javascript.ArticleController.updateTag,
         routes.javascript.Assets.at
       )

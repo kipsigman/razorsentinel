@@ -1,5 +1,5 @@
-@()(implicit request: RequestHeader, flash: Flash, lang: Lang)
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@mainPublic("404 Not Found") {
-  <h2>404 Not Found</h2>
+@main(Messages("error.http.notFound")) {
+  <h2>@Messages("error.http.notFound")</h2>
 }

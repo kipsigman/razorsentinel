@@ -1,31 +1,16 @@
 package models
 
-import java.util.TimeZone
+import java.util.UUID
 
-import org.mindrot.jbcrypt.BCrypt
-import org.squeryl.PrimitiveTypeMode._
-import models.Permission._
+import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
 
-case class User(id: Long, name: String, email: String, password: String, permission: Permission) extends IdEntity {
+case class User(
+  id: Option[Int],
+  loginInfo: LoginInfo,
+  firstName: Option[String],
+  lastName: Option[String],
+  email: Option[String],
+  avatarURL: Option[String]) extends IdEntity with Identity {
   
-  def this() = this(Entity.UnpersistedId, "", "", "", Permission.Administrator)
-  
-  /**
-   * Returns default TimeZone for the User. May be implemented as a persisted property in the future.
-   */
-  def timeZone = TimeZone.getTimeZone("US/Eastern")
-}
-
-object User extends Dao[User](NewsSchema.userTable){
-
-  def authenticate(email: String, password: String): Option[User] = inTransaction {
-    findByEmail(email).filter { user => BCrypt.checkpw(password, user.password) }
-  }
-
-  def findByEmail(email: String): Option[User] = inTransaction {
-    this.table.where(user => user.email === email).headOption
-  }
-  
-  def nameById(id: Long) = findById(id).map(user => user.name).getOrElse("")
-  
+  lazy val name: String = firstName.getOrElse("") + lastName.map(ln => s" $ln").getOrElse("")
 }
