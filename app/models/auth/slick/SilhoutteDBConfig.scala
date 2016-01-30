@@ -1,4 +1,4 @@
-package models.slick
+package models.auth.slick
 
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.slick.HasDatabaseConfig

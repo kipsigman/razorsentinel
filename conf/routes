@@ -15,8 +15,10 @@ GET     /auth/user                       controllers.AuthController.user
 
 # Public
 GET     /                                controllers.Application.index
+GET     /articles                        controllers.ArticleController.list
 GET     /articles/templates              controllers.ArticleController.listArticleTemplates
 GET     /articles/create/:templateId     controllers.ArticleController.create(templateId:Int)
+GET     /articles/:id/edit               controllers.ArticleController.edit(id:Int)
 POST    /articles/updateTag              controllers.ArticleController.updateTag
 GET     /articles/:seoAlias              controllers.ArticleController.show(seoAlias:String)
 

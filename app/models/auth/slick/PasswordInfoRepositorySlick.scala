@@ -1,4 +1,4 @@
-package models.slick
+package models.auth.slick
 
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -6,6 +6,7 @@ import services.StringService
 
 case class Article(
     id: Option[Int],
+    userId: Option[Int],
     articleTemplateId: Int,
     tagReplacements: Option[String],
     publish: Boolean) extends IdEntity {
@@ -48,25 +49,44 @@ case class Article(
 }
 
 case class ArticleInflated(article: Article, articleTemplate: ArticleTemplate) {
+  val id = article.id
+  val userId = article.userId
+  val publish = article.publish
 
-  def body: String = {
-    article.tagReplacementSet.foldLeft(articleTemplate.body)((str, tagReplacement) => {
-      tagReplacement.replace(str)
-    })
-  }
-
+  /**
+   * Returns headline with all defined Tag replacements.
+   */
   def headline: String = {
     article.tagReplacementSet.foldLeft(articleTemplate.headline)((str, tagReplacement) => {
       tagReplacement.replace(str)
     })
   }
+  
+  /**
+   * Returns body with all defined Tag replacements.
+   */
+  def body: String = {
+    article.tagReplacementSet.foldLeft(articleTemplate.body)((str, tagReplacement) => {
+      tagReplacement.replace(str)
+    })
+  }
+  
+  /**
+   * Returns headline for edit with all defined Tag replacements.
+   */
+  def headlineInlineEditHtml: String = {
+    TagContent.inlineEditHtml(articleTemplate.headline, article.tagReplacementSet)
+  }
+  
+  /**
+   * Returns body for edit with all defined Tag replacements.
+   */
+  def bodyInlineEditHtml: String = {
+    TagContent.inlineEditHtml(articleTemplate.body, article.tagReplacementSet)
+  }
 
   def allTagsReplaced = {
     (article.tagReplacementSet.size == articleTemplate.tags.size)
-  }
-
-  def relativeUrl: String = {
-    "/articles/" + StringService.formatSeo(headline) + "-" + article.id.getOrElse(0)
   }
 
   def addTagReplacement(tagReplacement: TagReplacement): ArticleInflated = {
@@ -81,5 +101,11 @@ case class ArticleInflated(article: Article, articleTemplate: ArticleTemplate) {
         tagAddedArticle
 
     this.copy(article = updatedArticle)
+  }
+  
+  lazy val seoAlias: String = s"${article.id.getOrElse(0)}-${StringService.formatSeo(headline)}"
+  
+  lazy val relativeUrl: String = {
+    s"/articles/${seoAlias}" 
   }
 }

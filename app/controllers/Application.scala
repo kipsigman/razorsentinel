@@ -13,7 +13,7 @@ import play.api.mvc.Action
 import play.api.routing.JavaScriptReverseRouter
 
 import models.NewsRepository
-import models.User
+import models.auth.User
 
 @Singleton
 class Application @Inject() (

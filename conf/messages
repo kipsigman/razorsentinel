@@ -1,20 +1,34 @@
 # General Errors
-error=Error!
-error.email = Valid email required
-error.http.notFound=404 Not Found
+error=Error
+error.email=Valid email required
+error.http.401=401 Authentication Required
+error.http.401.description=You must be signed in to view this page
+error.http.403=403 Forbidden
+error.http.403.description=You are unauthorized to view this page
+error.http.404=404 Not Found
+error.http.404.description=The requested page or resource cannot be found
 error.required=This field is required
 
 # Sections
 section.admin=Admin
 section.admin.articleTemplates=Admin: Article Templates
 section.articles=Articles
+section.articles.my=My Articles
+section.articleTemplates=Templates
 section.home=News
+section.user=User
 navigation.toggle=Toggle navigation
 
 # Article & Template
 article=Article
-article.create.description=Replace all tags in article headline and body in order to generate a share link for your article.
-article.create.share=Share
+article.body=Body
+article.edit=Create/Edit Article
+article.edit.description=Replace all tags in article headline and body in order to generate a share link for your article.
+article.edit.share=Share
+article.headline=Headline
+article.id=ID
+article.tagReplacements=Tag Replacements
+article.templateId=Template ID
 
 articleTemplate=Article Template
 articleTemplate.body=Body
@@ -29,6 +43,7 @@ user.first.name=First name
 user.last.name=Last name
 user.email=Email
 user.password=Password
+user.roles=Roles
 
 # Auth
 sign.in=Sign in

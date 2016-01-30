@@ -1,10 +1,9 @@
-@(form: Form[ArticleTemplate])(implicit request: RequestHeader, messages: Messages, user: User)
+@(form: Form[ArticleTemplate])(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
 
 @import tags._
 @import b3.inline.fieldConstructor
 
 @mainSecured(Messages("articleTemplate")) {
-  <h2>@Messages("articleTemplate")</h2>
   <div class="row">
     <div class="col-md-12">
   

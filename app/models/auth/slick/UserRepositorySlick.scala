@@ -1,4 +1,4 @@
-package models.slick
+package models.auth.slick
 
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,7 +11,8 @@ import play.api.db.slick.DatabaseConfigProvider
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 
-import models._
+import models.auth.User
+import models.auth.UserRepository
 
 @Singleton()
 class UserRepositorySlick @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends UserRepository with SilhoutteDBConfig {
@@ -37,7 +38,7 @@ class UserRepositorySlick @Inject()(dbConfigProvider: DatabaseConfigProvider)(im
     } yield dbUser
     db.run(dbUserQuery.result.headOption).map { dbUserOption =>
       dbUserOption.map { user =>
-        User(user.id, loginInfo, user.firstName, user.lastName, user.email, user.avatarURL)
+        User(user.id, loginInfo, user.firstName, user.lastName, user.email, user.avatarURL, user.roles)
       }
     }
   }
@@ -63,7 +64,8 @@ class UserRepositorySlick @Inject()(dbConfigProvider: DatabaseConfigProvider)(im
             user.firstName,
             user.lastName,
             user.email,
-            user.avatarURL)
+            user.avatarURL,
+            user.roles)
       }
     }
   }
@@ -75,7 +77,7 @@ class UserRepositorySlick @Inject()(dbConfigProvider: DatabaseConfigProvider)(im
    * @return The saved user.
    */
   override def save(user: User) = {
-    val dbUser = DBUser(user.id, user.firstName, user.lastName, user.email, user.avatarURL)
+    val dbUser = DBUser(user.id, user.firstName, user.lastName, user.email, user.avatarURL, user.roles)
     val dbLoginInfo = DBLoginInfo(None, user.loginInfo.providerID, user.loginInfo.providerKey)
     // We don't have the LoginInfo id so we try to get it first.
     // If there is no LoginInfo yet for this user we retrieve the id on insertion.    

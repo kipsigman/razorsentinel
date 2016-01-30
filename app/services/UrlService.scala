@@ -15,20 +15,7 @@ import play.api.libs.ws.WSClient
 
 @Singleton
 class UrlService @Inject() (ws: WSClient) {
-
-  val HttpProtocol = "http://"
-
-  // Regex
-  val UrlRegex: Regex = """(https?|ftp|file|mailto)://[-A-Za-z0-9+&@#/%?=~_|!:,.;\{\}]*[-A-Za-z0-9+&@#/%=~_|\{\}]""".r
-  val UrlMatchRegex: Regex = ("^" + UrlRegex.toString + "$").r
-
-  def absoluteUrl(request: RequestHeader, relativeUrl: String): String = {
-    HttpProtocol + request.host + relativeUrl
-  }
-
-  def isValidUrl(url: String): Boolean = {
-    UrlMatchRegex.findFirstMatchIn(url).isDefined
-  }
+  def absoluteUrl(request: RequestHeader, relativeUrl: String): String = UrlService.absoluteUrl(request, relativeUrl) 
 
   /**
    * Shortens a URL using a third party URL shortener.
@@ -43,9 +30,25 @@ class UrlService @Inject() (ws: WSClient) {
     })
     shortUrlFuture
   }
+  
+}
 
+object UrlService {
+  val HttpProtocol = "http://"
+
+  // Regex
+  val UrlRegex: Regex = """(https?|ftp|file|mailto)://[-A-Za-z0-9+&@#/%?=~_|!:,.;\{\}]*[-A-Za-z0-9+&@#/%=~_|\{\}]""".r
+  val UrlMatchRegex: Regex = ("^" + UrlRegex.toString + "$").r
+
+  def absoluteUrl(request: RequestHeader, relativeUrl: String): String = {
+    HttpProtocol + request.host + relativeUrl
+  }
+
+  def isValidUrl(url: String): Boolean = {
+    UrlMatchRegex.findFirstMatchIn(url).isDefined
+  }
+  
   def urlDecode(url: String) = URLDecoder.decode(url, "UTF-8")
 
   def urlEncode(url: String) = URLEncoder.encode(url, "UTF-8")
-
 }

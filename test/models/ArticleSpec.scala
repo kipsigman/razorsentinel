@@ -14,7 +14,7 @@ class ArticleSpec extends Specification {
       val headline = "{city} - {firstname} {lastname} is the worst bowler."
       val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
       val articleTemplate = ArticleTemplate(Option(1), headline, body)
-      val article = Article(Option(88), articleTemplate.id.get, None, false).
+      val article = Article(Option(88), None, articleTemplate.id.get, None, false).
         addTagReplacement(TagReplacement("{firstname}", "Kip")).
         addTagReplacement(TagReplacement("{lastname}", "Sigman"))
 
@@ -22,7 +22,7 @@ class ArticleSpec extends Specification {
 
       val completeArticle = article.addTagReplacement(TagReplacement("{city}", "Santa Barbara"))
       val inflatedArticle = ArticleInflated(completeArticle, articleTemplate)
-      inflatedArticle.relativeUrl must equalTo("/articles/santa-barbara-kip-sigman-is-the-worst-bowler-88")
+      inflatedArticle.relativeUrl must equalTo("/articles/88-santa-barbara-kip-sigman-is-the-worst-bowler")
     }
   }
 

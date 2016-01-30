@@ -32,9 +32,12 @@ import play.api.i18n.Messages
 import play.api.i18n.MessagesApi
 import play.api.mvc.Action
 
-import models.User
-import services.UserService
+import models.auth.User
+import services.auth.UserService
 
+/**
+ * Controller for Authentication/Authorization flows: Login, Logout, Sign-up, User permissions
+ */
 @Singleton
 class AuthController @Inject() (
   messagesApi: MessagesApi,
@@ -118,9 +121,9 @@ class AuthController @Inject() (
             val user = User(
               None,
               loginInfo = loginInfo,
-              firstName = Some(data.firstName),
-              lastName = Some(data.lastName),
-              email = Some(data.email),
+              firstName = Option(data.firstName),
+              lastName = Option(data.lastName),
+              email = data.email,
               avatarURL = None
             )
             for {

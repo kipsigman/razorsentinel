@@ -21,12 +21,19 @@ $(document).ready(function() {
             // $('#articleId').val(data.articleId);
             if (response.status == "PUBLISH") {
                 // Set article URL in div
-                $('#articleUrl')[0].value = response.url;
+                $('#articleUrl').attr("href", response.url);
                 $('#shareArticleDraft').hide();
                 $('#shareArticlePublish').show();
             }
         }
     });
-    $('#shareArticleDraft').show();
-    $('#shareArticlePublish').hide();
+    
+    // Initialize sharing
+    if ($('#publish')[0].value == "true") {
+        $('#shareArticleDraft').hide();
+        $('#shareArticlePublish').show();
+    } else {
+      $('#shareArticleDraft').show();
+      $('#shareArticlePublish').hide();
+    }
 });

@@ -16,6 +16,7 @@ import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 
 import models._
+import models.auth.User
 
 trait NewsDBConfig extends NewsTableDefinitions with HasDatabaseConfig[JdbcProfile] {
   protected val dbConfig: DatabaseConfig[JdbcProfile]
@@ -39,6 +40,7 @@ class NewsRepositorySlick @Inject() (dbConfigProvider: DatabaseConfigProvider)(i
         case ep =>
           Article(
             ep.id,
+            ep.userId,
             ep.articleTemplateId,
             ep.tagReplacements,
             ep.publish)
@@ -47,13 +49,17 @@ class NewsRepositorySlick @Inject() (dbConfigProvider: DatabaseConfigProvider)(i
   }
   
   override def findArticleBySeoAlias(seoAlias: String): Future[Option[Article]] = {
-    // /article/some-seo-alias-path-with-an-id-at-the-end-99
-    val lastDash = seoAlias.lastIndexOf('-')
+    // /article/99-some-seo-alias-path-prefixed-with-an-id
+    val firstDash = seoAlias.indexOf('-')
     try {
-      val id = seoAlias.substring(lastDash+1).toInt
+      val id: Int = firstDash match {
+        case -1 => seoAlias.toInt
+        case x if(x > 0) => seoAlias.substring(0, firstDash).toInt
+        case x => throw new IllegalArgumentException(s"$seoAlias is an invalid article path")
+      }
       findArticleById(id)  
     } catch {
-      case _ : Throwable => Future.successful(None)
+      case t : Throwable => Future.failed(t)
     }
   }
   
@@ -67,6 +73,16 @@ class NewsRepositorySlick @Inject() (dbConfigProvider: DatabaseConfigProvider)(i
         case _ => None
       }
     }
+  }
+  
+  override def findArticlesByUser(user: User): Future[Seq[ArticleInflated]] = {
+    val filteredSortedArticleQuery = articleQuery.filter(_.userId === user.id).sortBy(_.id.asc)
+    val q = for {
+      a <- filteredSortedArticleQuery
+      at <- articleTemplateQuery if a.articleTemplateId === at.id
+    } yield (a, at)
+    
+    db.run(q.result).map(_.map(ax => ArticleInflated(ax._1, ax._2)))
   }
 
   override def saveArticle(entity: Article): Future[Article] = {

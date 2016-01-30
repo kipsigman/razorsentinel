@@ -2,6 +2,8 @@ package models
 
 import scala.concurrent.Future
 
+import models.auth.User
+
 trait NewsRepository {
 
   def findArticleById(id: Int): Future[Option[Article]]
@@ -9,6 +11,8 @@ trait NewsRepository {
   def findArticleBySeoAlias(seoAlias: String): Future[Option[Article]]
 
   def findArticleInflatedById(id: Int): Future[Option[ArticleInflated]]
+  
+  def findArticlesByUser(user: User): Future[Seq[ArticleInflated]]
 
   def saveArticle(entity: Article): Future[Article]
 

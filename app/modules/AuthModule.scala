@@ -39,13 +39,17 @@ import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 import play.api.Configuration
 import play.api.libs.ws.WSClient
 
-import models.User
-import models.UserRepository
-import models.slick.PasswordInfoRepositorySlick
-import models.slick.UserRepositorySlick
-import services.UserService
+import models.auth.User
+import models.auth.UserRepository
+import models.auth.slick.PasswordInfoRepositorySlick
+import models.auth.slick.UserRepositorySlick
+import services.auth.UserService
 
-class SilhouetteModule(
+/**
+ * Module for all Auth/User dependencies. 
+ * Auth implemented with Silhouette: http://silhouette.mohiva.com/.
+ */
+class AuthModule(
     environment: play.api.Environment,
     configuration: Configuration) extends AbstractModule {
   

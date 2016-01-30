@@ -20,7 +20,8 @@ import play.api.mvc.Action
 
 import models.ArticleTemplate
 import models.NewsRepository
-import models.User
+import models.auth.Role
+import models.auth.User
 
 @Singleton
 class ArticleTemplateController @Inject() (
@@ -36,18 +37,18 @@ class ArticleTemplateController @Inject() (
     )(ArticleTemplate.apply)(ArticleTemplate.unapply)
   )
 
-  def list = SecuredAction.async { implicit request =>
+  def list = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
     newsRepository.findArticleTemplates.map(articleTemplates =>
       Ok(views.html.articleTemplate.list(articleTemplates))
     )
   }
 
-  def create = SecuredAction { implicit request =>
+  def create = SecuredAction(WithRole(Role.Editor)) { implicit request =>
     val theForm = form.fill(ArticleTemplate())
     Ok(views.html.articleTemplate.edit(theForm))
   }
 
-  def edit(id: Int) = SecuredAction.async { implicit request =>
+  def edit(id: Int) = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
     for {
       articleTemplateOption <- newsRepository.findArticleTemplateById(id)
     } yield {
@@ -58,7 +59,7 @@ class ArticleTemplateController @Inject() (
     }
   }
 
-  def show(id: Int) = SecuredAction.async { implicit request =>
+  def show(id: Int) = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
     for {
       articleTemplateOption <- newsRepository.findArticleTemplateById(id)
     } yield {
@@ -69,7 +70,7 @@ class ArticleTemplateController @Inject() (
     }
   }
 
-  def save = SecuredAction.async { implicit request =>
+  def save = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
     form.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.articleTemplate.edit(formWithErrors))),
       articleTemplate => {

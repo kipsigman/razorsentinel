@@ -1,4 +1,4 @@
-package models
+package models.auth
 
 import scala.concurrent.Future
 

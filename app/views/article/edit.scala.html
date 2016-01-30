@@ -1,0 +1,32 @@
+@(article: ArticleInflated)(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
+
+@import services.UrlService
+
+@cssIncludes = {
+<link href="@routes.Assets.at("stylesheets/bootstrap-editable.css")" rel="stylesheet">
+}
+
+@jsIncludes = {
+<script src="@routes.Assets.at("javascripts/bootstrap-editable.min.js")"></script>
+<script src="@routes.Assets.at("javascripts/article.js")"></script>
+}
+
+@main(Messages("article.edit"), cssIncludes, jsIncludes) {
+  
+  <input id="articleId" type="hidden" name="articleId" value="@article.id" />
+  <input id="articleTemplateId" type="hidden" name="articleTemplateId" value="@article.articleTemplate.id" />
+  <input id="publish" type="hidden" name="publish" value="@article.publish" />
+  <h4>@Html(article.headlineInlineEditHtml)</h4>
+  @Html(article.bodyInlineEditHtml)
+  <p>
+    <br/><br/>
+    <div id="shareArticleDraft">
+      <h4>@Messages("article.edit.share")</h4>
+      <span class="text-error">@Messages("article.edit.description")</span>
+    </div>
+    <div id="shareArticlePublish" class="form-group">
+      <h4>@Messages("article.edit.share")</h4>
+      <a id="articleUrl" href="@routes.ArticleController.show(article.seoAlias)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-sunglasses"></span></a>
+    </div>
+  </p>
+}

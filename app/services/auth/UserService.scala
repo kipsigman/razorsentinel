@@ -1,17 +1,18 @@
-package services
+package services.auth
 
 import javax.inject.Inject
 import javax.inject.Singleton
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
-import models.User
-import models.UserRepository
 
-import scala.concurrent.Future
+import models.auth.Role
+import models.auth.User
+import models.auth.UserRepository
 
 @Singleton
 class UserService @Inject() (userRepository: UserRepository)(implicit ec: ExecutionContext) extends IdentityService[User] {
@@ -46,7 +47,7 @@ class UserService @Inject() (userRepository: UserRepository)(implicit ec: Execut
         userRepository.save(user.copy(
           firstName = profile.firstName,
           lastName = profile.lastName,
-          email = profile.email,
+          email = profile.email.getOrElse(user.email),
           avatarURL = profile.avatarURL
         ))
       case None => // Insert a new user
@@ -55,7 +56,7 @@ class UserService @Inject() (userRepository: UserRepository)(implicit ec: Execut
           loginInfo = profile.loginInfo,
           firstName = profile.firstName,
           lastName = profile.lastName,
-          email = profile.email,
+          email = profile.email.get, // Assume this is required
           avatarURL = profile.avatarURL
         ))
     }

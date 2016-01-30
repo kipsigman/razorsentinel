@@ -1,6 +1,8 @@
-package models.slick
+package models.auth.slick
 
-import models._
+import models.IdEntity
+import models.auth._
+import models.slick.TableDefinitions
 
 trait SilhoutteTableDefinitions extends TableDefinitions {
 
@@ -10,16 +12,29 @@ trait SilhoutteTableDefinitions extends TableDefinitions {
     id: Option[Int],
     firstName: Option[String],
     lastName: Option[String],
-    email: Option[String],
-    avatarURL: Option[String]
+    email: String,
+    avatarURL: Option[String],
+    roles: Set[Role]
   ) extends IdEntity
   
   class DBUserTable(tag: Tag) extends IdTable[DBUser](tag, "user") {
     def firstName = column[Option[String]]("first_name")
     def lastName = column[Option[String]]("last_name")
-    def email = column[Option[String]]("email")
+    def email = column[String]("email")
     def avatarURL = column[Option[String]]("avatar_url")
-    def * = (id.?, firstName, lastName, email, avatarURL) <> (DBUser.tupled, DBUser.unapply)
+    def roles = column[Set[Role]]("roles")
+    
+    implicit val rolesTypeMapper = MappedColumnType.base[Set[Role], String](
+      {roleSet => roleSet.map(_.name).mkString(",")},
+      {str => 
+        if (str.isEmpty())
+          Set[Role]()
+        else
+          str.split(",").map(Role(_)).toSet
+      }
+    )
+    
+    def * = (id.?, firstName, lastName, email, avatarURL, roles) <> (DBUser.tupled, DBUser.unapply)
   }
 
   case class DBLoginInfo(

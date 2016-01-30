@@ -1,6 +1,21 @@
-@(articleInflated: ArticleInflated)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(article: ArticleInflated)(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
 
-@main(articleInflated.headline) {
-  <h3>@articleInflated.headline</h3>
-  @Html(articleInflated.body)
+@import services.UrlService
+
+@main(article.headline) {
+@Html(article.body)
+<div class="row">
+  <div class="col-md-4">
+	<table class="table">
+	  <tr>
+	    <td><a id="articleUrl" href="@routes.ArticleController.show(article.seoAlias)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-sunglasses"></span></a></td>
+	    <td>
+	    <div class="fb-share-button" data-href="@UrlService.absoluteUrl(request, article.relativeUrl)" data-layout="button_count"></div>
+	    </td>
+	    <td><a id="twitterShare" href="https://twitter.com/share" class="twitter-share-button" data-url="@UrlService.absoluteUrl(request, article.relativeUrl)" data-text="Check out this article">Tweet</a></td>
+	  </tr>
+	</table>  
+  </div>
+  <div class="col-md-8"></div>
+</div>
 }

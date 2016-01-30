@@ -1,7 +1,5 @@
-@(articleTemplates: Seq[ArticleTemplate])(implicit request: RequestHeader, messages: Messages, user: User)
+@(articleTemplates: Seq[ArticleTemplate])(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
 @mainSecured(Messages("section.admin.articleTemplates")) {
-  <h2>@Messages("section.admin.articleTemplates")</h2>
-  
   <table class="table table-striped table-hover">
     <thead>
       <tr>

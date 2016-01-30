@@ -1,6 +1,6 @@
-@()(implicit request: RequestHeader, messages: Messages, user: User)
+@()(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
 
-@mainSecured(Messages("home.title")) {
+@mainSecured(Messages("section.user")) {
     <div class="user col-md-6 col-md-offset-3">
         <div class="row">
             <hr class="col-md-12" />
@@ -18,7 +18,17 @@
                     <p class="col-md-6"><strong>@Messages("user.last.name"):</strong></p><p class="col-md-6">@user.lastName.getOrElse("None")</p>
                 </div>
                 <div class="row">
-                    <p class="col-md-6"><strong>@Messages("user.email"):</strong></p><p class="col-md-6">@user.email.getOrElse("None")</p>
+                    <p class="col-md-6"><strong>@Messages("user.email"):</strong></p><p class="col-md-6">@user.email</p>
+                </div>
+                <div class="row">
+                    <p class="col-md-6"><strong>@Messages("user.roles"):</strong></p>
+                    <p class="col-md-6">
+                    <ul>
+					@for(role <- user.roles) {
+					  <li>@role.name</li>
+					}
+					</ul>
+                    </p>
                 </div>
             </div>
         </div>

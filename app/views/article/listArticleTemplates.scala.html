@@ -1,7 +1,5 @@
-@(articleTemplates: Seq[ArticleTemplate])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(articleTemplates: Seq[ArticleTemplate])(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
 @main(Messages("section.articles")) {
-  <h2>@Messages("section.articles")</h2>
-  
   <table class="table table-striped table-hover">
     <!-- 
     <thead>

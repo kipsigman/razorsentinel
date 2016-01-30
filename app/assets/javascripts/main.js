@@ -1,31 +1,33 @@
-var NEWS = NEWS || {};
-NEWS.forms = {
-    /**
-     * Function to populate options for a secondary select depending on the primary value.
-     */
-    dependentSelect: function(primarySelector, secondarySelector, getUrl) {
-        "use strict";
-        var primarySelect = $(primarySelector);
-        var secondarySelect = $(secondarySelector);
-        primarySelect.change(function() {
-            var primarySelectVal = primarySelect.val();
-            if (primarySelectVal && primarySelectVal !== "") {
-                $.ajax({
-                    type: "GET",
-                    dataType: "json",
-                    url: getUrl(primarySelectVal),
-                    success: function (data) {
-                        // Add Select Options
-                        secondarySelect.empty();
-                        $.each(data, function (i, selectOption) {
-                            secondarySelect.append($('<option>', selectOption));
-                        });
-                    }
-                });
-            } else {
-                // Empty select options as no primary option is selected
-                secondarySelect.empty();
-            }
-        });
-    }
+// Facebook
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '1526906210972841',
+    xfbml      : true,
+    version    : 'v2.5'
+  });
 };
+(function(d, s, id){
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+// Twitter
+window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+ 
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+ 
+  return t;
+}(document, "script", "twitter-wjs"));

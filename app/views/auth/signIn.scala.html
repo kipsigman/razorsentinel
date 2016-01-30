@@ -1,4 +1,4 @@
-@(signInForm: Form[controllers.SignInForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(signInForm: Form[controllers.SignInForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
 
 @import com.mohiva.play.silhouette.impl.providers.oauth2.ClefProvider
 @import b3.inline.fieldConstructor
