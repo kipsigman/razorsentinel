@@ -15,7 +15,9 @@ import play.api.libs.ws.WSClient
 
 @Singleton
 class UrlService @Inject() (ws: WSClient) {
-  def absoluteUrl(request: RequestHeader, relativeUrl: String): String = UrlService.absoluteUrl(request, relativeUrl) 
+  def absoluteUrl(request: RequestHeader, relativeUrl: String): String = UrlService.absoluteUrl(request, relativeUrl)
+  
+  def isValidUrl(url: String): Boolean = UrlService.isValidUrl(url)
 
   /**
    * Shortens a URL using a third party URL shortener.
@@ -30,6 +32,10 @@ class UrlService @Inject() (ws: WSClient) {
     })
     shortUrlFuture
   }
+  
+  def urlDecode(url: String): String = UrlService.urlDecode(url)
+
+  def urlEncode(url: String): String = UrlService.urlEncode(url)
   
 }
 
@@ -48,7 +54,7 @@ object UrlService {
     UrlMatchRegex.findFirstMatchIn(url).isDefined
   }
   
-  def urlDecode(url: String) = URLDecoder.decode(url, "UTF-8")
+  def urlDecode(url: String): String = URLDecoder.decode(url, "UTF-8")
 
-  def urlEncode(url: String) = URLEncoder.encode(url, "UTF-8")
+  def urlEncode(url: String): String = URLEncoder.encode(url, "UTF-8")
 }

@@ -10,7 +10,7 @@ import play.api.test.Helpers._
  * @author kip
  */
 @RunWith(classOf[JUnitRunner])
-class TagContentSpec extends Specification {
+class TagContentSpec extends Specification with TestData {
 
   "TagReplacement.replace" should {
     "replace repeated tags in text" in {

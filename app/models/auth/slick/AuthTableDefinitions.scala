@@ -4,7 +4,7 @@ import models.IdEntity
 import models.auth._
 import models.slick.TableDefinitions
 
-trait SilhoutteTableDefinitions extends TableDefinitions {
+trait AuthTableDefinitions extends TableDefinitions {
 
   import driver.api._
   

@@ -1,0 +1,17 @@
+@import models.ContentEntity.Status
+@(status: Status)(implicit messages: Messages)
+
+@status match {
+  case Status.Deleted => {
+    <span class="glyphicon glyphicon-trash" title="@Messages("content.status.deleted")"></span>
+  }
+  case Status.Draft => {
+    <span class="glyphicon glyphicon-edit" title="@Messages("content.status.draft")"></span>
+  }
+  case Status.Public => {
+    <span class="glyphicon glyphicon-globe" title="@Messages("content.status.public")"></span>
+  }
+  case Status.Unlisted => {
+    <span class="glyphicon glyphicon-eye-open" title="@Messages("content.status.published")"></span>
+  }
+}

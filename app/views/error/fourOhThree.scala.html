@@ -1,5 +1,6 @@
-@()(implicit request: RequestHeader, messages: Messages)
+@(message: Option[String] = None)(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
 
-@mainError(Messages("error.http.403")) {
-  <p>@Messages("error.http.403.description")</p>
+@main(Messages("error.http.403")) {
+  @Messages("error.http.403.description")
+  @message.getOrElse("")
 }

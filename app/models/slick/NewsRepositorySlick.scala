@@ -16,6 +16,7 @@ import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 
 import models._
+import models.auth.UnauthorizedOperationException
 import models.auth.User
 
 trait NewsDBConfig extends NewsTableDefinitions with HasDatabaseConfig[JdbcProfile] {
@@ -23,12 +24,29 @@ trait NewsDBConfig extends NewsTableDefinitions with HasDatabaseConfig[JdbcProfi
 }
 
 @Singleton()
-class NewsRepositorySlick @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends NewsRepository with NewsDBConfig {
+class NewsRepositorySlick @Inject() (
+  dbConfigProvider: DatabaseConfigProvider)
+  (implicit ec: ExecutionContext) extends NewsRepository with NewsDBConfig {
+  
   import driver.api._
   
   protected val logger = Logger(getClass)
   
   override protected val dbConfig: DatabaseConfig[JdbcProfile] = dbConfigProvider.get[JdbcProfile]
+  
+  override def deleteArticle(id: Int)(implicit userOption: Option[User]): Future[Option[Article]] = {
+    findArticleById(id) flatMap {
+      case Some(article) => {
+        if (article.canEdit(userOption)) {
+          val deletedArticle = article.delete
+          saveArticle(deletedArticle).map(Option(_))
+        } else {
+          Future.failed(new UnauthorizedOperationException("User does not own this Article"))
+        }
+      }
+      case None => Future.successful(None)
+    }
+  }
   
   override def findArticleById(id: Int): Future[Option[Article]] = {
     val query = for {
@@ -42,24 +60,9 @@ class NewsRepositorySlick @Inject() (dbConfigProvider: DatabaseConfigProvider)(i
             ep.id,
             ep.userId,
             ep.articleTemplateId,
-            ep.tagReplacements,
-            ep.publish)
+            ep.status,
+            ep.tagReplacements)
       }
-    }
-  }
-  
-  override def findArticleBySeoAlias(seoAlias: String): Future[Option[Article]] = {
-    // /article/99-some-seo-alias-path-prefixed-with-an-id
-    val firstDash = seoAlias.indexOf('-')
-    try {
-      val id: Int = firstDash match {
-        case -1 => seoAlias.toInt
-        case x if(x > 0) => seoAlias.substring(0, firstDash).toInt
-        case x => throw new IllegalArgumentException(s"$seoAlias is an invalid article path")
-      }
-      findArticleById(id)  
-    } catch {
-      case t : Throwable => Future.failed(t)
     }
   }
   
@@ -76,37 +79,55 @@ class NewsRepositorySlick @Inject() (dbConfigProvider: DatabaseConfigProvider)(i
   }
   
   override def findArticlesByUser(user: User): Future[Seq[ArticleInflated]] = {
-    val filteredSortedArticleQuery = articleQuery.filter(_.userId === user.id).sortBy(_.id.asc)
+    val filteredSortedArticleQuery = articleQuery.
+      filter(_.userId === user.id).
+      sortBy(_.id.asc)
     val q = for {
       a <- filteredSortedArticleQuery
       at <- articleTemplateQuery if a.articleTemplateId === at.id
     } yield (a, at)
     
-    db.run(q.result).map(_.map(ax => ArticleInflated(ax._1, ax._2)))
+    // TODO: Filter should be in query
+    db.run(q.result).map(_.filter(ax => ax._1.status != ContentEntity.Status.Deleted).map(ax => ArticleInflated(ax._1, ax._2)))
   }
-
-  override def saveArticle(entity: Article): Future[Article] = {
-    logger.debug(s"saveArticle $entity")
-    if (entity.id.isDefined) {
-      db.run(articleQuery.filter(_.id === entity.id.get).update(entity)).map(_ => entity)
+  
+  override def saveArticle(entity: Article)(implicit userOption: Option[User]): Future[Article] = {
+    if (entity.canEdit(userOption)) {
+      if (entity.isPersisted) {
+        db.run(articleQuery.filter(_.id === entity.id.get).update(entity)).map(_ => entity)
+      } else {
+        db.run((articleQuery returning articleQuery.map(_.id)) += entity).map(id => {
+          val savedEntity = entity.copy(id = Some(id))
+          logger.debug(s"saveArticle savedEntity=$savedEntity")
+          savedEntity
+        })
+      }
     } else {
-      db.run((articleQuery returning articleQuery.map(_.id)) += entity).map(id => {
-        val savedEntity = entity.copy(id = Some(id))
-        logger.debug(s"saveArticle savedEntity=$savedEntity")
-        savedEntity
-      })
+      Future.failed(new UnauthorizedOperationException("User does not own this Article"))
     }
   }
   
-  override def addTagReplacement(articleId: Int, tagReplacement: TagReplacement): Future[ArticleInflated] = {
-    findArticleInflatedById(articleId) flatMap {
+  override def addTagReplacement(id: Int, tagReplacement: TagReplacement)(implicit userOption: Option[User]): Future[ArticleInflated] = {
+    findArticleInflatedById(id) flatMap {
       case Some(articleInflated) => {
         val updatedArticleInflated = articleInflated.addTagReplacement(tagReplacement)
         saveArticle(updatedArticleInflated.article).map(savedArticle =>
           updatedArticleInflated.copy(article = savedArticle)
         )
       }
-      case None => Future.failed(new RuntimeException(s"Article $articleId not found"))
+      case None => Future.failed(new RuntimeException(s"Article $id not found"))
+    }
+  }
+  
+  override def updateArticleStatus(id: Int, status: ContentEntity.Status)(implicit userOption: Option[User]): Future[ArticleInflated] = {
+    findArticleInflatedById(id) flatMap {
+      case Some(articleInflated) => {
+        val updatedArticle = articleInflated.article.updateStatus(status)
+        saveArticle(updatedArticle).map(savedArticle =>
+          articleInflated.copy(article = savedArticle)
+        )
+      }
+      case None => Future.failed(new RuntimeException(s"Article $id not found"))
     }
   }
 
@@ -120,20 +141,25 @@ class NewsRepositorySlick @Inject() (dbConfigProvider: DatabaseConfigProvider)(i
         case e =>
           ArticleTemplate(
             e.id,
+            e.categories,
             e.headline,
             e.body)
       }
     }
   }
   
-  override def findArticleTemplates: Future[Seq[ArticleTemplate]] = {
+  override def findArticleTemplates(categoryOption: Option[Category] = None): Future[Seq[ArticleTemplate]] = {
     val filteredQuery = articleTemplateQuery
     val sortedQuery = filteredQuery.sortBy(_.headline.asc)
-    db.run(sortedQuery.result)
+    val all = db.run(sortedQuery.result)
+    categoryOption match {
+      case Some(category) => all.map(articleTemplates => articleTemplates.filter(at => at.hasCategory(category))) 
+      case None => all
+    }
   }
 
-  override def saveArticleTemplate(entity: ArticleTemplate): Future[ArticleTemplate] = {
-    if (entity.id.isDefined) {
+  override def saveArticleTemplate(entity: ArticleTemplate)(implicit userOption: Option[User]): Future[ArticleTemplate] = {
+    if (entity.isPersisted) {
       db.run(articleTemplateQuery.filter(_.id === entity.id.get).update(entity)).map(_ => entity)
     } else {
       db.run((articleTemplateQuery returning articleQuery.map(_.id)) += entity).map(id => {

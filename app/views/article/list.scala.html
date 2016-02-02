@@ -1,25 +1,33 @@
 @(articles: Seq[ArticleInflated])(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
-@mainSecured(Messages("section.articles.my")) {
+
+@import models.ContentEntity.Status
+
+@mainSecured(Messages("nav.articles")) {
   <table class="table table-striped table-hover">
+@*********************
     <thead>
       <tr>
-        <th>@Messages("article.id")</th>
-        <th>@Messages("article.templateId")</th>
         <th>@Messages("article.headline")</th>
+        <th>@Messages("content.status")</th>
         <th></th>
       </tr>
     </thead>
+*********************@
     <tbody>
     @for(article <- articles) {
       <tr>
-        <td>@article.id</td>
-        <td>@article.articleTemplate.id</td>
         <td>@article.headline</td>
+        <td>@tags.contentEntityStatus(article.status)</td>
         <td>
-        @if(article.publish) {
-          <a href="@routes.ArticleController.show(article.id.get.toString)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-sunglasses"></span></a>
+        @if(article.canPublish) {
+          @if(article.isPublished) {
+          <a href="@routes.ArticleController.preview(article.id.get)" class="btn btn-info btn-sm" target="_blank">@Messages("action.view")</a>	
+          } else {
+          <a href="@routes.ArticleController.preview(article.id.get)" class="btn btn-info btn-sm" target="_blank">@Messages("action.preview")</a>
+          }          
         }
-          <a href="@routes.ArticleController.edit(article.id.get)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a>
+          <a href="@routes.ArticleController.edit(article.id.get)" class="btn btn-warning btn-sm">@Messages("action.edit")</a>
+          <a href="@routes.ArticleController.delete(article.id.get)" class="btn btn-danger btn-sm">@Messages("action.delete")</a>
         </td>
       </tr>
     }

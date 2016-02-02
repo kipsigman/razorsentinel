@@ -1,6 +1,9 @@
+import com.typesafe.sbt.packager.docker._
 import scalariform.formatter.preferences._
 
 name := "news"
+
+organization := "kipsigman"
 
 version := "0.2.0"
 
@@ -18,6 +21,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "2.2.0",
   "org.webjars" % "bootstrap" % "3.3.6",
   "com.adrianhurt" %% "play-bootstrap3" % "0.4.5-P24",
+  "org.julienrf" %% "play-jsmessages" % "2.0.0",
   specs2 % Test,
   "org.mockito" % "mockito-core" % "1.10.19" % "test",
   "com.mohiva" %% "play-silhouette-testkit" % "3.0.4" % "test"
@@ -52,3 +56,40 @@ pipelineStages := Seq(digest, gzip)
 sources in (Compile,doc) := Seq.empty
 
 publishArtifact in (Compile, packageDoc) := false
+
+// Docker
+maintainer in Docker := "Kip Sigman <kip.sigman@gmail.com>"
+
+dockerExposedPorts := Seq(9000)
+
+dockerBaseImage := "java/openjdk-8-jdk"
+
+// Elastic Beanstalk tasks
+lazy val elasticBeanstalkStage = taskKey[Unit]("Create a local directory with all the files for an AWS Elastic Beanstalk Docker distribution.")
+
+elasticBeanstalkStage := {
+  // Depends on docker:stage
+  val dockerStageValue = (stage in Docker).value
+  
+  // Copy Elastic Beanstalk Dockerrun.aws.json configuration file to Docker target directory
+  val elasticBeanstalkSource = baseDirectory.value / "elastic-beanstalk"
+  IO.copyDirectory(elasticBeanstalkSource, dockerStageValue, true)
+}
+
+lazy val elasticBeanstalkDist = taskKey[File]("Creates a zip for an AWS Elastic Beanstalk Docker distribution")
+
+elasticBeanstalkDist := {
+  val log = streams.value.log
+  
+  // Depends on elasticBeanstalkStage
+  val stageValue = elasticBeanstalkStage.value
+  
+  // Zip Docker target
+  val dockerStagingDirectory: File = (stagingDirectory in Docker).value
+  
+  val zipFile: File = (target.value) / s"${name.value}-${version.value}-elastic-beanstalk.zip"
+  log.info(s"Zipping $dockerStagingDirectory to $zipFile")
+  Process(s"zip -r $zipFile .", dockerStagingDirectory) !!
+  
+  zipFile
+}

@@ -1,26 +1,23 @@
-@(signInForm: Form[controllers.SignInForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
+@(form: Form[controllers.SignInForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
 
-@import com.mohiva.play.silhouette.impl.providers.oauth2.ClefProvider
-@import b3.inline.fieldConstructor
+@import b3.vertical.fieldConstructor
 
-@main(Messages("sign.in")) {
-    <fieldset class="col-md-6 col-md-offset-3">
-        <legend>@Messages("sign.in.description")</legend>
-        @helper.form(action = routes.AuthController.signInPost()) {
-            @helper.CSRF.formField
-            @b3.email(signInForm("email"), '_hiddenLabel -> Messages("user.email"), 'placeholder -> Messages("user.email"), 'class -> "form-control input-lg")
-            @b3.password(signInForm("password"), '_hiddenLabel -> Messages("user.password"), 'placeholder -> Messages("user.password"), 'class -> "form-control input-lg")
-            @b3.checkbox(signInForm("rememberMe"), '_text -> Messages("remember.me"), 'checked -> true)
-            <div class="form-group">
-                <div>
-                    <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">@Messages("sign.in")</button>
-                </div>
-            </div>
-        }
-
-        <div>
-            <p class="not-a-member">@Messages("not.a.member") <a href="@routes.AuthController.signUp">@Messages("sign.up.now")</a></p>
-        </div>
-
-    </fieldset>
+@main(Messages("auth.sign.in")) {
+<div class="row">
+  <div class="col-md-6">
+  @b3.form(helper.CSRF(routes.AuthController.signInPost())) {
+    @b3.email(form("email"), '_hiddenLabel -> Messages("user.email"), 'placeholder -> Messages("user.email"))
+    @b3.password(form("password"), '_hiddenLabel -> Messages("user.password"), 'placeholder -> Messages("user.password"))
+    @b3.checkbox(form("rememberMe"), '_text -> Messages("auth.remember.me"), 'checked -> true)
+    @tags.submitAndCancel(Some(Messages("auth.sign.in")), routes.AppController.index())
+  }
+  </div>
+  <div class="col-md-6">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+	@Messages("auth.not.a.member") <a href="@routes.AuthController.signUp">@Messages("auth.sign.up")</a>
+  </div>
+</div>
 }

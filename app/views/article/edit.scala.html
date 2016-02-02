@@ -1,32 +1,57 @@
 @(article: ArticleInflated)(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
 
+@import models.ContentEntity.Status
 @import services.UrlService
 
 @cssIncludes = {
-<link href="@routes.Assets.at("stylesheets/bootstrap-editable.css")" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
 }
 
 @jsIncludes = {
-<script src="@routes.Assets.at("javascripts/bootstrap-editable.min.js")"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <script src="@routes.Assets.at("javascripts/article.js")"></script>
 }
 
 @main(Messages("article.edit"), cssIncludes, jsIncludes) {
-  
-  <input id="articleId" type="hidden" name="articleId" value="@article.id" />
-  <input id="articleTemplateId" type="hidden" name="articleTemplateId" value="@article.articleTemplate.id" />
-  <input id="publish" type="hidden" name="publish" value="@article.publish" />
-  <h4>@Html(article.headlineInlineEditHtml)</h4>
-  @Html(article.bodyInlineEditHtml)
-  <p>
-    <br/><br/>
-    <div id="shareArticleDraft">
-      <h4>@Messages("article.edit.share")</h4>
-      <span class="text-error">@Messages("article.edit.description")</span>
+  <div class="row">
+    <div class="col-md-7"><h4>@Html(article.headlineInlineEditHtml)</h4></div>
+    <div class="col-md-1">@tags.contentEntityStatus(article.status)</div>
+    <div class="col-md-4">
+      <form>
+        <input id="articleId" type="hidden" name="id" value="@article.id.get" />
+        <input id="canPublish" type="hidden" name="canPublish" value="@article.canPublish" />
+      </form>
+      <div id="canPublishTrue">
+  @article.status match {
+    case Status.Deleted => {@* Included for exhaustive match, Deleted articles aren't editable *@}
+    case Status.Draft => {
+    	<a href="@routes.ArticleController.preview(article.id.get)" class="btn btn-info btn-sm" target="_blank">@Messages("action.preview")</a>
+        <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Unlisted)" class="btn btn-warning btn-sm">@Messages("content.status.publish")</a>
+      @if(user.isDefined && user.get.isEditor) {  
+        <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Public)" class="btn btn-warning btn-sm">@Messages("content.status.publishPublic")</a>
+      }
+    }
+    case Status.Public => {
+    	<a href="@routes.ArticleController.preview(article.id.get)" class="btn btn-info btn-sm" target="_blank">@Messages("action.view")</a>
+        <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Draft)" class="btn btn-warning btn-sm">@Messages("content.status.revertToDraft")</a>
+        <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Unlisted)" class="btn btn-warning btn-sm">@Messages("content.status.publishUnlisted")</a>
+    }
+    case Status.Unlisted => {
+    	<a href="@routes.ArticleController.preview(article.id.get)" class="btn btn-info btn-sm" target="_blank">@Messages("action.view")</a>
+        <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Draft)" class="btn btn-warning btn-sm">@Messages("content.status.revertToDraft")</a>
+      @if(user.isDefined && user.get.isEditor) {
+        <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Public)" class="btn btn-warning btn-sm">@Messages("content.status.publishPublic")</a>
+      }
+    }
+  }
+      </div>
+      <div id="canPublishFalse"></div>
     </div>
-    <div id="shareArticlePublish" class="form-group">
-      <h4>@Messages("article.edit.share")</h4>
-      <a id="articleUrl" href="@routes.ArticleController.show(article.seoAlias)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-sunglasses"></span></a>
-    </div>
-  </p>
+  </div>
+  <div class="row">
+    <div class="col-md-12">@Html(article.bodyInlineEditHtml)</div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">@Messages("article.edit.description")</div>
+  </div>
 }

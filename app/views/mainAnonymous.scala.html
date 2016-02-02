@@ -1,0 +1,2 @@
+@(title: String, headIncludes: Html = Html(""), jsIncludes: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages)
+@main(title, headIncludes, jsIncludes)(content)(request, messages, None)

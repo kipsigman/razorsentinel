@@ -35,7 +35,14 @@ class ErrorHandler @Inject() (
     implicit val rh = request
     implicit val userOption: Option[User] = None
     
-    Some(Future.successful(Forbidden(views.html.error.fourOhOne())))
+    Some(Future.successful(Unauthorized(views.html.error.fourOhOne())))
+  }
+  
+  override protected def onForbidden(request: RequestHeader, message: String): Future[Result] = {
+    implicit val rh = request
+    implicit val userOption: Option[User] = None
+    
+    Future.successful(Forbidden(views.html.error.fourOhThree()))
   }
   
   override def onNotAuthorized(request: RequestHeader, messages: Messages) = {

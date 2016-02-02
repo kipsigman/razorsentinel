@@ -10,21 +10,66 @@ error.http.404.description=The requested page or resource cannot be found
 error.required=This field is required
 
 # Sections
-section.admin=Admin
-section.admin.articleTemplates=Admin: Article Templates
-section.articles=Articles
-section.articles.my=My Articles
-section.articleTemplates=Templates
-section.home=News
-section.user=User
-navigation.toggle=Toggle navigation
+nav.admin=Admin
+nav.admin.articleTemplates=Admin: Article Templates
+nav.articles=My Articles
+nav.articleTemplates=Templates
+nav.help=Help
+nav.home=News
+nav.toggle=Toggle navigation
+
+# Generic actions
+action.cancel=Cancel
+action.delete=Delete
+action.delete.confirm=Are you sure you want to delete this?
+action.delete.success=Item deleted
+action.edit=Edit
+action.preview=Preview
+action.save=Save
+action.save.success=Item saved
+action.share.email=Email
+action.view=View
+
+# Content
+content.status=Status
+content.status.deleted=Deleted
+content.status.draft=Draft
+content.status.public=Public
+content.status.published=Published
+content.status.unlisted=Unlisted
+content.status.revertToDraft=Revert to Draft
+content.status.publish=Publish
+content.status.publishPublic=Publish Public
+content.status.publishUnlisted=Publish Unlisted
+content.status.save.success=Status updated
+
+category=Category
+categories=Categories
+category.error.invalid=Invalid Category
+category.name.All=All
+category.name.Arts=Arts
+category.name.Business=Business
+category.name.Entertainment=Entertainment
+category.name.Food=Food
+category.name.Health=Health
+category.name.Lifestyle=Lifestyle
+category.name.Local=Local
+category.name.National=National
+category.name.Opinion=Opinion
+category.name.Politics=Politics
+category.name.ScienceTechnology=Science & Technology
+category.name.Sports=Sports
+category.name.Travel=Travel
+category.name.World=World
 
 # Article & Template
 article=Article
 article.body=Body
-article.edit=Create/Edit Article
+article.customize=Customize this article
+article.edit=Edit Article
 article.edit.description=Replace all tags in article headline and body in order to generate a share link for your article.
 article.edit.share=Share
+article.error.unauthorized=You are not authorized to modify this Article.
 article.headline=Headline
 article.id=ID
 article.tagReplacements=Tag Replacements
@@ -32,11 +77,21 @@ article.templateId=Template ID
 
 articleTemplate=Article Template
 articleTemplate.body=Body
+articleTemplate.edit=Edit Template (Editors only)
 articleTemplate.headline=Headline
 articleTemplate.id=ID
-articleTemplate.saved=Article Template saved
 articleTemplate.tags=Tags
 
+# Auth
+auth.sign.in=Sign in
+auth.sign.in.error.invalid=Invalid login credentials
+auth.sign.out=Sign out
+auth.sign.up=Sign up
+auth.already.a.member=Already a member?
+auth.not.a.member=Not a member?
+auth.remember.me=Remember my login on this computer
+auth.or.use.social=Or use your existing account on one of the following services to sign in:
+auth.access.denied=Access denied
 # User
 user.error.exists=There already exists a user with this email
 user.first.name=First name
@@ -44,18 +99,4 @@ user.last.name=Last name
 user.email=Email
 user.password=Password
 user.roles=Roles
-
-# Auth
-sign.in=Sign in
-sign.in.description=Sign in with email and password
-sign.in.error.invalid=Invalid login credentials
-sign.in.now=Sign in now
-sign.out=Sign out
-sign.up=Sign up
-sign.up.description=Sign up for a new user account
-sign.up.now = Sign up now
-already.a.member = Already a member?
-not.a.member = Not a member?
-remember.me = Remember my login on this computer
-or.use.social = Or use your existing account on one of the following services to sign in:
-access.denied=Access denied
+user.settings=Settings

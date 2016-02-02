@@ -1,13 +1,25 @@
 package models
 
+/**
+ * Inline edit is done with X-editable: https://vitalets.github.io/x-editable/
+ */
 object TagContent {
-  val TagRegex = """\{([\w]*)\}""".r
-
+  private val tagRegex = """\{([\w]*)\}""".r
+  private val neighborTagsRegex = """\}([\s]+)\{""".r
+  
+  def tags(content: String): Set[String] = {
+    tagRegex.findAllIn(content).toSet
+  }
+  
   def inlineEditHtml(content: String, tagReplacementSet: Set[TagReplacement]): String = {
+    // X-editable seems to push neighboring tags with only whitespace separation next to each other when editing.
+    // Replace with forced HTML space
+    val forcedSpaceHtml = neighborTagsRegex.replaceAllIn(content, "}&nbsp;{")
+      
     // Get edit HTML with no replacements
-    val initialEditHtml = TagContent.TagRegex.replaceAllIn(content, tagMatch => inlineEditHtml(tagMatch))
+    val initialEditHtml = tagRegex.replaceAllIn(forcedSpaceHtml, tagMatch => inlineEditHtml(tagMatch))
     
-    // Replace set tags
+    // Replace Default tag values with Replacements
     tagReplacementSet.foldLeft(initialEditHtml)((str, tagReplacement) => {
       tagReplacement.inlineEditReplace(str)
     })
@@ -19,21 +31,27 @@ object TagContent {
 }
 
 case class TagReplacement(tag: String, replacement: String) {
+  
+  // Value placeholder is tag without brackets
+  val placeholderValue = tag.replace("{", "").replace("}", "")
 
   // First escape brackets so regex doesn't think they are special characters
-  val regex = tag.replace("{", "\\{").replace("}", "\\}").r
+  val tagRegexStr = tag.replace("{", "\\{").replace("}", "\\}")
+  val tagRegex = tagRegexStr.r
 
   def replace(str: String): String = {
-    regex.replaceAllIn(str, replacement)
+    tagRegex.replaceAllIn(str, replacement)
   }
   
   // Replace displayed value for Tag in edit HTML
   // <a href="#" class="field-editable" data-type="text" data-name="{first}" data-value="first">{first}</a>
-  val inlineEditRegex = (">" + tag.replace("{", "\\{").replace("}", "\\}") + "</a>").r
+  val inlineEditRegex = (s"""data-value="$placeholderValue">$tagRegexStr</a>""").r
   def inlineEditReplace(str: String): String = {
-    val editReplacement = s">$replacement</a>"
+    val editReplacement = s"""data-value="$replacement">$replacement</a>"""
     inlineEditRegex.replaceAllIn(str, editReplacement)
   }
+  
+  def toKeyValue: (String, String) = tag -> replacement
 
   override def toString: String = {
     tag + "=" + replacement

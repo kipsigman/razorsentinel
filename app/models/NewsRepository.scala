@@ -5,24 +5,30 @@ import scala.concurrent.Future
 import models.auth.User
 
 trait NewsRepository {
+  
+  /**
+   * Changes Article status to Deleted. Returns Article if successful,
+   * None if not found, and UnauthorizedOperationException if user doesn't have permissions.
+   */
+  def deleteArticle(id: Int)(implicit userOption: Option[User]): Future[Option[Article]]
 
   def findArticleById(id: Int): Future[Option[Article]]
-
-  def findArticleBySeoAlias(seoAlias: String): Future[Option[Article]]
-
+  
   def findArticleInflatedById(id: Int): Future[Option[ArticleInflated]]
   
   def findArticlesByUser(user: User): Future[Seq[ArticleInflated]]
 
-  def saveArticle(entity: Article): Future[Article]
+  def saveArticle(entity: Article)(implicit userOption: Option[User]): Future[Article]
 
-  def addTagReplacement(articleId: Int, tagReplacement: TagReplacement): Future[ArticleInflated]
+  def addTagReplacement(id: Int, tagReplacement: TagReplacement)(implicit userOption: Option[User]): Future[ArticleInflated]
+  
+  def updateArticleStatus(id: Int, status: ContentEntity.Status)(implicit userOption: Option[User]): Future[ArticleInflated]
 
   def findArticleTemplateById(id: Int): Future[Option[ArticleTemplate]]
 
-  def findArticleTemplates: Future[Seq[ArticleTemplate]]
+  def findArticleTemplates(categoryOption: Option[Category] = None): Future[Seq[ArticleTemplate]]
 
-  def saveArticleTemplate(entity: ArticleTemplate): Future[ArticleTemplate]
+  def saveArticleTemplate(entity: ArticleTemplate)(implicit userOption: Option[User]): Future[ArticleTemplate]
 }
 
 case class PageFilter(page: Int = 0, pageSize: Int = 20) {

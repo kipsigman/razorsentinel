@@ -1,0 +1,42 @@
+@(article: ArticleInflated)(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
+
+@import services.UrlService
+
+@headIncludes = {
+  @if(!article.isPublic) {
+  	<meta name="robots" content="noindex">
+  }
+}
+
+@main(article.headline, headIncludes = headIncludes) {
+<div class="row">
+  <div class="col-md-12">
+  @Html(article.body)
+  </div>
+</div>
+  @if(article.isPublished) {
+<div class="row">
+  <div class="col-md-1">
+    <a id="twitterShare" href="https://twitter.com/share" class="twitter-share-button" data-url="@UrlService.absoluteUrl(request, article.relativeUrl)" data-text="Check out this article">Tweet</a>
+  </div>
+  <div class="col-md-1">
+  	<div class="fb-share-button" data-href="@UrlService.absoluteUrl(request, article.relativeUrl)" data-layout="button_count"></div>
+  </div>
+  <div class="col-md-1">
+    <div class="g-plusone"></div>
+  </div>
+  <div class="col-md-1">
+    <a href="mailto:?subject=Check out this article&body=@UrlService.absoluteUrl(request, article.relativeUrl)" class="btn btn-default btn-xs" title="@Messages("action.share.email")" target="_blank"><span class="glyphicon glyphicon-envelope"></span></a>
+  </div>
+  <div class="col-md-1">
+  @if(article.isOwnedBy(user)) {
+  	<a href="@routes.ArticleController.edit(article.id.get)" class="btn btn-warning btn-xs" title="@Messages("action.edit")"><span class="glyphicon glyphicon-pencil"></span></a>
+  } else {
+    <a href="@routes.ArticleController.create(article.articleTemplate.id.get)" class="btn btn-default btn-xs" title="@Messages("article.customize")"><span class="glyphicon glyphicon-pencil"></span></a>
+  }
+  </div>
+  <div class="col-md-7">
+  </div>
+</div>
+  }
+}

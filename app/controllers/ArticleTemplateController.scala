@@ -10,15 +10,13 @@ import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 
 import play.api.data.Form
-import play.api.data.Forms.mapping
-import play.api.data.Forms.nonEmptyText
-import play.api.data.Forms.number
-import play.api.data.Forms.optional
+import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.MessagesApi
 import play.api.mvc.Action
 
 import models.ArticleTemplate
+import models.Category
 import models.NewsRepository
 import models.auth.Role
 import models.auth.User
@@ -27,25 +25,30 @@ import models.auth.User
 class ArticleTemplateController @Inject() (
   messagesApi: MessagesApi,
   env: Environment[User, CookieAuthenticator],
-  newsRepository: NewsRepository)(implicit ec: ExecutionContext) extends BaseController(messagesApi, env) {
+  newsRepository: NewsRepository)
+  (implicit ec: ExecutionContext) extends BaseController(messagesApi, env) {
 
   private val form = Form[ArticleTemplate](
     mapping(
       "id" -> optional(number),
+      "categories" -> set(Category.formMapping),
       "headline" -> nonEmptyText,
       "body" -> nonEmptyText
     )(ArticleTemplate.apply)(ArticleTemplate.unapply)
   )
+  
+  private val categoryOptions: Seq[(String, String)] =
+    Category.all.map(cat => cat.name -> Messages(s"category.name.${cat.name}")).toSeq.sortBy(_._2)
 
-  def list = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
-    newsRepository.findArticleTemplates.map(articleTemplates =>
-      Ok(views.html.articleTemplate.list(articleTemplates))
+  def list(category: Option[Category]) = UserAwareAction.async { implicit request =>
+    newsRepository.findArticleTemplates(category).map(articleTemplates =>
+      Ok(views.html.articleTemplate.list(articleTemplates, category))
     )
   }
 
   def create = SecuredAction(WithRole(Role.Editor)) { implicit request =>
     val theForm = form.fill(ArticleTemplate())
-    Ok(views.html.articleTemplate.edit(theForm))
+    Ok(views.html.articleTemplate.edit(theForm, categoryOptions))
   }
 
   def edit(id: Int) = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
@@ -53,18 +56,7 @@ class ArticleTemplateController @Inject() (
       articleTemplateOption <- newsRepository.findArticleTemplateById(id)
     } yield {
       articleTemplateOption match {
-        case Some(articleTemplate) => Ok(views.html.articleTemplate.edit(form.fill(articleTemplate)))
-        case None => NotFound
-      }
-    }
-  }
-
-  def show(id: Int) = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
-    for {
-      articleTemplateOption <- newsRepository.findArticleTemplateById(id)
-    } yield {
-      articleTemplateOption match {
-        case Some(articleTemplate) => Ok(views.html.articleTemplate.show(articleTemplate))
+        case Some(articleTemplate) => Ok(views.html.articleTemplate.edit(form.fill(articleTemplate), categoryOptions))
         case None => NotFound
       }
     }
@@ -72,10 +64,10 @@ class ArticleTemplateController @Inject() (
 
   def save = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
     form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.articleTemplate.edit(formWithErrors))),
+      formWithErrors => Future.successful(BadRequest(views.html.articleTemplate.edit(formWithErrors, categoryOptions))),
       articleTemplate => {
         newsRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
-          Redirect(routes.ArticleTemplateController.show(savedArticleTemplate.id.get)).flashing("success" -> Messages("articleTemplate.saved"))
+          Redirect(routes.ArticleTemplateController.list()).flashing(FlashKey.success -> Messages("action.save.success"))
         )
       }
     )

@@ -1,24 +1,24 @@
-@(signInForm: Form[controllers.SignUpForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
+@(form: Form[controllers.SignUpForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
 
-@import b3.inline.fieldConstructor
+@import b3.vertical.fieldConstructor
 
-@main(Messages("sign.up")) {
-    <fieldset class="col-md-6 col-md-offset-3">
-        <legend>@Messages("sign.up.description")</legend>
-        @helper.form(action = routes.AuthController.signUpPost()) {
-            @helper.CSRF.formField
-            @b3.text(signInForm("firstName"), '_hiddenLabel -> Messages("user.first.name"), 'placeholder -> Messages("user.first.name"), 'class -> "form-control input-lg")
-            @b3.text(signInForm("lastName"), '_hiddenLabel -> Messages("user.last.name"), 'placeholder -> Messages("user.last.name"), 'class -> "form-control input-lg")
-            @b3.text(signInForm("email"), '_hiddenLabel -> Messages("user.email"), 'placeholder -> Messages("user.email"), 'class -> "form-control input-lg")
-            @b3.password(signInForm("password"), '_hiddenLabel -> Messages("user.password"), 'placeholder -> Messages("user.password"), 'class -> "form-control input-lg")
-            <div class="form-group">
-                <div>
-                    <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">@Messages("sign.up")</button>
-                </div>
-            </div>
-            <div class="sign-in-now">
-                <p>@Messages("already.a.member") <a href="@routes.AuthController.signIn">@Messages("sign.in.now")</a></p>
-            </div>
-        }
-    </fieldset>
+@main(Messages("auth.sign.up")) {
+<div class="row">
+  <div class="col-md-6">
+  @b3.form(helper.CSRF(routes.AuthController.signUpPost())) {
+    @b3.text(form("firstName"), '_hiddenLabel -> Messages("user.first.name"), 'placeholder -> Messages("user.first.name"))
+    @b3.text(form("lastName"), '_hiddenLabel -> Messages("user.last.name"), 'placeholder -> Messages("user.last.name"))
+    @b3.text(form("email"), '_hiddenLabel -> Messages("user.email"), 'placeholder -> Messages("user.email"))
+    @b3.password(form("password"), '_hiddenLabel -> Messages("user.password"), 'placeholder -> Messages("user.password"))
+    @tags.submitAndCancel(Some(Messages("auth.sign.up")), routes.AppController.index())
+  }
+  </div>
+  <div class="col-md-6">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+	@Messages("auth.already.a.member") <a href="@routes.AuthController.signIn">@Messages("auth.sign.in")</a>
+  </div>
+</div>
 }

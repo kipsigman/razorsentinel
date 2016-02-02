@@ -16,7 +16,7 @@ import slick.driver.JdbcProfile
 
 @Singleton
 class PasswordInfoRepositorySlick @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
-    extends DelegableAuthInfoDAO[PasswordInfo] with SilhoutteDBConfig {
+    extends DelegableAuthInfoDAO[PasswordInfo] with AuthDBConfig {
 
   import driver.api._
   

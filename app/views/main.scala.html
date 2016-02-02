@@ -37,44 +37,57 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="@routes.Application.index">@Messages("section.home")</a>
+                    <a class="navbar-brand" href="@routes.AppController.index">@Messages("nav.home")</a>
                 </div>
                 <nav class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li@if(request.path.startsWith("/articles/templates")){ class="active"}><a href="@routes.ArticleController.listArticleTemplates()">@Messages("section.articleTemplates")</a></li>
+                        <li@if(request.path.startsWith("/articleTemplates")){ class="active"}><a href="@routes.ArticleTemplateController.list()">@Messages("nav.articleTemplates")</a></li>
                         @user.map { u =>
                           @if(u.hasRole(models.auth.Role.Member)) {
-                            <li@if(request.path.equals("/articles")){ class="active"}><a href="@routes.ArticleController.list()">@Messages("section.articles.my")</a></li>
-                          }
-                          @if(u.hasRole(models.auth.Role.Editor)) {
-                            <li@if(request.path.startsWith("/admin")){ class="active"}><a href="@routes.ArticleTemplateController.list">@Messages("section.admin")</a></li>
+                            <li@if(request.path.equals("/articles")){ class="active"}><a href="@routes.ArticleController.list()">@Messages("nav.articles")</a></li>
                           }
                         }
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        @user.map { u =>
-                          <li><a href="@routes.AuthController.user">@u.name</a></li>
-                          <li><a href="@routes.AuthController.signOut">@Messages("sign.out")</a></li>
-                        }.getOrElse {
-                          <li><a href="@routes.AuthController.signIn">@Messages("sign.in")</a></li>
-                        }
+                      <li><a href="@routes.AppController.help" title="@Messages("nav.help")kip"><span class="glyphicon glyphicon-question-sign"></span></a></li>
+                    @user.map { u =>
+                      <li role="presentation" class="dropdown">
+					    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+					      <span class="glyphicon glyphicon-user"></span> @u.name <span class="caret"></span>
+					    </a>
+					    <ul class="dropdown-menu">
+					      <li><a href="@routes.AuthController.user">@Messages("user.settings")</a></li>
+                          <li><a href="@routes.AuthController.signOut">@Messages("auth.sign.out")</a></li>
+					    </ul>
+					  </li>    
+                    }.getOrElse {
+                      <li><a href="@routes.AuthController.signIn"><span class="glyphicon glyphicon-user"></span> @Messages("auth.sign.in")</a></li>
+                    }
                     </ul>
                 </nav>
             </div>
         </header>
         <main class="container">
             <div class="starter-template row">
-                <h2>@title</h2>
                 @tags.flash(request.flash)
+                <h2>@title</h2>
                 @content
+                <footer class="footer">
+		          <p>&copy; 2016 News, Inc.</p>
+		        </footer>
             </div>
         </main>
         <!-- JavaScripts (placed at end of document for fast page load) -->
-        <div id="fb-root"></div>
-	    <script type="text/javascript" src="@controllers.routes.Assets.at("lib/jquery/jquery.min.js")"></script>
+        <script type="text/javascript" src="@controllers.routes.Assets.at("lib/jquery/jquery.min.js")"></script>
 	    <script type="text/javascript" src="@controllers.routes.Assets.at("lib/bootstrap/js/bootstrap.min.js")"></script>
 	    <script type="text/javascript" src="@controllers.routes.Assets.at("javascripts/main.js")"></script>
-	    <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+	    <script type="text/javascript" src="@routes.AppController.javascriptRoutes"></script>
+	    <script type="text/javascript" src="@routes.AppController.jsMessages()"></script>
+	    
+	    <div id="fb-root"></div>
+	    <script type="text/javascript" src="@controllers.routes.Assets.at("javascripts/social.js")"></script>
+	    <script src="https://apis.google.com/js/platform.js" async defer></script>
+	    
 	    @jsIncludes
     </body>
 </html>

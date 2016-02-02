@@ -8,9 +8,7 @@ import play.api.test._
 import play.api.test.Helpers._
 
 @RunWith(classOf[JUnitRunner])
-class UserSpec extends Specification {
-
-  val user = User(None, LoginInfo("", ""), Option("Johnny"), Option("Utah"), "johnny.utah@fbi.gov", None, Set())
+class UserSpec extends Specification with models.TestData {
   
   "hasRole" should {
     "return true if Role is in Set" in {

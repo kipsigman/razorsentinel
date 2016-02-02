@@ -1,31 +1,24 @@
-@(form: Form[ArticleTemplate])(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
+@(form: Form[ArticleTemplate], categoryOptions: Seq[(String, String)])(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
 
-@import tags._
-@import b3.inline.fieldConstructor
+@import b3.vertical.fieldConstructor
 
 @mainSecured(Messages("articleTemplate")) {
   <div class="row">
     <div class="col-md-12">
-  
-  @helper.form(action = routes.ArticleTemplateController.save(), 'class -> "form-horizontal", 'role -> "form") {
-  
+  @b3.form(helper.CSRF(routes.ArticleTemplateController.save())) {
     @if(form.hasGlobalErrors) {
-      <p>
         <ul>
       @for(error <- form.globalErrors) {
           <li><span class="text-danger">@error.message</span></li>
       }
         </ul>
-      </p>
     }
-    
-      <input type="hidden" name="id" value="@form("id").value" />
-      @helper.inputText(form("headline"), '_label -> Messages("articleTemplate.headline"), '_help -> "", 'class -> "form-control")
-      @helper.textarea(form("body"), '_label -> Messages("articleTemplate.body"), '_help -> "", 'rows -> 20, 'class -> "form-control")
-      
-    @submitAndCancel(routes.ArticleTemplateController.list())
+    @b3.hidden("id", form("id").value)
+    @b3.select(form("categories"), options = categoryOptions, '_label -> Messages("categories"), 'multiple -> true )
+    @b3.text(form("headline"), '_label -> Messages("articleTemplate.headline"))
+    @b3.textarea(form("body"), '_label -> Messages("articleTemplate.body"), 'rows -> 20)
+    @tags.submitAndCancel(None, routes.ArticleTemplateController.list())
   }
     </div>
   </div>
-  
 }

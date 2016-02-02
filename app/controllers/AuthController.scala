@@ -56,7 +56,7 @@ class AuthController @Inject() (
 
   def signIn = UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.Application.index()))
+      case Some(user) => Future.successful(Redirect(routes.AppController.index()))
       case None => Future.successful(Ok(views.html.auth.signIn(SignInForm.form)))
     }
   }
@@ -67,7 +67,7 @@ class AuthController @Inject() (
       data => {
         val credentials = Credentials(data.email, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
-          val result = Redirect(routes.Application.index())
+          val result = Redirect(routes.AppController.index())
           userService.retrieve(loginInfo).flatMap {
             case Some(user) =>
               env.authenticatorService.create(loginInfo).map {
@@ -88,14 +88,14 @@ class AuthController @Inject() (
           }
         }.recover {
           case e: ProviderException =>
-            Redirect(routes.AuthController.signIn()).flashing("error" -> Messages("sign.in.error.invalid"))
+            Redirect(routes.AuthController.signIn()).flashing(FlashKey.error -> Messages("auth.sign.in.error.invalid"))
         }
       }
     )
   }
 
   def signOut = SecuredAction.async { implicit request =>
-    val result = Redirect(routes.Application.index())
+    val result = Redirect(routes.AppController.index())
     env.eventBus.publish(LogoutEvent(request.identity, request, request2Messages))
 
     env.authenticatorService.discard(request.authenticator, result)
@@ -103,7 +103,7 @@ class AuthController @Inject() (
 
   def signUp = UserAwareAction.async { implicit request =>
     request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.Application.index()))
+      case Some(user) => Future.successful(Redirect(routes.AppController.index()))
       case None => Future.successful(Ok(views.html.auth.signUp(SignUpForm.form)))
     }
   }
@@ -115,7 +115,7 @@ class AuthController @Inject() (
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
         userService.retrieve(loginInfo).flatMap {
           case Some(user) =>
-            Future.successful(Redirect(routes.AuthController.signUp()).flashing("error" -> Messages("user.error.exists")))
+            Future.successful(Redirect(routes.AuthController.signUp()).flashing(FlashKey.error -> Messages("user.error.exists")))
           case None =>
             val authInfo = passwordHasher.hash(data.password)
             val user = User(
@@ -132,7 +132,7 @@ class AuthController @Inject() (
               authInfo <- authInfoRepository.add(loginInfo, authInfo)
               authenticator <- env.authenticatorService.create(loginInfo)
               value <- env.authenticatorService.init(authenticator)
-              result <- env.authenticatorService.embed(value, Redirect(routes.Application.index()))
+              result <- env.authenticatorService.embed(value, Redirect(routes.AppController.index()))
             } yield {
               env.eventBus.publish(SignUpEvent(user, request, request2Messages))
               env.eventBus.publish(LoginEvent(user, request, request2Messages))

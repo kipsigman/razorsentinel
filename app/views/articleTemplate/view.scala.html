@@ -1,0 +1,33 @@
+@(articleTemplate: ArticleTemplate)(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
+
+@headIncludes = {
+<meta name="robots" content="noindex">
+}
+
+@mainSecured(Messages("articleTemplate"), headIncludes) {
+  <div class="row">
+    <div class="col-md-12">
+    <h3>@Html(articleTemplate.headline)</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+    @Html(articleTemplate.body)
+    </div>
+  </div>
+<div class="row">
+  <div class="col-md-1">
+    <strong>@Messages("articleTemplate.tags")</strong>
+  </div>
+  <div class="col-md-11">
+  @for(tag <- articleTemplate.tagsSorted){@tag }
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-1">
+  	<a href="@routes.ArticleTemplateController.edit(articleTemplate.id.get)" class="btn btn-warning btn-sm" title="@Messages("action.edit")"><span class="glyphicon glyphicon-pencil"></span></a>
+  </div>
+  <div class="col-md-11">
+  </div>
+</div>
+}

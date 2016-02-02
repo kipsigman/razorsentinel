@@ -2,11 +2,11 @@ package models
 
 case class ArticleTemplate(
     id: Option[Int] = None,
+    categories: Set[Category] = Set(),
     headline: String = "",
-    body: String = "") extends IdEntity {
+    body: String = "") extends IdEntity with CategorizedEntity {
 
-  def tags: Set[String] = {
-    collection.SortedSet.empty[String] ++ (TagContent.TagRegex.findAllIn(headline).toList ::: TagContent.TagRegex.findAllIn(body).toList)
-  }
-
+  lazy val tags: Set[String] = TagContent.tags(headline) ++ TagContent.tags(body)
+  
+  lazy val tagsSorted: Seq[String] = tags.toSeq.sorted
 }

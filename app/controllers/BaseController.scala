@@ -26,8 +26,18 @@ abstract class BaseController(
   val messagesApi: MessagesApi,
   val env: Environment[User, CookieAuthenticator]) extends Silhouette[User, CookieAuthenticator] {
   
+  protected object FlashKey {
+    val error = "error"
+    val info = "info"
+    val success = "success"
+    val warning = "warning"
+  }
+  
   protected implicit def request2UserOption(implicit request: UserAwareRequest[play.api.mvc.AnyContent]): Option[User] = request.identity
   protected implicit def request2User(implicit request: SecuredRequest[play.api.mvc.AnyContent]): User = request.identity
+  protected implicit def user2UserOption(implicit user: User): Option[User] = Option(user)
+  
+  protected def forbidden(message: Option[String] = None)(implicit request: RequestHeader, user: Option[User]): Result = Forbidden(views.html.error.fourOhThree())
   
   protected def notFound(implicit request: RequestHeader, user: Option[User]): Result = NotFound(views.html.error.fourOhFour())
 }

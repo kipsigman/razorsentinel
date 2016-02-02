@@ -19,6 +19,10 @@ case class User(
    * Checks for Role. Administrators are assumed to have all roles.
    */
   def hasRole(role: Role): Boolean = roles.contains(role) || roles.contains(Role.Administrator)
+  
+  lazy val isAdministrator: Boolean = hasRole(Role.Administrator)
+  lazy val isEditor: Boolean = hasRole(Role.Editor)
+  lazy val isMember: Boolean = hasRole(Role.Member)
 }
 
 sealed abstract class Role(val name: String) {
@@ -38,7 +42,7 @@ object Role {
   def apply(name: String): Role = {
     all.find(s => s.name == name) match {
       case Some(role) => role
-      case None => throw new IllegalArgumentException(s"$name is not a valid Role")
+      case None => throw new IllegalArgumentException(s"Invalid Role: $name")
     }
   }
 }

@@ -15,7 +15,7 @@ import models.auth.User
 import models.auth.UserRepository
 
 @Singleton()
-class UserRepositorySlick @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends UserRepository with SilhoutteDBConfig {
+class UserRepositorySlick @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) extends UserRepository with AuthDBConfig {
   import driver.api._
   
   override protected val dbConfig: DatabaseConfig[JdbcProfile] = dbConfigProvider.get[JdbcProfile]
