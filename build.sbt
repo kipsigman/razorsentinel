@@ -5,7 +5,7 @@ name := "news"
 
 organization := "kipsigman"
 
-version := "0.2.0"
+version := "0.2.1"
 
 scalaVersion := "2.11.7"
 
@@ -14,23 +14,25 @@ libraryDependencies ++= Seq(
   filters,
   ws,
   "mysql" % "mysql-connector-java" % "5.1.36",
-  "com.typesafe.play" %% "play-slick" % "1.1.1",
+  "kipsigman" %% "scala-domain-model" % "0.1.0",
+  "kipsigman" %% "play-auth" % "0.1.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",
-  "com.mohiva" %% "play-silhouette" % "3.0.4",
-  "net.ceedubs" %% "ficus" % "1.1.2",
   "org.webjars" % "jquery" % "2.2.0",
   "org.webjars" % "bootstrap" % "3.3.6",
   "com.adrianhurt" %% "play-bootstrap3" % "0.4.5-P24",
   "org.julienrf" %% "play-jsmessages" % "2.0.0",
-  specs2 % Test,
-  "org.mockito" % "mockito-core" % "1.10.19" % "test",
-  "com.mohiva" %% "play-silhouette-testkit" % "3.0.4" % "test"
+  "org.scalatest" %% "scalatest" % "2.2.5" % "test",
+  "org.scalatestplus" %% "play" % "1.4.0" % "test",
+  "org.mockito" % "mockito-core" % "1.10.19" % Test
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 // Play settings
 routesGenerator := InjectedRoutesGenerator
+
+routesImport += "models.NewsCategoryOptions.queryStringBinder"
+routesImport += "models.NewsCategoryOptions.pathBinder"
 
 // Compiler settings
 scalacOptions ++= Seq(
@@ -62,7 +64,7 @@ maintainer in Docker := "Kip Sigman <kip.sigman@gmail.com>"
 
 dockerExposedPorts := Seq(9000)
 
-dockerBaseImage := "java/openjdk-8-jdk"
+dockerBaseImage := "java:latest"
 
 // Elastic Beanstalk tasks
 lazy val elasticBeanstalkStage = taskKey[Unit]("Create a local directory with all the files for an AWS Elastic Beanstalk Docker distribution.")

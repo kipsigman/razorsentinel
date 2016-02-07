@@ -1,0 +1,3 @@
+@import kipsigman.domain.entity.Category
+@(category: Category, isActive: Boolean = false, link: (Category) => Call)(implicit messages: Messages)
+<a class="label @if(isActive){label-primary}else{label-info}" href="@link(category)">@Messages(s"category.name.${category.name}")</a>

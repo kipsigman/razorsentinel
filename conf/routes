@@ -8,29 +8,33 @@ GET     /javascriptRoutes                controllers.AppController.javascriptRou
 GET     /messages.js                     controllers.AppController.jsMessages
 
 # Auth/User
-GET     /auth/signIn                     controllers.AuthController.signIn
-POST    /auth/signIn                     controllers.AuthController.signInPost
-GET     /auth/signOut                    controllers.AuthController.signOut
-GET     /auth/signUp                     controllers.AuthController.signUp
-POST    /auth/signUp                     controllers.AuthController.signUpPost
-GET     /auth/user                       controllers.AuthController.user
+GET     /auth/signIn                     controllers.NewsUserController.signIn
+POST    /auth/signIn                     controllers.NewsUserController.signInPost
+GET     /auth/signOut                    controllers.NewsUserController.signOut
+GET     /auth/signUp                     controllers.NewsUserController.signUp
+POST    /auth/signUp                     controllers.NewsUserController.signUpPost
+GET     /auth/user                       controllers.NewsUserController.user
 
-# Member
+# Public site
 GET     /                                controllers.AppController.index
 GET     /help                            controllers.AppController.help
-GET     /articles                        controllers.ArticleController.list
-GET     /articles/create/:templateId     controllers.ArticleController.create(templateId:Int)
-GET     /articles/:id/delete             controllers.ArticleController.delete(id:Int)
-GET     /articles/:id/edit               controllers.ArticleController.edit(id:Int)
-GET     /articles/:id/preview            controllers.ArticleController.preview(id:Int)
-GET     /articles/:id/saveStatus         controllers.ArticleController.saveStatus(id:Int, status:models.ContentEntity.Status)
-POST    /articles/:id/tag                controllers.ArticleController.saveTag(id:Int)
-GET     /articles/:seoAlias              controllers.ArticleController.view(seoAlias:String)
+GET     /section/:category               controllers.AppController.section(category:kipsigman.domain.entity.Category)
+GET     /section/:category/template/:id  controllers.ArticleTemplateController.view(category:kipsigman.domain.entity.Category, id:Int)
+GET     /section/:category/:seoAlias     controllers.ArticleController.view(category:kipsigman.domain.entity.Category, seoAlias:String)
 
-# Editor
-GET     /articleTemplates                controllers.ArticleTemplateController.list(category: Option[models.Category] ?= None)
-GET     /articleTemplates/create         controllers.ArticleTemplateController.create
-GET     /articleTemplates/:id/edit       controllers.ArticleTemplateController.edit(id:Int)
-POST    /articleTemplates                controllers.ArticleTemplateController.save
+# Content Management
+GET     /content/articles                        controllers.ArticleController.list
+GET     /content/articles/create/:templateId     controllers.ArticleController.create(templateId:Int)
+GET     /content/articles/:id/delete             controllers.ArticleController.delete(id:Int)
+GET     /content/articles/:id/edit               controllers.ArticleController.edit(id:Int)
+GET     /content/articles/:id/preview            controllers.ArticleController.preview(id:Int)
+GET     /content/articles/:id/saveStatus         controllers.ArticleController.saveStatus(id:Int, status:models.ContentEntity.Status)
+POST    /content/articles/:id/tag                controllers.ArticleController.saveTag(id:Int)
+
+GET     /content/articleTemplates                controllers.ArticleTemplateController.list
+GET     /content/articleTemplates/category/:category controllers.ArticleTemplateController.listByCategory(category:kipsigman.domain.entity.Category)
+GET     /content/articleTemplates/create         controllers.ArticleTemplateController.create
+GET     /content/articleTemplates/:id/edit       controllers.ArticleTemplateController.edit(id:Int)
+POST    /content/articleTemplates                controllers.ArticleTemplateController.save
 
 # Admin

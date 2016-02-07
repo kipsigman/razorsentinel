@@ -1,0 +1,5 @@
+@import kipsigman.domain.entity.Category
+@(activeCategory: Option[Category])(implicit request: RequestHeader, messages: Messages)
+@for(category <- NewsCategoryOptions.allSorted) {
+  <li@if(activeCategory.isDefined && category == activeCategory.get){ class="active"}><a href="@routes.AppController.section(category)">@Messages(s"category.name.${category.name}")</a></li>
+}

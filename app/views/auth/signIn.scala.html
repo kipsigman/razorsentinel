@@ -1,11 +1,11 @@
-@(form: Form[controllers.SignInForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
-
+@import kipsigman.play.auth.entity.User
 @import b3.vertical.fieldConstructor
+@(form: Form[kipsigman.play.auth.mvc.SignInForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
 @main(Messages("auth.sign.in")) {
 <div class="row">
   <div class="col-md-6">
-  @b3.form(helper.CSRF(routes.AuthController.signInPost())) {
+  @b3.form(helper.CSRF(routes.NewsUserController.signInPost())) {
     @b3.email(form("email"), '_hiddenLabel -> Messages("user.email"), 'placeholder -> Messages("user.email"))
     @b3.password(form("password"), '_hiddenLabel -> Messages("user.password"), 'placeholder -> Messages("user.password"))
     @b3.checkbox(form("rememberMe"), '_text -> Messages("auth.remember.me"), 'checked -> true)
@@ -17,7 +17,7 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-	@Messages("auth.not.a.member") <a href="@routes.AuthController.signUp">@Messages("auth.sign.up")</a>
+	@Messages("auth.not.a.member") <a href="@routes.NewsUserController.signUp">@Messages("auth.sign.up")</a>
   </div>
 </div>
 }

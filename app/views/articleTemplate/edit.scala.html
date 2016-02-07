@@ -1,8 +1,15 @@
-@(form: Form[ArticleTemplate], categoryOptions: Seq[(String, String)])(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
-
+@import kipsigman.play.auth.entity.User
 @import b3.vertical.fieldConstructor
+@(form: Form[_], categoryOptions: Seq[(String, String)])(implicit request: RequestHeader, messages: Messages, user: User)
+
+
 
 @mainSecured(Messages("articleTemplate")) {
+  <div class="row">
+    <div class="col-md-12 alert alert-warning">
+      @Messages("articleTemplate.edit.warning")
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-12">
   @b3.form(helper.CSRF(routes.ArticleTemplateController.save())) {
@@ -14,7 +21,7 @@
         </ul>
     }
     @b3.hidden("id", form("id").value)
-    @b3.select(form("categories"), options = categoryOptions, '_label -> Messages("categories"), 'multiple -> true )
+    @b3.select(form("category"), options = categoryOptions, '_label -> Messages("category"))
     @b3.text(form("headline"), '_label -> Messages("articleTemplate.headline"))
     @b3.textarea(form("body"), '_label -> Messages("articleTemplate.body"), 'rows -> 20)
     @tags.submitAndCancel(None, routes.ArticleTemplateController.list())

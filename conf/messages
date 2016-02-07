@@ -10,12 +10,12 @@ error.http.404.description=The requested page or resource cannot be found
 error.required=This field is required
 
 # Sections
-nav.admin=Admin
-nav.admin.articleTemplates=Admin: Article Templates
 nav.articles=My Articles
 nav.articleTemplates=Templates
+nav.brand=The Razor Sentinel
+nav.content=Content
 nav.help=Help
-nav.home=News
+nav.home=Home
 nav.toggle=Toggle navigation
 
 # Generic actions
@@ -29,8 +29,10 @@ action.save=Save
 action.save.success=Item saved
 action.share.email=Email
 action.view=View
+action.view.more=More
 
 # Content
+content.error.unauthorized=You are not authorized to modify this content
 content.status=Status
 content.status.deleted=Deleted
 content.status.draft=Draft
@@ -44,32 +46,29 @@ content.status.publishUnlisted=Publish Unlisted
 content.status.save.success=Status updated
 
 category=Category
-categories=Categories
 category.error.invalid=Invalid Category
-category.name.All=All
-category.name.Arts=Arts
-category.name.Business=Business
-category.name.Entertainment=Entertainment
-category.name.Food=Food
-category.name.Health=Health
-category.name.Lifestyle=Lifestyle
-category.name.Local=Local
-category.name.National=National
-category.name.Opinion=Opinion
-category.name.Politics=Politics
-category.name.ScienceTechnology=Science & Technology
-category.name.Sports=Sports
-category.name.Travel=Travel
-category.name.World=World
+category.name.all=All
+category.name.arts=Arts
+category.name.business=Business
+category.name.entertainment=Entertainment
+category.name.food=Food
+category.name.health=Health
+category.name.lifestyle=Lifestyle
+category.name.local=Local
+category.name.national=National
+category.name.opinion=Opinion
+category.name.politics=Politics
+category.name.science-and-technology=Science & Tech
+category.name.sports=Sports
+category.name.travel=Travel
+category.name.world=World
 
 # Article & Template
 article=Article
 article.body=Body
 article.customize=Customize this article
 article.edit=Edit Article
-article.edit.description=Replace all tags in article headline and body in order to generate a share link for your article.
 article.edit.share=Share
-article.error.unauthorized=You are not authorized to modify this Article.
 article.headline=Headline
 article.id=ID
 article.tagReplacements=Tag Replacements
@@ -78,6 +77,7 @@ article.templateId=Template ID
 articleTemplate=Article Template
 articleTemplate.body=Body
 articleTemplate.edit=Edit Template (Editors only)
+articleTemplate.edit.warning=Editing a template will affect existing articles based on that template. You may edit content and insert/remove existing tags. If you wish to add new tags, create a new replacement template and disable this one.
 articleTemplate.headline=Headline
 articleTemplate.id=ID
 articleTemplate.tags=Tags
@@ -93,10 +93,11 @@ auth.remember.me=Remember my login on this computer
 auth.or.use.social=Or use your existing account on one of the following services to sign in:
 auth.access.denied=Access denied
 # User
+user.avatar=Avatar
 user.error.exists=There already exists a user with this email
 user.first.name=First name
 user.last.name=Last name
 user.email=Email
 user.password=Password
+user.profile=Profile
 user.roles=Roles
-user.settings=Settings

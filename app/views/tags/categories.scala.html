@@ -1,4 +1,5 @@
-@import models.Category
-@(categories: Seq[Category], selected: Option[Category], link: (Option[Category]) => Call, all: Boolean = false)(implicit messages: Messages)
-@if(all){<a class="label @if(selected.isEmpty){label-primary}else{label-info}" href="@link(None)">@Messages("category.name.All")</a>}
-@for(category <- categories) {<a class="label @if(selected.isDefined && selected.get == category){label-primary}else{label-info}" href="@link(Some(category))">@Messages(s"category.name.${category.name}")</a> }
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(categories: Seq[Category], selected: Option[Category], link: (Category) => Call, allLink: Option[() => Call] = None)(implicit messages: Messages)
+@if(allLink.isDefined){<a class="label @if(selected.isEmpty){label-primary}else{label-info}" href="@allLink.get()">@Messages("category.name.all")</a>}
+@for(category <- categories) {@categoryButton(category, (selected.isDefined && selected.get == category), link) }

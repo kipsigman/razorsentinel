@@ -1,33 +1,14 @@
-@(articleTemplate: ArticleTemplate)(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
+@import kipsigman.play.auth.entity.User
+@import services.UrlService
+@(articleTemplate: ArticleTemplate)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@headIncludes = {
-<meta name="robots" content="noindex">
+@contentActions = {
+  <a href="@routes.ArticleController.create(articleTemplate.id.get)" class="btn btn-default btn-xs" title="@Messages("article.customize")"><span class="glyphicon glyphicon-pencil"></span></a>
+  @if(articleTemplate.canEdit(user)){
+  <a href="@routes.ArticleTemplateController.edit(articleTemplate.id.get)" class="btn btn-warning btn-sm" title="@Messages("action.edit")"><span class="glyphicon glyphicon-edit"></span></a>
+  }
 }
 
-@mainSecured(Messages("articleTemplate"), headIncludes) {
-  <div class="row">
-    <div class="col-md-12">
-    <h3>@Html(articleTemplate.headline)</h3>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-    @Html(articleTemplate.body)
-    </div>
-  </div>
-<div class="row">
-  <div class="col-md-1">
-    <strong>@Messages("articleTemplate.tags")</strong>
-  </div>
-  <div class="col-md-11">
-  @for(tag <- articleTemplate.tagsSorted){@tag }
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-1">
-  	<a href="@routes.ArticleTemplateController.edit(articleTemplate.id.get)" class="btn btn-warning btn-sm" title="@Messages("action.edit")"><span class="glyphicon glyphicon-pencil"></span></a>
-  </div>
-  <div class="col-md-11">
-  </div>
-</div>
+@defining(routes.ArticleTemplateController.view(articleTemplate.category, articleTemplate.id.get).absoluteURL) { viewUrl =>
+  @tags.viewArticleContent(articleTemplate, viewUrl, contentActions)
 }

@@ -1,0 +1,39 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@import services.StringService
+@(category: Category, articles: Seq[ArticleInflated], articleTemplates: Seq[ArticleTemplate])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+
+@defining(Messages(s"category.name.${category.name}")) {categoryDisplayName =>
+  @main(s"$categoryDisplayName - ${Messages("nav.brand")} ", Option(category)) {
+
+  <div class="row">
+    <div class="col-md-12">
+      <h1>@categoryDisplayName</h1>
+    </div>
+  </div>
+  
+    @for(article <- articles){
+  <div class="row">
+    <div class="col-md-12">
+      <h3>@Html(article.headline)</h3>
+      @Html(StringService.abbreviate(article.body, 300))
+      <p>
+        <a href="@routes.ArticleController.view(article.category, article.seoAlias)" class="btn btn-default btn-sm">@Messages("action.view.more")</a>
+      </p>
+    </div>
+  </div>
+    }
+  
+    @for(articleTemplate <- articleTemplates){
+  <div class="row">
+    <div class="col-md-12">
+      <h3>@Html(articleTemplate.headline)</h3>
+      @Html(StringService.abbreviate(articleTemplate.body, 300))
+      <p>
+        <a href="@routes.ArticleTemplateController.view(articleTemplate.category, articleTemplate.id.get)" class="btn btn-default btn-sm">@Messages("action.view.more")</a>
+      </p>
+    </div>
+  </div>
+    }
+  }
+}

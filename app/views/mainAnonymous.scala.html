@@ -1,2 +1,3 @@
-@(title: String, headIncludes: Html = Html(""), jsIncludes: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages)
-@main(title, headIncludes, jsIncludes)(content)(request, messages, None)
+@import kipsigman.domain.entity.Category
+@(title: String, category: Option[Category] = None, headIncludes: Html = Html(""), jsIncludes: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages)
+@main(title, category, headIncludes, jsIncludes)(content)(request, messages, None)

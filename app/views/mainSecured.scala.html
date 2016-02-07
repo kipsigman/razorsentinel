@@ -1,3 +1,5 @@
-@(title: String, headIncludes: Html = Html(""), jsIncludes: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages, user: models.auth.User)
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(title: String, category: Option[Category] = None, headIncludes: Html = Html(""), jsIncludes: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages, user: User)
 
-@main(title, headIncludes, jsIncludes)(content)(request, messages, Option(user))
+@main(title, category, headIncludes, jsIncludes)(content)(request, messages, Option(user))

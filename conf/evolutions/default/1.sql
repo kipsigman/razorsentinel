@@ -1,5 +1,4 @@
 # --- !Ups
-
 CREATE TABLE user (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(255),
@@ -35,7 +34,6 @@ CREATE TABLE password_info (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 # --- !Downs
-
 DROP TABLE IF EXISTS password_info;
 DROP TABLE IF EXISTS user_login_info;
 DROP TABLE IF EXISTS login_info;

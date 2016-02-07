@@ -1,33 +1,27 @@
 package models
 
-import org.specs2.mutable._
-import org.specs2.runner._
-import org.junit.runner._
-import play.api.test._
-import play.api.test.Helpers._
+import org.scalatest.Matchers
+import org.scalatest.WordSpec
 
-import models.auth.User
+import kipsigman.play.auth.entity.User
 
-@RunWith(classOf[JUnitRunner])
-class ContentEntitySpec extends Specification with TestData {
-  val contentEntity: ContentEntity = article
-  val publishedEntity: ContentEntity = article.publishPublic
-  val anonymousEntity: ContentEntity = article.copy(userId = None)
+class ContentEntitySpec extends WordSpec with Matchers with TestData {
+  val draftEntity: ContentEntity[Article] = article
+  val publishedEntity: ContentEntity[Article] = article.publishUnlisted
   
   "canView" should {
     "return true if published" in {
-      publishedEntity.canView(user) must beTrue
-      publishedEntity.canView(None) must beTrue
+      publishedEntity.canView(user) shouldBe true
+      publishedEntity.canView(None) shouldBe true
     }
     "return true if user is owner" in {
-      contentEntity.canView(user) must beTrue
+      draftEntity.canView(user) shouldBe true
     }
     "return false if Draft and user is not owner" in {
-      contentEntity.canView(user2) must beFalse
+      draftEntity.canView(user2) shouldBe false
     }
-    "return false if Draft and no owner" in {
-      anonymousEntity.canView(user) must beFalse
-      anonymousEntity.canView(None) must beFalse
+    "return false if Draft and no user" in {
+      draftEntity.canView(None) shouldBe false
     }
   }
 }

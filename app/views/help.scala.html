@@ -1,4 +1,6 @@
-@()(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
 @import play.api.Play.current
 

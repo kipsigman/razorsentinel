@@ -1,4 +1,5 @@
-@()(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
+@import kipsigman.play.auth.entity.User
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
 @main(Messages("error.http.404")) {
   <p>@Messages("error.http.404.description")</p>

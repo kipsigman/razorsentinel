@@ -1,11 +1,11 @@
-@(form: Form[controllers.SignUpForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
-
+@import kipsigman.play.auth.entity.User
 @import b3.vertical.fieldConstructor
+@(form: Form[kipsigman.play.auth.mvc.SignUpForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
 @main(Messages("auth.sign.up")) {
 <div class="row">
   <div class="col-md-6">
-  @b3.form(helper.CSRF(routes.AuthController.signUpPost())) {
+  @b3.form(helper.CSRF(routes.NewsUserController.signUpPost())) {
     @b3.text(form("firstName"), '_hiddenLabel -> Messages("user.first.name"), 'placeholder -> Messages("user.first.name"))
     @b3.text(form("lastName"), '_hiddenLabel -> Messages("user.last.name"), 'placeholder -> Messages("user.last.name"))
     @b3.text(form("email"), '_hiddenLabel -> Messages("user.email"), 'placeholder -> Messages("user.email"))
@@ -18,7 +18,7 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-	@Messages("auth.already.a.member") <a href="@routes.AuthController.signIn">@Messages("auth.sign.in")</a>
+	@Messages("auth.already.a.member") <a href="@routes.NewsUserController.signIn">@Messages("auth.sign.in")</a>
   </div>
 </div>
 }

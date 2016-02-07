@@ -1,30 +1,34 @@
-@(articleTemplates: Seq[ArticleTemplate], category: Option[Category])(implicit request: RequestHeader, messages: Messages, user: Option[models.auth.User])
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@import models.ContentEntity.Status
+@(articleTemplates: Seq[ArticleTemplate], category: Option[Category])(implicit request: RequestHeader, messages: Messages, user: Option[User])
 @main(Messages("nav.articleTemplates")) {
   <div class="row">
     <div class="col-md-12">
-    @tags.categories(Category.allSorted, category, routes.ArticleTemplateController.list, true)
+    @tags.categories(NewsCategoryOptions.allSorted, category, routes.ArticleTemplateController.listByCategory, Option(routes.ArticleTemplateController.list))
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
-  <table class="table table-striped table-hover">
-    <tbody>
-  @for(articleTemplate <- articleTemplates) {
-      <tr>
-        <!-- <td>@articleTemplate.id</td> -->
-        <td>@articleTemplate.headline</td>
-        <td>@tags.categories(articleTemplate.categoriesSorted, category, routes.ArticleTemplateController.list)</td>
-        <td>
-        <a href="@routes.ArticleController.create(articleTemplate.id.get)" class="btn btn-warning btn-sm" title="@Messages("article.customize")"><span class="glyphicon glyphicon-share"></span></a>
+    <table class="table table-striped table-hover">
+  <tbody>
+  @for(articleTemplate <- articleTemplates){
+    <tr>
+      <!-- <td>@articleTemplate.id</td> -->
+      <td>@articleTemplate.headline</td>
+      <td>
+      @tags.categories(articleTemplate.categoriesSorted, category, routes.ArticleTemplateController.listByCategory, Option(routes.ArticleTemplateController.list))
+      </td>
+      <td>
+        <a href="@routes.ArticleController.create(articleTemplate.id.get)" class="btn btn-default btn-sm" title="@Messages("article.customize")"><span class="glyphicon glyphicon-pencil"></span></a>
     @if(user.map(u => u.isEditor).getOrElse(false)) {
-    	<a href="@routes.ArticleTemplateController.edit(articleTemplate.id.get)" class="btn btn-danger btn-sm" title="@Messages("articleTemplate.edit")"><span class="glyphicon glyphicon-pencil"></span></a>
+    	<a href="@routes.ArticleTemplateController.edit(articleTemplate.id.get)" class="btn btn-warning btn-sm" title="@Messages("articleTemplate.edit")"><span class="glyphicon glyphicon-edit"></span></a>
     }    
-        </td>
-      </tr>
+      </td>
+    </tr>
   }
-
-    </tbody>
-  </table>  
+  </tbody>
+</table>
     </div>
   </div>
   
