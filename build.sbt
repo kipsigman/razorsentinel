@@ -5,17 +5,19 @@ name := "news"
 
 organization := "kipsigman"
 
-version := "0.2.1"
+version := "0.2.2"
 
 scalaVersion := "2.11.7"
+
+resolvers += Resolver.bintrayRepo("kipsigman", "maven")
 
 libraryDependencies ++= Seq(
   cache,
   filters,
   ws,
   "mysql" % "mysql-connector-java" % "5.1.36",
-  "kipsigman" %% "scala-domain-model" % "0.1.0",
-  "kipsigman" %% "play-auth" % "0.1.0",
+  "kipsigman" %% "scala-domain-model" % "0.1.1",
+  "kipsigman" %% "play-auth" % "0.1.2",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",
   "org.webjars" % "jquery" % "2.2.0",
   "org.webjars" % "bootstrap" % "3.3.6",
@@ -26,7 +28,7 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-core" % "1.10.19" % Test
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala,ElasticBeanstalkPlugin)
 
 // Play settings
 routesGenerator := InjectedRoutesGenerator
@@ -59,39 +61,7 @@ sources in (Compile,doc) := Seq.empty
 
 publishArtifact in (Compile, packageDoc) := false
 
-// Docker
+// Docker/Elastic Beanstalk
 maintainer in Docker := "Kip Sigman <kip.sigman@gmail.com>"
-
 dockerExposedPorts := Seq(9000)
-
 dockerBaseImage := "java:latest"
-
-// Elastic Beanstalk tasks
-lazy val elasticBeanstalkStage = taskKey[Unit]("Create a local directory with all the files for an AWS Elastic Beanstalk Docker distribution.")
-
-elasticBeanstalkStage := {
-  // Depends on docker:stage
-  val dockerStageValue = (stage in Docker).value
-  
-  // Copy Elastic Beanstalk Dockerrun.aws.json configuration file to Docker target directory
-  val elasticBeanstalkSource = baseDirectory.value / "elastic-beanstalk"
-  IO.copyDirectory(elasticBeanstalkSource, dockerStageValue, true)
-}
-
-lazy val elasticBeanstalkDist = taskKey[File]("Creates a zip for an AWS Elastic Beanstalk Docker distribution")
-
-elasticBeanstalkDist := {
-  val log = streams.value.log
-  
-  // Depends on elasticBeanstalkStage
-  val stageValue = elasticBeanstalkStage.value
-  
-  // Zip Docker target
-  val dockerStagingDirectory: File = (stagingDirectory in Docker).value
-  
-  val zipFile: File = (target.value) / s"${name.value}-${version.value}-elastic-beanstalk.zip"
-  log.info(s"Zipping $dockerStagingDirectory to $zipFile")
-  Process(s"zip -r $zipFile .", dockerStagingDirectory) !!
-  
-  zipFile
-}

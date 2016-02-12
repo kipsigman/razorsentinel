@@ -1,6 +1,6 @@
 @import kipsigman.domain.entity.Category
 @import kipsigman.play.auth.entity.User
-@import models.ContentEntity.Status
+@import models.Content.Status
 @(articles: Seq[ArticleInflated])(implicit request: RequestHeader, messages: Messages, user: User)
 
 @mainSecured(Messages("nav.articles")) {
@@ -20,7 +20,7 @@
       <tr>
         <td>@article.headline</td>
         <td>@tags.categoryButton(article.category, false, routes.AppController.section)</td>
-        <td>@tags.contentEntityStatus(article.status)</td>
+        <td>@tags.contentStatus(article.status)</td>
         <td>
         @if(article.canPublish) {
           @if(article.isPublished) {

@@ -1,6 +1,6 @@
 @import kipsigman.domain.entity.Category
 @import kipsigman.play.auth.entity.User
-@import models.ContentEntity.Status
+@import models.Content.Status
 @import services.UrlService
 @(article: ArticleInflated)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
@@ -16,7 +16,7 @@
 @main(Messages("article.edit"), Option(article.category), cssIncludes, jsIncludes) {
   <div class="row">
     <div class="col-md-7"><h4>@Html(article.headlineInlineEditHtml)</h4></div>
-    <div class="col-md-1">@tags.contentEntityStatus(article.status)</div>
+    <div class="col-md-1">@tags.contentStatus(article.status)</div>
     <div class="col-md-4">
       <form>
         <input id="articleId" type="hidden" name="id" value="@article.id.get" />
@@ -33,12 +33,12 @@
       }
     }
     case Status.Public => {
-    	<a href="@routes.ArticleController.view(article.category, article.seoAlias)" class="btn btn-info btn-sm" target="_blank">@Messages("action.view")</a>
+    	<a href="@routes.ArticleController.view(article.category, article.seoAlias, true)" class="btn btn-info btn-sm" target="_blank">@Messages("action.preview")</a>
         <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Draft)" class="btn btn-warning btn-sm">@Messages("content.status.revertToDraft")</a>
         <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Unlisted)" class="btn btn-warning btn-sm">@Messages("content.status.publishUnlisted")</a>
     }
     case Status.Unlisted => {
-    	<a href="@routes.ArticleController.view(article.category, article.seoAlias)" class="btn btn-info btn-sm" target="_blank">@Messages("action.view")</a>
+    	<a href="@routes.ArticleController.view(article.category, article.seoAlias, true)" class="btn btn-info btn-sm" target="_blank">@Messages("action.preview")</a>
         <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Draft)" class="btn btn-warning btn-sm">@Messages("content.status.revertToDraft")</a>
       @if(user.isDefined && user.get.isEditor) {
         <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Public)" class="btn btn-warning btn-sm">@Messages("content.status.publishPublic")</a>

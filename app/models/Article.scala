@@ -1,25 +1,21 @@
 package models
 
 import kipsigman.domain.entity.Category
-import kipsigman.play.auth.entity.Role
-import kipsigman.play.auth.entity.User
-
-import models.ContentEntity.Status
+import models.Content.Status
 import services.StringService
 
 case class Article(
     id: Option[Int] = None,
-    userId: Int,
+    userIdOption: Option[Int],
     articleTemplateId: Int,
     status: Status = Status.Draft,
-    tagReplacements: Set[TagReplacement] = Set()) extends ContentEntity[Article] {
+    tagReplacements: Set[TagReplacement] = Set()) extends Content[Article] {
   
   // Can't determine this without the ArticleTemplate, default to false
-  override val canPublish: Boolean = false
+  override lazy val canPublish: Boolean = false
   
   override protected def updateStatusCopy(newStatus: Status): Article = copy(status = newStatus)
   
-
   def addTagReplacement(tagReplacement: TagReplacement): Article = {
     val newTagReplacements = tagReplacements.find(_.tag == tagReplacement.tag) match {
       case Some(existingTr) => tagReplacements - existingTr + tagReplacement
@@ -29,12 +25,12 @@ case class Article(
     this.copy(tagReplacements = newTagReplacements)
   }
   
-  private def tagReplacementMap: Map[String, String] = tagReplacements.map(_.toKeyValue).toMap
+  //private def tagReplacementMap: Map[String, String] = tagReplacements.map(_.toKeyValue).toMap
 }
 
 case class ArticleInflated(article: Article, articleTemplate: ArticleTemplate) extends ArticleContent[ArticleInflated] {
   override val id = article.id
-  override val userId = article.userId
+  override val userIdOption = article.userIdOption
   override val status = article.status
   
   override lazy val canPublish = article.tagReplacements.size == articleTemplate.tags.size

@@ -20,7 +20,7 @@ GET     /                                controllers.AppController.index
 GET     /help                            controllers.AppController.help
 GET     /section/:category               controllers.AppController.section(category:kipsigman.domain.entity.Category)
 GET     /section/:category/template/:id  controllers.ArticleTemplateController.view(category:kipsigman.domain.entity.Category, id:Int)
-GET     /section/:category/:seoAlias     controllers.ArticleController.view(category:kipsigman.domain.entity.Category, seoAlias:String)
+GET     /section/:category/:seoAlias     controllers.ArticleController.view(category:kipsigman.domain.entity.Category, seoAlias:String, preview: Boolean ?= false)
 
 # Content Management
 GET     /content/articles                        controllers.ArticleController.list
@@ -28,7 +28,7 @@ GET     /content/articles/create/:templateId     controllers.ArticleController.c
 GET     /content/articles/:id/delete             controllers.ArticleController.delete(id:Int)
 GET     /content/articles/:id/edit               controllers.ArticleController.edit(id:Int)
 GET     /content/articles/:id/preview            controllers.ArticleController.preview(id:Int)
-GET     /content/articles/:id/saveStatus         controllers.ArticleController.saveStatus(id:Int, status:models.ContentEntity.Status)
+GET     /content/articles/:id/saveStatus         controllers.ArticleController.saveStatus(id:Int, status:models.Content.Status)
 POST    /content/articles/:id/tag                controllers.ArticleController.saveTag(id:Int)
 
 GET     /content/articleTemplates                controllers.ArticleTemplateController.list

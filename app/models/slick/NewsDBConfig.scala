@@ -7,7 +7,7 @@ import kipsigman.play.auth.entity.User
 import kipsigman.domain.repository.slick.SlickRepository
 
 import models._
-import models.ContentEntity.Status
+import models.Content.Status
 
 trait NewsDBConfig extends SlickRepository {
   import driver.api._
@@ -70,12 +70,12 @@ trait NewsDBConfig extends SlickRepository {
       }
     )
     
-    def userId = column[Int]("user_id")
+    def userIdOption = column[Option[Int]]("user_id")
     def articleTemplateId = column[Int]("article_template_id")
     def status = column[Status]("status")
     def tagReplacements = column[Set[TagReplacement]]("tag_replacements")
     
-    def * = (id.?, userId, articleTemplateId, status, tagReplacements) <> (Article.tupled, Article.unapply)
+    def * = (id.?, userIdOption, articleTemplateId, status, tagReplacements) <> (Article.tupled, Article.unapply)
     def articleTemplate = foreignKey("fk_article_article_template_id", articleTemplateId, articleTemplateQuery)(_.id)
   }
   

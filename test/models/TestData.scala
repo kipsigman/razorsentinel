@@ -15,8 +15,8 @@ trait TestData {
   val articleTemplate = {
     val headline = "{city} - {firstname} {lastname} is the worst bowler."
     val body = "{firstname} {lastname} is the worst bowler in {city}. {firstname} really sucks."
-    ArticleTemplate(Option(13), user.id.get, ContentEntity.Status.Public, NewsCategoryOptions.Sports, headline, body)  
+    ArticleTemplate(Option(13), user.id.get, Content.Status.Public, NewsCategoryOptions.Sports, headline, body)  
   }
   
-  val article = Article(Option(88), user.id.get, articleTemplate.id.get, ContentEntity.Status.Draft, Set())
+  val article = Article(Option(88), user.id, articleTemplate.id.get, Content.Status.Draft, Set())
 }

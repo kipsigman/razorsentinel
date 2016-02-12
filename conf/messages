@@ -76,7 +76,7 @@ article.templateId=Template ID
 
 articleTemplate=Article Template
 articleTemplate.body=Body
-articleTemplate.edit=Edit Template (Editors only)
+articleTemplate.edit=Edit Template
 articleTemplate.edit.warning=Editing a template will affect existing articles based on that template. You may edit content and insert/remove existing tags. If you wish to add new tags, create a new replacement template and disable this one.
 articleTemplate.headline=Headline
 articleTemplate.id=ID

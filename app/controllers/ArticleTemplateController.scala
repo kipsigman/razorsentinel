@@ -1,13 +1,15 @@
 package controllers
 
-import javax.inject.Inject
-import javax.inject.Singleton
-
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import javax.inject.Inject
+import javax.inject.Singleton
+import kipsigman.domain.entity.Category
+import kipsigman.play.auth.entity.Role
+import kipsigman.play.auth.entity.User
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.Forms.nonEmptyText
@@ -16,20 +18,21 @@ import play.api.data.Forms.optional
 import play.api.i18n.Messages
 import play.api.i18n.MessagesApi
 
-import kipsigman.domain.entity.Category
-import kipsigman.play.auth.entity.Role
-import kipsigman.play.auth.entity.User
 import models.ArticleTemplate
 import models.NewsCategoryOptions
 import models.NewsRepository
+import services.ContentAuthorizationService
 
 @Singleton
 class ArticleTemplateController @Inject() (
   messagesApi: MessagesApi,
   env: Environment[User, CookieAuthenticator],
-  newsRepository: NewsRepository)
-  (implicit ec: ExecutionContext) extends BaseController(messagesApi, env) {
-
+  newsRepository: NewsRepository,
+  protected val contentAuthorizationService: ContentAuthorizationService)(implicit ec: ExecutionContext)
+  extends BaseController(messagesApi, env) with ContentAuthorizationController[ArticleTemplate] {
+  
+  protected def findContent(id: Int): Future[Option[ArticleTemplate]] = newsRepository.findArticleTemplate(id)
+  
   private case class ArticleTemplateData(
     id: Option[Int] = None,
     category: Category = NewsCategoryOptions.National,
@@ -69,16 +72,12 @@ class ArticleTemplateController @Inject() (
   }
 
   def edit(id: Int) = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
-    for {
-      articleTemplateOption <- newsRepository.findArticleTemplateForEdit(id)
-    } yield {
-      articleTemplateOption match {
-        case Some(articleTemplate) => {
-          val theForm = form.fill(new ArticleTemplateData(articleTemplate))
-          Ok(views.html.articleTemplate.edit(theForm, categoryOptions))
-        }
-        case None => NotFound
+    authorizeEdit(id) map {
+      case Some(articleTemplate) => {
+        val theForm = form.fill(new ArticleTemplateData(articleTemplate))
+        Ok(views.html.articleTemplate.edit(theForm, categoryOptions))
       }
+      case None => NotFound
     }
   }
 
@@ -87,7 +86,7 @@ class ArticleTemplateController @Inject() (
       formWithErrors => Future.successful(BadRequest(views.html.articleTemplate.edit(formWithErrors, categoryOptions))),
       data => {
         if(data.id.isDefined) {
-          newsRepository.findArticleTemplate(data.id.get) flatMap {
+          authorizeEdit(data.id.get) flatMap {
             case Some(oldArticleTemplate) => {
               val articleTemplate = oldArticleTemplate.copy(category = data.category, headline = data.headline, body = data.body)
               newsRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
@@ -110,7 +109,7 @@ class ArticleTemplateController @Inject() (
   def view(category: Category, id: Int) = UserAwareAction.async { implicit request =>
     newsRepository.findArticleTemplate(id) map {
       case Some(articleTemplate) => {
-        Ok(views.html.articleTemplate.view(articleTemplate))
+        Ok(views.html.articleTemplate.view(articleTemplate, contentAuthorizationService))
       }
       case None => notFound
     }

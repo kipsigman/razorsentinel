@@ -1,1 +1,0 @@
-web: target/universal/stage/bin/news -Dhttp.port=${PORT} -Dconfig.resource=production.conf

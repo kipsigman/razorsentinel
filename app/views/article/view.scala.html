@@ -1,12 +1,15 @@
 @import kipsigman.play.auth.entity.User
+@import services.ContentAuthorizationService
 @import services.UrlService
-@(article: ArticleInflated)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(article: ArticleInflated, preview: Boolean, contentAuthorizationService: ContentAuthorizationService)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
 @contentActions = {
-  @if(article.canEdit(user)){
+  @if(contentAuthorizationService.canViewEditLink(article)){
   	<a href="@routes.ArticleController.edit(article.id.get)" class="btn btn-default btn-xs" title="@Messages("action.edit")"><span class="glyphicon glyphicon-pencil"></span></a>
-  } else {
+  }else{
+    @if(!preview){
     <a href="@routes.ArticleController.create(article.articleTemplateId)" class="btn btn-default btn-xs" title="@Messages("article.customize")"><span class="glyphicon glyphicon-pencil"></span></a>
+    }
   }
 }
 	

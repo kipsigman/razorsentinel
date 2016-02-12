@@ -1,6 +1,6 @@
 @import kipsigman.domain.entity.Category
 @import kipsigman.play.auth.entity.User
-@import models.ContentEntity.Status
+@import models.Content.Status
 @(articleTemplates: Seq[ArticleTemplate], category: Option[Category])(implicit request: RequestHeader, messages: Messages, user: Option[User])
 @main(Messages("nav.articleTemplates")) {
   <div class="row">

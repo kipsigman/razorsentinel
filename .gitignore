@@ -17,5 +17,4 @@ dist
 .cache*
 bin
 .DS_Store
-/docker-local.sh
-/notes.txt
+/*.sql

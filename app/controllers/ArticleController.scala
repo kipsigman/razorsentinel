@@ -10,11 +10,6 @@ import javax.inject.Singleton
 import kipsigman.domain.entity.Category
 import kipsigman.play.auth.entity.Role
 import kipsigman.play.auth.entity.User
-import models.Article
-import models.ArticleInflated
-import models.ContentEntity
-import models.NewsRepository
-import models.TagReplacement
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.Forms.nonEmptyText
@@ -26,12 +21,23 @@ import play.api.libs.json.JsString
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 
+import models.Article
+import models.ArticleInflated
+import models.Content
+import models.NewsRepository
+import models.TagReplacement
+import services.ContentAuthorizationService
+
 @Singleton
 class ArticleController @Inject() (
   messagesApi: MessagesApi,
   env: Environment[User, CookieAuthenticator],
-  newsRepository: NewsRepository)(implicit ec: ExecutionContext) extends BaseController(messagesApi, env) {
-
+  newsRepository: NewsRepository,
+  protected val contentAuthorizationService: ContentAuthorizationService)(implicit ec: ExecutionContext) 
+  extends BaseController(messagesApi, env) with ContentAuthorizationController[ArticleInflated] {
+  
+  protected def findContent(id: Int): Future[Option[ArticleInflated]] = newsRepository.findArticleInflated(id)
+  
 //  private val statusOptions: Seq[(String, String)] =
 //    ContentEntity.Status.activeValues.toSeq.sortBy(_.name).map(status => status.name -> Messages(s"article.status.${status}"))
   
@@ -51,8 +57,7 @@ class ArticleController @Inject() (
   def create(articleTemplateId: Int) = UserAwareAction.async { implicit request =>
     newsRepository.findArticleTemplate(articleTemplateId) flatMap {
       case Some(articleTemplate) => {
-        val userId = request.identity.flatMap(_.id).getOrElse(anonymousUserId)
-        val article = Article(userId = userId, articleTemplateId = articleTemplate.id.get)
+        val article = Article(userIdOption = request.identity.flatMap(_.id), articleTemplateId = articleTemplate.id.get)
         newsRepository.saveArticle(article).map(savedArticle => {
           val articleInflated = ArticleInflated(savedArticle, articleTemplate)
           Ok(views.html.article.edit(articleInflated))
@@ -62,10 +67,10 @@ class ArticleController @Inject() (
     }
   }
   
-  def delete(id: Int) = saveStatus(id, ContentEntity.Status.Deleted)
+  def delete(id: Int) = saveStatus(id, Content.Status.Deleted)
   
-  def edit(id: Int) = SecuredAction(WithRole(Role.Member)).async { implicit request =>
-    newsRepository.findArticleForEdit(id) map {
+  def edit(id: Int) = UserAwareAction.async { implicit request =>
+    authorizeEdit(id) map {
       case Some(article) => Ok(views.html.article.edit(article))
       case None => notFound
     }
@@ -82,9 +87,9 @@ class ArticleController @Inject() (
       case Some(article) => {
         if(article.isPublished) {
           // If published redirect to view to display proper URL
-          Redirect(routes.ArticleController.view(article.category, article.seoAlias))
+          Redirect(routes.ArticleController.view(article.category, article.seoAlias, true))
         } else {
-          Ok(views.html.article.view(article))
+          Ok(views.html.article.view(article, true, contentAuthorizationService))
         }
       }
       case None => notFound
@@ -94,7 +99,7 @@ class ArticleController @Inject() (
   /**
    * seoAlias can be just the id or the id with headline.
    */
-  def view(category: Category, seoAlias: String) = UserAwareAction.async { implicit request =>
+  def view(category: Category, seoAlias: String, preview: Boolean = false) = UserAwareAction.async { implicit request =>
     // /article/99-the-article-headline-url-friendly
     val firstDash = seoAlias.indexOf('-')
     try {
@@ -104,7 +109,7 @@ class ArticleController @Inject() (
         case x => throw new IllegalArgumentException(s"$seoAlias is an invalid article path")
       }
       newsRepository.findArticleInflated(id) map {
-        case Some(article) => Ok(views.html.article.view(article))
+        case Some(article) => Ok(views.html.article.view(article, preview, contentAuthorizationService))
         case None => notFound
       }  
     } catch {
@@ -116,24 +121,31 @@ class ArticleController @Inject() (
     Json.toJson(Map("id" -> JsString(article.id.get.toString), "status" -> JsString(article.status.name), "canPublish" -> JsBoolean(article.canPublish)))
   }
 
-  def saveStatus(id: Int, status: ContentEntity.Status) = UserAwareAction.async { implicit request =>
-    for {
-      article <- newsRepository.updateArticleStatus(id, status)
-    } yield {
-      Redirect(routes.ArticleController.edit(id)).flashing(FlashKey.success -> Messages("content.status.save.success"))
-    }
+  def saveStatus(id: Int, status: Content.Status) = UserAwareAction.async { implicit request =>
+    authorizeEdit(id).flatMap(articleOption =>
+      for {
+        savedArticle <- newsRepository.updateArticleStatus(id, status)
+      } yield {
+        if (savedArticle.isPublished) {
+          Redirect(routes.ArticleController.view(savedArticle.category, savedArticle.seoAlias, true)).flashing(FlashKey.success -> Messages("content.status.save.success"))
+        } else {
+          Redirect(routes.ArticleController.edit(id)).flashing(FlashKey.success -> Messages("content.status.save.success"))
+        }
+      }
+    )
   }
   
   def saveTag(id: Int) = UserAwareAction.async { implicit request =>
     tagForm.bindFromRequest.fold(
       formWithErrors => Future(BadRequest("Bad data")),
       data => {
-        logger.debug(s"data=$data")
-        for {
-          article <- newsRepository.addTagReplacement(id, TagReplacement(data.name, data.value))
-        } yield {
-          Ok(saveSuccessJson(article))
-        }
+        authorizeEdit(id).flatMap(articleOption =>
+          for {
+            savedArticle <- newsRepository.addTagReplacement(id, TagReplacement(data.name, data.value))
+          } yield {
+            Ok(saveSuccessJson(savedArticle))
+          }
+        )
       }
     )
   }

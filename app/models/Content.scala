@@ -1,15 +1,10 @@
 package models
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-
-import com.mohiva.play.silhouette.api.exceptions.NotAuthorizedException
 import kipsigman.play.auth.entity.User
-import kipsigman.play.auth.entity.UserOwnedEntity
 import play.api.mvc.QueryStringBindable
 
-trait ContentEntity[T <: ContentEntity[T]] extends UserOwnedEntity {
-  import ContentEntity._
+trait Content[T <: Content[T]] extends UserOwnedEntity {
+  import Content._
   
   def status: Status
   
@@ -22,16 +17,6 @@ trait ContentEntity[T <: ContentEntity[T]] extends UserOwnedEntity {
   final def isPublic: Boolean = status == Status.Public
   final def isUnlisted: Boolean = status == Status.Unlisted
   final def isPublished: Boolean = Status.publishValues.contains(status)
-  
-  final def canView(userOption: Option[User]): Boolean = {
-    if (isPublished) {
-      true
-    } else {
-      isOwnedBy(userOption)
-    }
-  }
-  
-  final def canView(user: User): Boolean = canView(Option(user))
   
   final def updateStatus(newStatus: Status)(implicit user: Option[User]): T = {
     val statusChangeOk = (status, newStatus) match {
@@ -56,7 +41,8 @@ trait ContentEntity[T <: ContentEntity[T]] extends UserOwnedEntity {
   final def revertToDraft(implicit user: Option[User]): T = this.updateStatus(Status.Draft)
 }
 
-object ContentEntity {
+object Content {
+  
   sealed abstract class Status(val name: String) {
     override def toString: String = name
   }
@@ -94,28 +80,5 @@ object ContentEntity {
   }
 }
 
-class IllegalStatusChangeException(oldStatus: ContentEntity.Status, newStatus: ContentEntity.Status) 
+class IllegalStatusChangeException(oldStatus: Content.Status, newStatus: Content.Status) 
   extends RuntimeException(s"Illegal status change: ${oldStatus.name} -> ${newStatus.name}")
-
-trait ContentRepository {
-  
-  implicit protected def ec: ExecutionContext
-  
-  protected def authorizedEdit[T <: ContentEntity[T]](entity: T, userOption: Option[User])(editOperation: T => Future[T]) = {
-    if(entity.canEdit(userOption)) {
-      editOperation(entity)
-    } else {
-      throw new NotAuthorizedException(s"User is not authorized to edit entity: ${entity.toString}")
-    }
-  }
-  
-  protected def authorizedFindForEdit[T <: ContentEntity[T]](id: Int, userOption: Option[User])(findOperation: Int => Future[Option[T]]) = {
-    findOperation(id).map(entityOption => entityOption.map(entity => {
-      if(entity.canEdit(userOption)) {
-        entity
-      } else {
-        throw new NotAuthorizedException(s"User is not authorized to edit entity: ${entity.toString}")
-      }  
-    }))
-  }
-}

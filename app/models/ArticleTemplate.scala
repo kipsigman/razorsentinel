@@ -5,9 +5,9 @@ import kipsigman.domain.entity.CategorizedEntity
 import kipsigman.play.auth.entity.Role
 import kipsigman.play.auth.entity.User
 
-import models.ContentEntity.Status
+import models.Content.Status
 
-trait ArticleContent[T <: ArticleContent[T]] extends ContentEntity[T] with CategorizedEntity {
+trait ArticleContent[T <: ArticleContent[T]] extends Content[T] with CategorizedEntity {
   def headline: String
   def body: String
 }
@@ -20,11 +20,9 @@ case class ArticleTemplate(
     headline: String = "",
     body: String = "") extends ArticleContent[ArticleTemplate] {
   
-  override def canEdit(userOption: Option[User]): Boolean = {
-    userOption.map(user => user.isEditor && super.canEdit(userOption)).getOrElse(false)
-  }
+  override lazy val userIdOption: Option[Int] = Option(userId)
   
-  override val canPublish: Boolean = true
+  override lazy val canPublish: Boolean = true
   
   override protected def updateStatusCopy(newStatus: Status): ArticleTemplate = copy(status = newStatus)
   

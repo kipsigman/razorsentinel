@@ -12,7 +12,7 @@ CREATE TABLE article_template (
 
 CREATE TABLE article (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    user_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED,
     article_template_id INT UNSIGNED NOT NULL,
     status VARCHAR(255) NOT NULL,
 	tag_replacements TEXT,

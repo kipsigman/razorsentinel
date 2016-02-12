@@ -14,7 +14,5 @@ abstract class BaseController (
   env: Environment[User, CookieAuthenticator])
   (implicit ec: ExecutionContext)
   extends AuthController(messagesApi, env) with NewsErrorResults {
-  
-  // Assumes Anonymous User has been created in the DB
-  protected lazy val anonymousUserId: Int = 1
+
 }

@@ -15,7 +15,7 @@ import kipsigman.domain.entity.IdEntity
 import kipsigman.domain.repository.slick.SlickRepository
 import kipsigman.play.auth.entity.User
 import models._
-import models.ContentEntity.Status
+import models.Content.Status
 
 @Singleton()
 class NewsRepositorySlick @Inject() (
@@ -36,7 +36,7 @@ class NewsRepositorySlick @Inject() (
         case ep =>
           Article(
             ep.id,
-            ep.userId,
+            ep.userIdOption,
             ep.articleTemplateId,
             ep.status,
             ep.tagReplacements)
@@ -56,13 +56,9 @@ class NewsRepositorySlick @Inject() (
     }
   }
   
-  override def findArticleForEdit(id: Int)(implicit userOption: Option[User]): Future[Option[ArticleInflated]] = {
-    authorizedFindForEdit(id, userOption)(findArticleInflated)
-  }
-  
   override def findArticlesByUser(user: User): Future[Seq[ArticleInflated]] = {
     val filteredSortedArticleQuery = articleQuery.
-      filter(_.userId === user.id).
+      filter(_.userIdOption === user.id).
       sortBy(_.id.asc)
     val q = for {
       a <- filteredSortedArticleQuery
@@ -92,15 +88,13 @@ class NewsRepositorySlick @Inject() (
   }
   
   override def saveArticle(article: Article)(implicit userOption: Option[User]): Future[Article] = {
-    authorizedEdit(article, userOption) {entity =>
-      if (entity.isPersisted) {
-        db.run(articleQuery.filter(_.id === entity.id.get).update(entity)).map(_ => entity)
-      } else {
-        db.run((articleQuery returning articleQuery.map(_.id)) += entity).map(id => {
-          val savedEntity = entity.copy(id = Some(id))
-          savedEntity
-        })
-      }
+    if (article.isPersisted) {
+      db.run(articleQuery.filter(_.id === article.id.get).update(article)).map(_ => article)
+    } else {
+      db.run((articleQuery returning articleQuery.map(_.id)) += article).map(id => {
+        val savedEntity = article.copy(id = Some(id))
+        savedEntity
+      })
     }
   }
   
@@ -152,10 +146,6 @@ class NewsRepositorySlick @Inject() (
     }
   }
   
-  override def findArticleTemplateForEdit(id: Int)(implicit userOption: Option[User]): Future[Option[ArticleTemplate]] = {
-    authorizedFindForEdit(id, userOption)(findArticleTemplate)
-  }
-  
   override def findArticleTemplates(categoryOption: Option[Category] = None): Future[Seq[ArticleTemplate]] = {
     val filteredQuery = articleTemplateQuery
     val sortedQuery = filteredQuery.sortBy(_.headline.asc)
@@ -183,15 +173,13 @@ class NewsRepositorySlick @Inject() (
   }
 
   override def saveArticleTemplate(articleTemplate: ArticleTemplate)(implicit userOption: Option[User]): Future[ArticleTemplate] = {
-    authorizedEdit(articleTemplate, userOption) {entity =>
-      if (entity.isPersisted) {
-        db.run(articleTemplateQuery.filter(_.id === entity.id.get).update(entity)).map(_ => entity)
-      } else {
-        db.run((articleTemplateQuery returning articleQuery.map(_.id)) += entity).map(id => {
-          val savedEntity = entity.copy(id = Some(id))
-          savedEntity
-        })
-      }
+    if (articleTemplate.isPersisted) {
+      db.run(articleTemplateQuery.filter(_.id === articleTemplate.id.get).update(articleTemplate)).map(_ => articleTemplate)
+    } else {
+      db.run((articleTemplateQuery returning articleQuery.map(_.id)) += articleTemplate).map(id => {
+        val savedEntity = articleTemplate.copy(id = Some(id))
+        savedEntity
+      })
     }
   }
   

@@ -5,7 +5,7 @@ import org.scalatest.WordSpec
 
 import kipsigman.play.auth.entity.Role
 import kipsigman.play.auth.entity.User
-import models.ContentEntity.Status
+import models.Content.Status
 
 class ArticleSpec extends WordSpec with Matchers with TestData {
   
