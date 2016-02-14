@@ -14,6 +14,16 @@
 }
 
 @main(Messages("article.edit"), Option(article.category), cssIncludes, jsIncludes) {
+  @if(user.isEmpty){
+    @defining(Option(routes.ArticleController.own(article.id.get).url)){successUrl =>
+  <div class="row">
+    <div class="col-md-12 alert alert-danger">
+	  <a href="#" class="close" data-dismiss="alert">&times;</a>
+	  @Html(Messages("article.anonymous.danger", routes.NewsUserController.signIn(successUrl).url, routes.NewsUserController.signUp(successUrl).url))
+    </div>
+  </div>    
+    }
+  }
   <div class="row">
     <div class="col-md-7"><h4>@Html(article.headlineInlineEditHtml)</h4></div>
     <div class="col-md-1">@tags.contentStatus(article.status)</div>
@@ -33,12 +43,12 @@
       }
     }
     case Status.Public => {
-    	<a href="@routes.ArticleController.view(article.category, article.seoAlias, true)" class="btn btn-info btn-sm" target="_blank">@Messages("action.preview")</a>
+    	<a href="@routes.ArticleController.view(article.category, article.seoAlias)" class="btn btn-info btn-sm" target="_blank">@Messages("action.preview")</a>
         <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Draft)" class="btn btn-warning btn-sm">@Messages("content.status.revertToDraft")</a>
         <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Unlisted)" class="btn btn-warning btn-sm">@Messages("content.status.publishUnlisted")</a>
     }
     case Status.Unlisted => {
-    	<a href="@routes.ArticleController.view(article.category, article.seoAlias, true)" class="btn btn-info btn-sm" target="_blank">@Messages("action.preview")</a>
+    	<a href="@routes.ArticleController.view(article.category, article.seoAlias)" class="btn btn-info btn-sm" target="_blank">@Messages("action.preview")</a>
         <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Draft)" class="btn btn-warning btn-sm">@Messages("content.status.revertToDraft")</a>
       @if(user.isDefined && user.get.isEditor) {
         <a href="@routes.ArticleController.saveStatus(article.id.get, Status.Public)" class="btn btn-warning btn-sm">@Messages("content.status.publishPublic")</a>
@@ -52,4 +62,5 @@
   <div class="row">
     <div class="col-md-12">@Html(article.bodyInlineEditHtml)</div>
   </div>
+  
 }

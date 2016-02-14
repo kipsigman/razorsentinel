@@ -9,6 +9,7 @@
     @b3.email(form("email"), '_hiddenLabel -> Messages("user.email"), 'placeholder -> Messages("user.email"))
     @b3.password(form("password"), '_hiddenLabel -> Messages("user.password"), 'placeholder -> Messages("user.password"))
     @b3.checkbox(form("rememberMe"), '_text -> Messages("auth.remember.me"), 'checked -> true)
+    @b3.hidden("successUrl", form("successUrl").value)
     @tags.submitAndCancel(Some(Messages("auth.sign.in")), routes.AppController.index())
   }
   </div>
@@ -17,7 +18,7 @@
 </div>
 <div class="row">
   <div class="col-md-12">
-	@Messages("auth.not.a.member") <a href="@routes.NewsUserController.signUp">@Messages("auth.sign.up")</a>
+	@Messages("auth.not.a.member") <a href="@routes.NewsUserController.signUp(form("successUrl").value)">@Messages("auth.sign.up")</a>
   </div>
 </div>
 }

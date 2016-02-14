@@ -3,6 +3,7 @@ package controllers
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
+import com.mohiva.play.silhouette.api.exceptions.NotAuthorizedException
 import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import javax.inject.Inject
@@ -82,14 +83,31 @@ class ArticleController @Inject() (
     )
   }
   
+  def own(id: Int) = SecuredAction(WithRole(Role.Member)).async { implicit request =>
+    authorizeEdit(id) flatMap {
+      case Some(article) => {
+        if (article.userIdOption.isEmpty) {
+          val user = request.identity
+          val updatedArticle = article.article.copy(userIdOption = user.id)
+          newsRepository.saveArticle(updatedArticle).map(savedArticle =>
+            Redirect(routes.ArticleController.list())
+          )
+        } else {
+          throw new NotAuthorizedException(s"User ${request.identity} cannot own article with an existing owner")
+        }
+      }
+      case None => Future.successful(notFound)
+    }
+  }
+  
   def preview(id: Int) = UserAwareAction.async { implicit request =>
     newsRepository.findArticleInflated(id) map {
       case Some(article) => {
         if(article.isPublished) {
           // If published redirect to view to display proper URL
-          Redirect(routes.ArticleController.view(article.category, article.seoAlias, true))
+          Redirect(routes.ArticleController.view(article.category, article.seoAlias))
         } else {
-          Ok(views.html.article.view(article, true, contentAuthorizationService))
+          Ok(views.html.article.view(article, contentAuthorizationService))
         }
       }
       case None => notFound
@@ -99,7 +117,7 @@ class ArticleController @Inject() (
   /**
    * seoAlias can be just the id or the id with headline.
    */
-  def view(category: Category, seoAlias: String, preview: Boolean = false) = UserAwareAction.async { implicit request =>
+  def view(category: Category, seoAlias: String) = UserAwareAction.async { implicit request =>
     // /article/99-the-article-headline-url-friendly
     val firstDash = seoAlias.indexOf('-')
     try {
@@ -109,7 +127,7 @@ class ArticleController @Inject() (
         case x => throw new IllegalArgumentException(s"$seoAlias is an invalid article path")
       }
       newsRepository.findArticleInflated(id) map {
-        case Some(article) => Ok(views.html.article.view(article, preview, contentAuthorizationService))
+        case Some(article) => Ok(views.html.article.view(article, contentAuthorizationService))
         case None => notFound
       }  
     } catch {
@@ -127,7 +145,7 @@ class ArticleController @Inject() (
         savedArticle <- newsRepository.updateArticleStatus(id, status)
       } yield {
         if (savedArticle.isPublished) {
-          Redirect(routes.ArticleController.view(savedArticle.category, savedArticle.seoAlias, true)).flashing(FlashKey.success -> Messages("content.status.save.success"))
+          Redirect(routes.ArticleController.view(savedArticle.category, savedArticle.seoAlias)).flashing(FlashKey.success -> Messages("content.status.save.success"))
         } else {
           Redirect(routes.ArticleController.edit(id)).flashing(FlashKey.success -> Messages("content.status.save.success"))
         }

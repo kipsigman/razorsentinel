@@ -48,12 +48,12 @@ class NewsUserController @Inject() (
   
   override protected def homeRoute: Call = routes.AppController.index
   
-  override protected def signInRoute: Call = routes.NewsUserController.signIn
+  override protected def signInRoute: Call = routes.NewsUserController.signIn(None)
   
   override protected def signInView(form: Form[SignInForm.Data])(implicit request: RequestHeader, user: Option[User]): Html =
     views.html.auth.signIn(form)
   
-  override protected def signUpRoute: Call = routes.NewsUserController.signUp
+  override protected def signUpRoute: Call = routes.NewsUserController.signUp(None)
   
   override protected def signUpView(form: Form[SignUpForm.Data])(implicit request: RequestHeader, user: Option[User]): Html =
     views.html.auth.signUp(form)

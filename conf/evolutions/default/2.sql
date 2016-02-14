@@ -6,6 +6,7 @@ CREATE TABLE article_template (
     category VARCHAR(255) NOT NULL,
     headline VARCHAR(255) NOT NULL,
 	body MEDIUMTEXT NOT NULL,
+	image_file_name VARCHAR(255),
 	CONSTRAINT fk_article_template_user_id FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -16,6 +17,7 @@ CREATE TABLE article (
     article_template_id INT UNSIGNED NOT NULL,
     status VARCHAR(255) NOT NULL,
 	tag_replacements TEXT,
+	image_file_name VARCHAR(255),
 	PRIMARY KEY (id),
 	CONSTRAINT fk_article_user_id FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
 	CONSTRAINT fk_article_article_template_id FOREIGN KEY(article_template_id) REFERENCES article_template(id) ON DELETE CASCADE

@@ -1,11 +1,11 @@
 import com.typesafe.sbt.packager.docker._
 import scalariform.formatter.preferences._
 
-name := "news"
+name := "razorsentinel.com"
 
 organization := "kipsigman"
 
-version := "0.2.2"
+version := "0.2.3"
 
 scalaVersion := "2.11.7"
 
@@ -16,8 +16,8 @@ libraryDependencies ++= Seq(
   filters,
   ws,
   "mysql" % "mysql-connector-java" % "5.1.36",
-  "kipsigman" %% "scala-domain-model" % "0.1.1",
-  "kipsigman" %% "play-auth" % "0.1.2",
+  "kipsigman" %% "scala-domain-model" % "0.1.2",
+  "kipsigman" %% "play-auth" % "0.1.4",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",
   "org.webjars" % "jquery" % "2.2.0",
   "org.webjars" % "bootstrap" % "3.3.6",

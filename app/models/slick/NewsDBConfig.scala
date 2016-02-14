@@ -39,7 +39,8 @@ trait NewsDBConfig extends SlickRepository {
     def category = column[Category]("category")
     def headline = column[String]("headline")
     def body = column[String]("body")
-    def * = (id.?, userId, status, category, headline, body) <> (ArticleTemplate.tupled, ArticleTemplate.unapply)
+    def imageFileName = column[Option[String]]("image_file_name")
+    def * = (id.?, userId, status, category, headline, body, imageFileName) <> (ArticleTemplate.tupled, ArticleTemplate.unapply)
   }
   
   val articleTemplateQuery = TableQuery[ArticleTemplateTable]
@@ -74,8 +75,9 @@ trait NewsDBConfig extends SlickRepository {
     def articleTemplateId = column[Int]("article_template_id")
     def status = column[Status]("status")
     def tagReplacements = column[Set[TagReplacement]]("tag_replacements")
+    def imageFileName = column[Option[String]]("image_file_name")
     
-    def * = (id.?, userIdOption, articleTemplateId, status, tagReplacements) <> (Article.tupled, Article.unapply)
+    def * = (id.?, userIdOption, articleTemplateId, status, tagReplacements, imageFileName) <> (Article.tupled, Article.unapply)
     def articleTemplate = foreignKey("fk_article_article_template_id", articleTemplateId, articleTemplateQuery)(_.id)
   }
   

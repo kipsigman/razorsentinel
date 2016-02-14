@@ -10,6 +10,7 @@ import models.Content.Status
 trait ArticleContent[T <: ArticleContent[T]] extends Content[T] with CategorizedEntity {
   def headline: String
   def body: String
+  def imageFileName: Option[String]
 }
 
 case class ArticleTemplate(
@@ -18,7 +19,8 @@ case class ArticleTemplate(
     status: Status = Status.Draft,
     category: Category = NewsCategoryOptions.National,
     headline: String = "",
-    body: String = "") extends ArticleContent[ArticleTemplate] {
+    body: String = "",
+    imageFileName: Option[String] = None) extends ArticleContent[ArticleTemplate] {
   
   override lazy val userIdOption: Option[Int] = Option(userId)
   

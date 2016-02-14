@@ -39,7 +39,8 @@ class NewsRepositorySlick @Inject() (
             ep.userIdOption,
             ep.articleTemplateId,
             ep.status,
-            ep.tagReplacements)
+            ep.tagReplacements,
+            ep.imageFileName)
       }
     }
   }
@@ -141,7 +142,8 @@ class NewsRepositorySlick @Inject() (
             e.status,
             e.category,
             e.headline,
-            e.body)
+            e.body,
+            e.imageFileName)
       }
     }
   }

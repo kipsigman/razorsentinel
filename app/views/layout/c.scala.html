@@ -65,7 +65,8 @@
               </ul>
             </li>	
   }.getOrElse {
-            <a href="@routes.NewsUserController.signIn" class="btn btn-default navbar-btn"><span class="glyphicon glyphicon-user"></span> @Messages("auth.sign.in")</a>
+            <a href="@routes.NewsUserController.signIn(None)" class="btn btn-default navbar-btn"><span class="glyphicon glyphicon-user"></span> @Messages("auth.sign.in")</a>
+            <a href="@routes.NewsUserController.signUp(None)" class="btn btn-default navbar-btn"><span class="glyphicon glyphicon-user"></span> @Messages("auth.sign.up")</a>
   }
            <li><a href="@routes.AppController.help" title="@Messages("nav.help")"><span class="glyphicon glyphicon-question-sign"></span></a></li>
           </ul>

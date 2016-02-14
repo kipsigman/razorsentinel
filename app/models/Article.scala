@@ -9,7 +9,8 @@ case class Article(
     userIdOption: Option[Int],
     articleTemplateId: Int,
     status: Status = Status.Draft,
-    tagReplacements: Set[TagReplacement] = Set()) extends Content[Article] {
+    tagReplacements: Set[TagReplacement] = Set(),
+    imageFileName: Option[String] = None) extends Content[Article] {
   
   // Can't determine this without the ArticleTemplate, default to false
   override lazy val canPublish: Boolean = false
@@ -55,6 +56,12 @@ case class ArticleInflated(article: Article, articleTemplate: ArticleTemplate) e
     article.tagReplacements.foldLeft(articleTemplate.body)((str, tagReplacement) => {
       tagReplacement.replace(str)
     })
+  }
+  
+  override lazy val imageFileName: Option[String] = (article.imageFileName, articleTemplate.imageFileName) match {
+    case (Some(_), _) => article.imageFileName
+    case (None, Some(_)) => articleTemplate.imageFileName
+    case (None, None) => None
   }
   
   lazy val articleTemplateId = article.articleTemplateId

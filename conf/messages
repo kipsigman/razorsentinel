@@ -65,6 +65,7 @@ category.name.world=World
 
 # Article & Template
 article=Article
+article.anonymous.danger=You are currently not logged in. You can customize and publish an article anonymously, but you won't be able to edit it later.<br/> To manage your articles, you must <a href='{0}'><strong>Sign In</strong></a> or <a href='{1}'><strong>Sign Up</strong></a>.
 article.body=Body
 article.customize=Customize this article
 article.edit=Edit Article
