@@ -10,13 +10,22 @@ error.http.404.description=The requested page or resource cannot be found
 error.required=This field is required
 
 # Sections
+nav.about=About Us
 nav.articles=My Articles
 nav.articleTemplates=Templates
 nav.brand=The Razor Sentinel
+nav.contact=Contact Us
 nav.content=Content
 nav.help=Help
 nav.home=Home
 nav.toggle=Toggle navigation
+
+# Company pages
+company.about.description=TODO: content
+company.contact.email=Email
+company.contact.facebook=Facebook
+company.contact.twitter=Twitter
+
 
 # Generic actions
 action.cancel=Cancel
@@ -65,9 +74,10 @@ category.name.world=World
 
 # Article & Template
 article=Article
-article.anonymous.danger=You are currently not logged in. You can customize and publish an article anonymously, but you won't be able to edit it later.<br/> To manage your articles, you must <a href='{0}'><strong>Sign In</strong></a> or <a href='{1}'><strong>Sign Up</strong></a>.
+article.anonymous.danger=You are not signed in. You can customize and publish an article anonymously, but you won't be able to edit it later.<br/> To manage your articles, you must <a href='{0}'><strong>Sign In</strong></a> or <a href='{1}'><strong>Sign Up</strong></a>.
 article.body=Body
-article.customize=Customize this article
+article.customize=Customize
+article.customize.description=Customize this article
 article.edit=Edit Article
 article.edit.share=Share
 article.headline=Headline
@@ -81,18 +91,20 @@ articleTemplate.edit=Edit Template
 articleTemplate.edit.warning=Editing a template will affect existing articles based on that template. You may edit content and insert/remove existing tags. If you wish to add new tags, create a new replacement template and disable this one.
 articleTemplate.headline=Headline
 articleTemplate.id=ID
+articleTemplate.imageCaption=Image Caption
 articleTemplate.tags=Tags
 
 # Auth
-auth.sign.in=Sign in
+auth.sign.in=Sign In
 auth.sign.in.error.invalid=Invalid login credentials
-auth.sign.out=Sign out
-auth.sign.up=Sign up
+auth.sign.out=Sign Out
+auth.sign.up=Sign Up
 auth.already.a.member=Already a member?
 auth.not.a.member=Not a member?
 auth.remember.me=Remember my login on this computer
 auth.or.use.social=Or use your existing account on one of the following services to sign in:
 auth.access.denied=Access denied
+
 # User
 user.avatar=Avatar
 user.error.exists=There already exists a user with this email

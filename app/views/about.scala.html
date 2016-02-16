@@ -1,0 +1,13 @@
+@import kipsigman.play.auth.entity.User
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
+
+@main(Messages("nav.about")) {
+  <div class="row">
+    <div class="col-md-12">
+	  <h1>@Messages("nav.about")</h1>
+	  <p>
+	  @Messages("company.about.description")
+	  </p>
+    </div>
+  </div>
+}

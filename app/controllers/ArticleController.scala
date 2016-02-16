@@ -28,13 +28,16 @@ import models.Content
 import models.NewsRepository
 import models.TagReplacement
 import services.ContentAuthorizationService
+import services.ImageService
 
 @Singleton
 class ArticleController @Inject() (
   messagesApi: MessagesApi,
   env: Environment[User, CookieAuthenticator],
   newsRepository: NewsRepository,
-  protected val contentAuthorizationService: ContentAuthorizationService)(implicit ec: ExecutionContext) 
+  protected val contentAuthorizationService: ContentAuthorizationService,
+  imageService: ImageService)
+  (implicit ec: ExecutionContext) 
   extends BaseController(messagesApi, env) with ContentAuthorizationController[ArticleInflated] {
   
   protected def findContent(id: Int): Future[Option[ArticleInflated]] = newsRepository.findArticleInflated(id)
@@ -61,7 +64,7 @@ class ArticleController @Inject() (
         val article = Article(userIdOption = request.identity.flatMap(_.id), articleTemplateId = articleTemplate.id.get)
         newsRepository.saveArticle(article).map(savedArticle => {
           val articleInflated = ArticleInflated(savedArticle, articleTemplate)
-          Ok(views.html.article.edit(articleInflated))
+          Ok(views.html.article.edit(articleInflated, imageService))
         })
       }
       case None => Future.successful(notFound)
@@ -72,7 +75,7 @@ class ArticleController @Inject() (
   
   def edit(id: Int) = UserAwareAction.async { implicit request =>
     authorizeEdit(id) map {
-      case Some(article) => Ok(views.html.article.edit(article))
+      case Some(article) => Ok(views.html.article.edit(article, imageService))
       case None => notFound
     }
   }
@@ -107,7 +110,7 @@ class ArticleController @Inject() (
           // If published redirect to view to display proper URL
           Redirect(routes.ArticleController.view(article.category, article.seoAlias))
         } else {
-          Ok(views.html.article.view(article, contentAuthorizationService))
+          Ok(views.html.article.view(article, contentAuthorizationService, imageService))
         }
       }
       case None => notFound
@@ -127,7 +130,7 @@ class ArticleController @Inject() (
         case x => throw new IllegalArgumentException(s"$seoAlias is an invalid article path")
       }
       newsRepository.findArticleInflated(id) map {
-        case Some(article) => Ok(views.html.article.view(article, contentAuthorizationService))
+        case Some(article) => Ok(views.html.article.view(article, contentAuthorizationService, imageService))
         case None => notFound
       }  
     } catch {

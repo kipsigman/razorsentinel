@@ -1,0 +1,16 @@
+@import kipsigman.play.auth.entity.User
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
+
+@main(Messages("nav.contact")) {
+  <div class="row">
+    <div class="col-md-12">
+	  <h1>@Messages("nav.contact")</h1>
+	  <p>
+	    <dl>
+          <dt>@Messages("company.contact.twitter")</dt>
+          <dd><a href="https://twitter.com/razorsentinel1">https://twitter.com/razorsentinel1</a></dd>
+        </dl>
+	  </p>
+    </div>
+  </div>
+}

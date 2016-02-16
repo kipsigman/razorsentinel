@@ -7,6 +7,7 @@ CREATE TABLE article_template (
     headline VARCHAR(255) NOT NULL,
 	body MEDIUMTEXT NOT NULL,
 	image_file_name VARCHAR(255),
+	image_caption VARCHAR(255),
 	CONSTRAINT fk_article_template_user_id FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

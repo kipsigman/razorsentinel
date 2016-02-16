@@ -40,7 +40,8 @@ trait NewsDBConfig extends SlickRepository {
     def headline = column[String]("headline")
     def body = column[String]("body")
     def imageFileName = column[Option[String]]("image_file_name")
-    def * = (id.?, userId, status, category, headline, body, imageFileName) <> (ArticleTemplate.tupled, ArticleTemplate.unapply)
+    def imageCaption = column[Option[String]]("image_caption")
+    def * = (id.?, userId, status, category, headline, body, imageFileName, imageCaption) <> (ArticleTemplate.tupled, ArticleTemplate.unapply)
   }
   
   val articleTemplateQuery = TableQuery[ArticleTemplateTable]

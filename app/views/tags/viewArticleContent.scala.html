@@ -1,6 +1,7 @@
 @import kipsigman.play.auth.entity.User
+@import services.ImageService
 @import services.UrlService
-@(article: ArticleContent[_], viewUrl: String, contentActions: Html)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(article: ArticleContent[_], viewUrl: String, contentActions: Html, imageService: ImageService)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
 @headIncludes = {
   @if(!article.isPublic) {
@@ -8,33 +9,74 @@
   }
 }
 
-@main(article.headline, Option(article.category), headIncludes = headIncludes) {
-	
-<div class="row">
-  <div class="col-md-12">
-  <h1>@Html(article.headline)</h1>
-  @Html(article.body)
+@jsIncludes = {
+<script src="@routes.Assets.at("javascripts/article-view.js")"></script>
+}
+
+@main(article.headline, Option(article.category), headIncludes = headIncludes, jsIncludes = jsIncludes) {
+<!-- Modal for encouraging customization -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">@Messages("article.customize.description")</h4>
+      </div>
+      <div class="modal-body">
+        Customize this article, it's awesome!
+      </div>
+    </div>
   </div>
 </div>
+
+<div class="row">
+  <div class="col-md-8">
+    <!-- Headline -->
+    <div class="row">
+      <div class="col-md-12">
+        <h1>@Html(article.headline)</h1>
+      </div>
+    </div>
   @if(article.isPublished) {
-<div class="row">
-  <div class="col-md-1">
-    <a id="twitterShare" href="https://twitter.com/share" class="twitter-share-button" data-url="@viewUrl" data-text="Check out this article">Tweet</a>
+    @tags.contentActions(viewUrl, contentActions)
+  }
+    <div class="row">
+      <div class="col-md-12">
+        <hr/>
+      </div>
+    </div>
+    
+  @if(article.imageFileName.isDefined) {
+    <!-- Image -->
+    <div class="row">
+      <div class="col-md-9">
+        <div class="thumbnail">
+          <img class="img-responsive" src="@imageService.imageUrl(article)" />
+    @if(article.imageCaption.isDefined) {
+          <div class="caption">
+            @article.imageCaption.get
+          </div>
+    }
+        </div>
+      </div>
+      <div class="col-md-3">
+      </div>
+    </div>
+  }
+    <!-- Body -->
+    <div class="row">
+      <div class="col-md-12">
+        
+  @Html(article.body)
+        <p><br/></p>
+      </div>
+    </div>
+  @if(article.isPublished) {
+    @tags.contentActions(viewUrl, contentActions)
+  }
   </div>
-  <div class="col-md-1">
-  	<div class="fb-share-button" data-href="@viewUrl" data-layout="button_count"></div>
-  </div>
-  <div class="col-md-1">
-    <div class="g-plusone"></div>
-  </div>
-  <div class="col-md-1">
-    <a href="mailto:?subject=Check out this article&body=@viewUrl" class="btn btn-default btn-xs" title="@Messages("action.share.email")" target="_blank"><span class="glyphicon glyphicon-envelope"></span></a>
-  </div>
-  <div class="col-md-1">
-    @contentActions
-  </div>
-  <div class="col-md-7">
+  <div class="col-md-4">
+  <!-- Right sidebar -->
   </div>
 </div>
-  }
 }

@@ -11,10 +11,7 @@ import kipsigman.domain.entity.Category
 import kipsigman.play.auth.entity.Role
 import kipsigman.play.auth.entity.User
 import play.api.data.Form
-import play.api.data.Forms.mapping
-import play.api.data.Forms.nonEmptyText
-import play.api.data.Forms.number
-import play.api.data.Forms.optional
+import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.MessagesApi
 
@@ -22,13 +19,16 @@ import models.ArticleTemplate
 import models.NewsCategoryOptions
 import models.NewsRepository
 import services.ContentAuthorizationService
+import services.ImageService
 
 @Singleton
 class ArticleTemplateController @Inject() (
   messagesApi: MessagesApi,
   env: Environment[User, CookieAuthenticator],
   newsRepository: NewsRepository,
-  protected val contentAuthorizationService: ContentAuthorizationService)(implicit ec: ExecutionContext)
+  protected val contentAuthorizationService: ContentAuthorizationService,
+  imageService: ImageService)
+  (implicit ec: ExecutionContext)
   extends BaseController(messagesApi, env) with ContentAuthorizationController[ArticleTemplate] {
   
   protected def findContent(id: Int): Future[Option[ArticleTemplate]] = newsRepository.findArticleTemplate(id)
@@ -37,9 +37,10 @@ class ArticleTemplateController @Inject() (
     id: Option[Int] = None,
     category: Category = NewsCategoryOptions.National,
     headline: String = "",
-    body: String = "") {
+    body: String = "",
+    imageCaption: Option[String] = None) {
     
-    def this(at: ArticleTemplate) = this(at.id, at.category, at.headline, at.body)
+    def this(at: ArticleTemplate) = this(at.id, at.category, at.headline, at.body, at.imageCaption)
   }
     
   private val form = Form[ArticleTemplateData](
@@ -47,7 +48,8 @@ class ArticleTemplateController @Inject() (
       "id" -> optional(number),
       "category" -> NewsCategoryOptions.formMapping,
       "headline" -> nonEmptyText,
-      "body" -> nonEmptyText
+      "body" -> nonEmptyText,
+      "imageCaption" -> optional(text)
     )(ArticleTemplateData.apply)(ArticleTemplateData.unapply)
   )
   
@@ -88,7 +90,7 @@ class ArticleTemplateController @Inject() (
         if(data.id.isDefined) {
           authorizeEdit(data.id.get) flatMap {
             case Some(oldArticleTemplate) => {
-              val articleTemplate = oldArticleTemplate.copy(category = data.category, headline = data.headline, body = data.body)
+              val articleTemplate = oldArticleTemplate.copy(category = data.category, headline = data.headline, body = data.body, imageCaption = data.imageCaption)
               newsRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
                 Redirect(routes.ArticleTemplateController.list()).flashing(FlashKey.success -> Messages("action.save.success"))
               )
@@ -97,7 +99,7 @@ class ArticleTemplateController @Inject() (
           }
         } else {
           val userId = request.identity.id.get
-          val articleTemplate = ArticleTemplate(userId = userId, category = data.category, headline = data.headline, body = data.body)
+          val articleTemplate = ArticleTemplate(userId = userId, category = data.category, headline = data.headline, body = data.body, imageCaption = data.imageCaption)
           newsRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
             Redirect(routes.ArticleTemplateController.list()).flashing(FlashKey.success -> Messages("action.save.success"))
           )
@@ -109,7 +111,7 @@ class ArticleTemplateController @Inject() (
   def view(category: Category, id: Int) = UserAwareAction.async { implicit request =>
     newsRepository.findArticleTemplate(id) map {
       case Some(articleTemplate) => {
-        Ok(views.html.articleTemplate.view(articleTemplate, contentAuthorizationService))
+        Ok(views.html.articleTemplate.view(articleTemplate, contentAuthorizationService, imageService))
       }
       case None => notFound
     }

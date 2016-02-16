@@ -17,9 +17,11 @@ GET     /auth/user                       controllers.NewsUserController.user
 
 # Public site
 GET     /                                controllers.AppController.index
+GET     /company/about                   controllers.AppController.about
+GET     /company/contact                 controllers.AppController.contact
 GET     /help                            controllers.AppController.help
 GET     /section/:category               controllers.AppController.section(category:kipsigman.domain.entity.Category)
-GET     /section/:category/templates/:id  controllers.ArticleTemplateController.view(category:kipsigman.domain.entity.Category, id:Int)
+GET     /section/:category/templates/:id controllers.ArticleTemplateController.view(category:kipsigman.domain.entity.Category, id:Int)
 GET     /section/:category/:seoAlias     controllers.ArticleController.view(category:kipsigman.domain.entity.Category, seoAlias:String)
 
 # Content Management

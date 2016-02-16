@@ -143,7 +143,8 @@ class NewsRepositorySlick @Inject() (
             e.category,
             e.headline,
             e.body,
-            e.imageFileName)
+            e.imageFileName,
+            e.imageCaption)
       }
     }
   }

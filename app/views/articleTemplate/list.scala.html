@@ -6,6 +6,7 @@
   <div class="row">
     <div class="col-md-12">
     @tags.categories(NewsCategoryOptions.allSorted, category, routes.ArticleTemplateController.listByCategory, Option(routes.ArticleTemplateController.list))
+    <p></p>
     </div>
   </div>
   <div class="row">
@@ -17,13 +18,15 @@
       <!-- <td>@articleTemplate.id</td> -->
       <td>@articleTemplate.headline</td>
       <td>
-      @tags.categories(articleTemplate.categoriesSorted, category, routes.ArticleTemplateController.listByCategory, Option(routes.ArticleTemplateController.list))
+      @tags.categories(articleTemplate.categoriesSorted, category, routes.ArticleTemplateController.listByCategory, None)
       </td>
-      <td>
-        <a href="@routes.ArticleController.create(articleTemplate.id.get)" class="btn btn-default btn-sm" title="@Messages("article.customize")"><span class="glyphicon glyphicon-pencil"></span></a>
     @if(user.map(u => u.isEditor).getOrElse(false)) {
-    	<a href="@routes.ArticleTemplateController.edit(articleTemplate.id.get)" class="btn btn-warning btn-sm" title="@Messages("articleTemplate.edit")"><span class="glyphicon glyphicon-edit"></span></a>
-    }    
+      <td>
+    	<a href="@routes.ArticleTemplateController.edit(articleTemplate.id.get)" class="btn btn-warning btn-sm" title="@Messages("articleTemplate.edit")"><span class="glyphicon glyphicon-edit"></span> @Messages("action.edit")</a>
+      </td>
+    }
+      <td>
+        <a href="@routes.ArticleController.create(articleTemplate.id.get)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span> @Messages("article.customize")</a>
       </td>
     </tr>
   }

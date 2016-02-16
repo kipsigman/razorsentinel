@@ -5,7 +5,7 @@ name := "razorsentinel.com"
 
 organization := "kipsigman"
 
-version := "0.2.3"
+version := "0.2.5"
 
 scalaVersion := "2.11.7"
 

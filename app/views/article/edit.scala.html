@@ -1,8 +1,9 @@
 @import kipsigman.domain.entity.Category
 @import kipsigman.play.auth.entity.User
 @import models.Content.Status
+@import services.ImageService
 @import services.UrlService
-@(article: ArticleInflated)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(article: ArticleInflated, imageService: ImageService)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
 @cssIncludes = {
 <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
@@ -10,7 +11,7 @@
 
 @jsIncludes = {
 <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-<script src="@routes.Assets.at("javascripts/article.js")"></script>
+<script src="@routes.Assets.at("javascripts/article-edit.js")"></script>
 }
 
 @main(Messages("article.edit"), Option(article.category), cssIncludes, jsIncludes) {
@@ -25,8 +26,7 @@
     }
   }
   <div class="row">
-    <div class="col-md-7"><h4>@Html(article.headlineInlineEditHtml)</h4></div>
-    <div class="col-md-1">@tags.contentStatus(article.status)</div>
+    <div class="col-md-8"><h4>@Html(article.headlineInlineEditHtml)</h4></div>
     <div class="col-md-4">
       <form>
         <input id="articleId" type="hidden" name="id" value="@article.id.get" />
@@ -59,6 +59,22 @@
       <div id="canPublishFalse"></div>
     </div>
   </div>
+  @if(article.imageFileName.isDefined) {
+  <div class="row">
+    <div class="col-md-6">
+      <div class="thumbnail">
+        <img class="img-responsive" src="@imageService.imageUrl(article)" />
+    @if(article.imageCaption.isDefined) {
+        <div class="caption">
+          @Html(article.imageCaptionInlineEditHtml.get)
+        </div>
+    }
+      </div>
+    </div>
+    <div class="col-md-6">
+    </div>
+  </div>
+  }
   <div class="row">
     <div class="col-md-12">@Html(article.bodyInlineEditHtml)</div>
   </div>

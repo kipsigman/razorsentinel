@@ -23,6 +23,14 @@ class AppController @Inject() (
   newsRepository: NewsRepository
   )(implicit ec: ExecutionContext) extends BaseController(messagesApi, env) {
   
+  def about = UserAwareAction {implicit request =>
+    Ok(views.html.about())
+  }
+  
+  def contact = UserAwareAction {implicit request =>
+    Ok(views.html.contact())
+  }
+  
   def health = Action {
     Ok("Healthy")
   }

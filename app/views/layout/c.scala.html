@@ -65,8 +65,8 @@
               </ul>
             </li>	
   }.getOrElse {
-            <a href="@routes.NewsUserController.signIn(None)" class="btn btn-default navbar-btn"><span class="glyphicon glyphicon-user"></span> @Messages("auth.sign.in")</a>
-            <a href="@routes.NewsUserController.signUp(None)" class="btn btn-default navbar-btn"><span class="glyphicon glyphicon-user"></span> @Messages("auth.sign.up")</a>
+            <a href="@routes.NewsUserController.signIn(None)" class="btn btn-default navbar-btn">@Messages("auth.sign.in")</a>
+            <a href="@routes.NewsUserController.signUp(None)" class="btn btn-default navbar-btn">@Messages("auth.sign.up")</a>
   }
            <li><a href="@routes.AppController.help" title="@Messages("nav.help")"><span class="glyphicon glyphicon-question-sign"></span></a></li>
           </ul>
@@ -96,6 +96,15 @@
     
     <footer class="footer-custom">
       <p>&copy; 2016 @Messages("nav.brand")</p>
+      <p>
+        <ul class="list-inline">
+          @tags.navbarCategories(category)
+        </ul>
+        <ul class="list-inline">
+          <li><a href="@routes.AppController.about">@Messages("nav.about")</a></li>
+          <li><a href="@routes.AppController.contact">@Messages("nav.contact")</a></li>
+        </ul>
+      </p>
     </footer>
 
     <!-- JavaScripts (placed at end of document for fast page load) -->

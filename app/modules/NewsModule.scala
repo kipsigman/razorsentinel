@@ -9,6 +9,7 @@ import play.api.Environment
 import models.NewsRepository
 import models.slick.NewsRepositorySlick
 import services.ContentAuthorizationService
+import services.ImageService
 import services.UrlService
 
 class NewsModule(
@@ -20,6 +21,7 @@ class NewsModule(
     bind(classOf[Config]).toInstance(config)
     bind(classOf[NewsRepository]).to(classOf[NewsRepositorySlick])
     bind(classOf[ContentAuthorizationService])
+    bind(classOf[ImageService])
     bind(classOf[UrlService])
   }
 }

@@ -64,6 +64,22 @@ case class ArticleInflated(article: Article, articleTemplate: ArticleTemplate) e
     case (None, None) => None
   }
   
+  override lazy val imageSource: ArticleContent.ImageSource = article.imageFileName match {
+    case Some(_) => ArticleContent.ImageSource.Article 
+    case None => ArticleContent.ImageSource.Template
+  }
+  
+  /**
+   * Returns body with Tag replacements.
+   */
+  override def imageCaption: Option[String] = {
+    articleTemplate.imageCaption.map(ic =>
+      article.tagReplacements.foldLeft(ic)((str, tagReplacement) => {
+        tagReplacement.replace(str)
+      })  
+    )
+  }
+  
   lazy val articleTemplateId = article.articleTemplateId
   
   lazy val seoAlias: String = article.id match {
@@ -71,18 +87,18 @@ case class ArticleInflated(article: Article, articleTemplate: ArticleTemplate) e
     case None => throw new IllegalArgumentException("Article has no set ID")
   }
   
-  /**
-   * Returns headline for inline edit.
-   */
   def headlineInlineEditHtml: String = {
     TagContent.inlineEditHtml(articleTemplate.headline, article.tagReplacements)
   }
   
-  /**
-   * Returns body for inline edit.
-   */
   def bodyInlineEditHtml: String = {
     TagContent.inlineEditHtml(articleTemplate.body, article.tagReplacements)
+  }
+  
+  def imageCaptionInlineEditHtml: Option[String] = {
+    articleTemplate.imageCaption.map(ic =>
+      TagContent.inlineEditHtml(ic, article.tagReplacements)  
+    )
   }
 
   def addTagReplacement(tagReplacement: TagReplacement): ArticleInflated = {
