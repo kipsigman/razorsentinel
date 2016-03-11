@@ -1,0 +1,7 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(isFirst: Boolean)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div class="widget widget-calendar">
+  <h3>@Messages("widget.calendar.title")</h3>
+  <div id="widget-calendar-fullcalendar"></div>
+</div><!-- widget-calendar -->

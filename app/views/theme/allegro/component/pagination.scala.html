@@ -1,0 +1,16 @@
+@import kipsigman.domain.entity.Page
+@import kipsigman.play.auth.entity.User
+@(page: Page[_], link: (Int) => Call)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div class="pagination">
+  @page.prev.map {pageIndex =>
+  <a class="next page-numbers" href="@link(pageIndex)">@ViewHelper.iconSpan("triangle-left") @Messages("widget.pagination.previous")</a>
+  }.getOrElse {
+  
+  }
+  <span class='page-numbers current'>@page.currentDisplay</span>
+  @page.next.map {pageIndex =>
+  <a class="next page-numbers" href="@link(pageIndex)">@Messages("widget.pagination.next") @ViewHelper.iconSpan("triangle-right")</a>
+  }.getOrElse {
+  
+  }
+</div>

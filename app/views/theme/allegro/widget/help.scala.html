@@ -1,0 +1,9 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(isFirst: Boolean = false, topic: String)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div id="widget-member-info" class="widget">
+  <h3>@Messages(s"help.topic.${topic}.title")</h3>
+  <div class="textwidget">
+    Coming soon!
+  </div>
+</div><!-- widget-member-info -->

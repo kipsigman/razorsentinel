@@ -1,29 +1,11 @@
-@(f: Flash)
+@import kipsigman.play.mvc.AlertContext
+
+@(flash: Flash)
+@for(keyValue <- flash.data) {
 <div class="row">
-@f.data.map {
-  case ("error", value) => {
-    <div class="col-md-12 alert alert-danger">
-	  <a href="#" class="close" data-dismiss="alert">&times;</a>
-	  @value
-    </div>
-  }
-  case ("info", value) => {
-    <div class="col-md-12 alert alert-info">
-	  <a href="#" class="close" data-dismiss="alert">&times;</a>
-	  @value
-    </div>
-  }
-  case ("success", value) => {
-  	<div class="col-md-12 alert alert-success">
-	  <a href="#" class="close" data-dismiss="alert">&times;</a>
-	  @value
-    </div>
-  }
-  case ("warning", value) => {
-  	<div class="col-md-12 alert alert-warning">
-	  <a href="#" class="close" data-dismiss="alert">&times;</a>
-	  @value
-    </div>
-  }
-}
+  <div class="col-md-12 @AlertContext.bootstrapAlertClasses(keyValue._1)">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    @keyValue._2
+  </div>
 </div>
+}

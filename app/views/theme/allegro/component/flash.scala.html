@@ -1,0 +1,4 @@
+@(flash: Flash)
+@for(keyValue <- flash.data) {
+  views.html.theme.allegro.component.alert(keyValue._1, keyValue._2)
+}

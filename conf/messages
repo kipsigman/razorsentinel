@@ -7,32 +7,77 @@ error.http.403=403 Forbidden
 error.http.403.description=You are unauthorized to view this page
 error.http.404=404 Not Found
 error.http.404.description=The requested page or resource cannot be found
+error.http.500=Aww sh*t!
+error.http.500.description=Somebody properly f'd something up. Despite this being an HTTP 500 error (server), we're still going to blame you (client).
 error.required=This field is required
 
 # Sections
-nav.about=About Us
-nav.articles=My Articles
-nav.articleTemplates=Templates
+nav.about=About
 nav.brand=The Razor Sentinel
-nav.contact=Contact Us
-nav.content=Content
+nav.contact=Contact
+nav.content=Manage Content
+nav.content.articles=Articles
+nav.content.templates=Templates
 nav.help=Help
 nav.home=Home
+nav.menu.main=Main Menu
+nav.menu.secondary=Categories
 nav.toggle=Toggle navigation
 
+header.brand.description=The world's finest news source
+footer.copyright=&copy; 2016 Razor Sentinel. All rights reserved.
+
+help.topic.editArticle.title=How to create/edit an article
+help.topic.manageArticles.title=How to manage articles
+help.topic.manageTemplates.title=How to manage templates
+help.whatsThis=What's this?
+
+widget.banner.advertisement=Advertisement
+widget.calendar.title=Calendar
+widget.calendar.dayOfWeek.sun=Sun
+widget.calendar.dayOfWeek.mon=Mon
+widget.calendar.dayOfWeek.tue=Tue
+widget.calendar.dayOfWeek.wed=Wed
+widget.calendar.dayOfWeek.thu=Thu
+widget.calendar.dayOfWeek.fri=Fri
+widget.calendar.dayOfWeek.sat=Sat
+widget.mailingList.title=Mailing List
+widget.helpTopic.title={0} Why be a Member?
+widget.pagination.next=Next
+widget.pagination.previous=Previous
+widget.recentArticles.title=Recent
+widget.recentArticles.category.title=Recent in {0}
+widget.share.email=Email
+widget.share.facebook=Facebook
+widget.share.googlePlus=Google+
+widget.share.linkedin=Linkedin
+widget.share.pinterest=Pinterest
+widget.share.twitter=Twitter
+widget.share.print=Print
+widget.share.socialMedia=Social media
+widget.share.title=Share this article
+widget.trendingArticles.title=Trending
+
 # Company pages
-company.about.description=TODO: content
+company.about.where=Where did we come from?
+company.about.whatDoWeEat=And what do we eat?
 company.contact.email=Email
 company.contact.facebook=Facebook
+company.contact.followUs=Follow us
 company.contact.twitter=Twitter
+
+help.personalization=Personalization
 
 
 # Generic actions
 action.cancel=Cancel
+action.close=Close
+action.create=Create
 action.delete=Delete
 action.delete.confirm=Are you sure you want to delete this?
 action.delete.success=Item deleted
 action.edit=Edit
+action.find.error.notFound={0} with id {2} not found
 action.preview=Preview
 action.save=Save
 action.save.success=Item saved
@@ -40,58 +85,80 @@ action.share.email=Email
 action.view=View
 action.view.more=More
 
+# Entity
+entity.find.error.notFound={0} with id {1} not found
+
 # Content
+content.articles.list.title=Manage Articles
+content.templates.list.title=Manage Templates
 content.error.unauthorized=You are not authorized to modify this content
 content.status=Status
 content.status.deleted=Deleted
 content.status.draft=Draft
+content.status.draft.description=Not viewable by other visitors, not listed, and not indexed by search engines
 content.status.public=Public
-content.status.published=Published
+content.status.public.description=Published, listed on site, indexed by search engines
 content.status.unlisted=Unlisted
+content.status.unlisted.description=Published and viewable by sharing but not listed on site and not indexed by search engines
 content.status.revertToDraft=Revert to Draft
 content.status.publish=Publish
-content.status.publishPublic=Publish Public
-content.status.publishUnlisted=Publish Unlisted
 content.status.save.success=Status updated
 
+categories=Categories
 category=Category
 category.error.invalid=Invalid Category
+category.more=More
 category.name.all=All
 category.name.arts=Arts
 category.name.business=Business
 category.name.entertainment=Entertainment
 category.name.food=Food
 category.name.health=Health
-category.name.lifestyle=Lifestyle
 category.name.local=Local
 category.name.national=National
-category.name.opinion=Opinion
-category.name.politics=Politics
 category.name.science-and-technology=Science & Tech
 category.name.sports=Sports
+category.name.top-stories=Top Stories
 category.name.travel=Travel
 category.name.world=World
 
+
 # Article & Template
 article=Article
-article.anonymous.danger=You are not signed in. You can customize and publish an article anonymously, but you won't be able to edit it later.<br/> To manage your articles, you must <a href='{0}'><strong>Sign In</strong></a> or <a href='{1}'><strong>Sign Up</strong></a>.
+article.anonymous.danger=You are not signed in. You can personalize and publish an article anonymously, but you won't be able to edit it later.<br/> To manage your articles, you must <a href='{0}'><strong>Sign In</strong></a> or <a href='{1}'><strong>Sign Up</strong></a>.
 article.body=Body
-article.customize=Customize
-article.customize.description=Customize this article
+article.create=Create Article
+article.create.success=Article created
+article.create.modal.title=Personalize this Article!
+article.create.modal.body=Did you know that you can <a href="{0}">customize and publish your own version of this</a> and all other articles? Just the right parts are editable, such as names, places, etc. 
+article.create.modal.showMeMore=Show me more!
 article.edit=Edit Article
 article.edit.share=Share
 article.headline=Headline
 article.id=ID
+article.customize=Customize
+article.customize.description=Create a custom version of this article by editing selected parts, such as names, places, etc.
+article.highlights.title=Story Highlights
+article.publishDate=Publish Date
+article.publishDate.fixed.option.true=Fixed as
+article.publishDate.fixed.option.false=Always shows current date
+article.save.error.notFound=The Article with id {0} cannot be found
+article.save.error.templateNotFound=The Article Template with id {0} cannot be found
+article.save.success=Article saved
 article.tagReplacements=Tag Replacements
 article.templateId=Template ID
+article.view.create.alert=Start crafting your article by clicking on the "Customize" button or any of the inline tooltips
 
 articleTemplate=Article Template
 articleTemplate.body=Body
+articleTemplate.body.html.tidy=Tidy Body HTML
+articleTemplate.body.html.tidy.tooltip=Clean up and correct errors in the body HTML
+articleTemplate.create=New Template
+articleTemplate.create.imageAfterSave=After initially saving this Article Template you will be able to add images
 articleTemplate.edit=Edit Template
 articleTemplate.edit.warning=Editing a template will affect existing articles based on that template. You may edit content and insert/remove existing tags. If you wish to add new tags, create a new replacement template and disable this one.
 articleTemplate.headline=Headline
 articleTemplate.id=ID
-articleTemplate.imageCaption=Image Caption
 articleTemplate.tags=Tags
 
 # Auth

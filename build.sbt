@@ -5,8 +5,6 @@ name := "razorsentinel.com"
 
 organization := "kipsigman"
 
-version := "0.2.5"
-
 scalaVersion := "2.11.7"
 
 resolvers += Resolver.bintrayRepo("kipsigman", "maven")
@@ -16,23 +14,28 @@ libraryDependencies ++= Seq(
   filters,
   ws,
   "mysql" % "mysql-connector-java" % "5.1.36",
-  "kipsigman" %% "scala-domain-model" % "0.1.2",
-  "kipsigman" %% "play-auth" % "0.1.4",
+  "kipsigman" %% "scala-domain-model" % "0.2.1",
+  "kipsigman" %% "play-extensions" % "0.2.1",
+  "kipsigman" %% "play-auth" % "0.2.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",
-  "org.webjars" % "jquery" % "2.2.0",
   "org.webjars" % "bootstrap" % "3.3.6",
   "com.adrianhurt" %% "play-bootstrap3" % "0.4.5-P24",
-  "org.julienrf" %% "play-jsmessages" % "2.0.0",
   "org.scalatest" %% "scalatest" % "2.2.5" % "test",
   "org.scalatestplus" %% "play" % "1.4.0" % "test",
   "org.mockito" % "mockito-core" % "1.10.19" % Test
 )
+
+// S3
+resolvers += "Kaliber Internal Repository" at "https://jars.kaliber.io/artifactory/libs-release-local"
+libraryDependencies += "net.kaliber" %% "play-s3" % "7.0.2"
+
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala,ElasticBeanstalkPlugin)
 
 // Play settings
 routesGenerator := InjectedRoutesGenerator
 
+routesImport += "kipsigman.play.mvc.Binders.statusQueryStringBinder"
 routesImport += "models.NewsCategoryOptions.queryStringBinder"
 routesImport += "models.NewsCategoryOptions.pathBinder"
 

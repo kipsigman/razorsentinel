@@ -1,0 +1,79 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(category: Option[Category] = None)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<!-- BEGIN header -->
+<div class="header">
+  <div class="wrapper">
+    <div class="header-logo">
+      <a href="@controllers.routes.SiteController.index"><img src="@controllers.routes.Assets.at("images/icon/apple-touch-icon-60x60.png")" alt="@Messages("nav.brand")" /></a>
+    </div>
+    <div class="header-menu">
+      <p><h2>@Messages("nav.brand")</h2></p>
+    </div>
+    <div class="header-middle">
+      @views.html.theme.allegro.widget.weather(true, None, None)
+    </div>
+    <div class="header-addons">
+      <div class="header-search">
+        <form method="get" action="http://www.google.com/search" name="searchform">
+          <input type="hidden" name="sitesearch" value="@request.host">
+          <input type="search" class="search-input" name="q" placeholder="Search..." results="10" />
+          <input type="submit" value="Search" class="search-button" />
+        </form>
+      </div><!-- header-search -->
+    </div>
+  </div><!-- wrapper -->
+  <div class="main-menu">
+    <div class="wrapper">
+      <ul class="the-menu transition-active menu load-responsive" rel="@Messages("nav.menu.main")">
+        <li class="menu-item menu-item-home"><a class="navbar-brand" href="@routes.SiteController.index">@Messages("nav.home")</a></li>
+        <li class="menu-item"><a href="@routes.SiteController.about">@Messages("nav.about")</a></li>
+        <li class="menu-item"><a href="@routes.SiteController.contact">@Messages("nav.contact")</a></li>
+        <li class="menu-item"><a href="@routes.SiteController.help">@Messages("nav.help")</a></li>
+  @user.map { u =>
+  	    <li class="menu-item menu-item-right current-menu-ancestor current-menu-parent menu-item-has-children ot-dropdown">
+  	      <a href="#">
+    @if(u.avatarURL.isDefined){
+             <span><img src="@u.avatarURL.get" width="25" height="25"/> @u.firstName</span>
+    } else {
+  	      <span class="icon-text">@ViewHelper.iconCodeHtml("user") @u.firstName</span>
+    }
+  	      </a>
+          <ul class="sub-menu">
+            <li class="menu-item"><a href="@routes.UserController.user">@Messages("user.profile")</a></li>
+            <li class="menu-item"><a href="@routes.UserController.signOut">@Messages("auth.sign.out")</a></li>
+          </ul>
+        </li>
+        <li class="menu-item menu-item-right current-menu-ancestor current-menu-parent menu-item-has-children ot-dropdown">
+          <a href="#">
+            <span>@Messages("nav.content")</span>
+          </a>
+          <ul class="sub-menu">
+            <li class="menu-item"><a href="@routes.ArticleController.list">@Messages("nav.content.articles")</a></li>
+    @if(u.isEditor) {
+            <li class="menu-item"><a href="@routes.ArticleTemplateController.list()">@Messages("nav.content.templates")</a></li>
+    }        
+          </ul>
+        </li>
+            
+  }.getOrElse {
+        <li class="menu-item menu-item-right">
+          <a href="@routes.UserController.signUp(None)"><span class="icon-text">@ViewHelper.iconCodeHtml("user")</span> @Messages("auth.sign.up")</a>
+        </li>
+        <li class="menu-item menu-item-right">
+          <a href="@routes.UserController.signIn(None)"><span class="icon-text">@ViewHelper.iconCodeHtml("user")</span> @Messages("auth.sign.in")</a>
+        </li>
+  }
+      </ul>
+    </div>
+  </div><!-- header main menu -->
+  <div class="secondary-menu">
+    <div class="wrapper">
+      <ul class="load-responsive" rel="@Messages("nav.menu.secondary")">
+  @for(category <- NewsCategoryOptions.allSorted) {
+        <li class="menu-item menu-item-type-taxonomy menu-item-object-category"><a href="@routes.SiteController.category(category)">@Messages(s"category.name.${category.name}")</a></li>  
+  }
+      </ul>
+    </div>
+  </div><!-- header secondary menu -->
+</div><!-- header -->

@@ -1,0 +1,18 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.domain.entity.ContentImage
+@import kipsigman.play.auth.entity.User
+@(categoryOption: Option[Category], articlesWithImages: Seq[ArticleWithImages])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div class="widget-articles">
+  <ul>
+@for(awi <- articlesWithImages) {  
+    <li>
+  @defining(awi.contentImages.headOption.map(_.image).getOrElse(ViewHelper.sampleArticleImage)){image =>
+     @views.html.theme.allegro.component.articleImage(categoryOption, awi.article, awi.contentImages.headOption, 59, 42)
+    <div class="article-content">
+      <h4><a href="@ViewHelper.viewArticle(categoryOption, awi.article)">@awi.article.headline</a></h4>
+    </div>
+  }
+    </li>
+}  
+  </ul>
+</div>

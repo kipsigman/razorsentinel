@@ -1,0 +1,10 @@
+@import kipsigman.domain.entity.ContentImage
+@import kipsigman.play.auth.entity.User
+@(contentImageOption: Option[ContentImage])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+  @defining(contentImageOption.map(_.image).getOrElse(ViewHelper.sampleArticleImage)){image =>
+<!-- Begin Image @image.id -->
+<span class="hover-effect">
+  <img class="image-border" src="@kipsigman.play.mvc.routes.S3Controller.image(image.filename.get)" width="@image.width" height="@image.height" />
+</span>
+<!-- End Image @image.id -->
+  }

@@ -1,34 +1,35 @@
 @import kipsigman.play.auth.entity.User
-@()(implicit request: RequestHeader, messages: Messages, user: User)
-
-@mainSecured(Messages("user.profile")) {
-  <div class="row">
-    <div class="col-md-12">
-      <h1>@Messages("user.profile")</h1>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <dl class="dl-horizontal">
-  @if(user.avatarURL.isDefined){
-  	    <dt>@Messages("user.avatar")</dt>
-        <dd><img src="@user.avatarURL.get"/></dd>
+@import b3.vertical.fieldConstructor
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@views.html.theme.allegro.layoutFullWidth(Messages("user.profile")) {
+<div class="paragraph-row">
+  <div class="column6">
+    <form class="form-vertical " role="form">
+  @if(user.get.avatarURL.isDefined){
+      <p><img src="@user.get.avatarURL.get"/></p>
   }
-        <dt>@Messages("user.first.name")</dt>
-        <dd>@user.firstName.getOrElse("None")</dd>
-        <dt>@Messages("user.last.name")</dt>
-        <dd>@user.lastName.getOrElse("None")</dd>
-        <dt>@Messages("user.email")</dt>
-        <dd>@user.email</dd>
-        <dt>@Messages("user.roles")</dt>
-        <dd>
-          <ul>
-  @for(role <- user.roles) {
-            <li>@role.name</li>
+      <div class="form-group" id="email_field">
+        <label class="control-label" for="email">@Messages("user.email")</label>
+        <input type="email" id="email" name="email" value="@user.get.email" class="form-control">
+      </div>
+      <div class="form-group" id="firstName_field">
+        <label class="control-label" for="firstName">@Messages("user.first.name")</label>
+        <input type="text" id="firstName" name="firstName" value="@user.get.firstName.getOrElse("")" class="form-control">
+      </div>
+      <div class="form-group" id="lastName_field">
+        <label class="control-label" for="lastName">@Messages("user.last.name")</label>
+        <input type="text" id="lastName" name="lastName" value="@user.get.lastName.getOrElse("")" class="form-control">
+      </div>
+      <div class="form-group" id="roles_field">
+        <label class="control-label" for="roles">@Messages("user.roles")</label>
+        <ul>
+  @for(role <- user.get.roles) {
+          <li>@role.name</li>
   }
-		</ul>
-        </dd>
-      </dl>
-    </div>
+        </ul>
+      </div>      
+    </form>
   </div>
+  <div class="column6"></div>
+</div>
 }

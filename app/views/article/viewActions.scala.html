@@ -1,0 +1,28 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.domain.entity.ContentImage
+@import kipsigman.play.auth.entity.User
+@(category: Category, article: Article, contentImage: Option[ContentImage])(implicit request: RequestHeader, messages: Messages, user: Option[User])  
+  @defining(ViewHelper.viewArticleAbsoluteUrl(category, article)){shareUrl =>
+  <div>
+    <div class="share-article left">
+      <span>@Messages("widget.share.socialMedia")</span>
+      <strong>@Messages("widget.share.title")</strong>
+    </div>
+    <div class="left">
+      <a href="http://www.facebook.com/sharer/sharer.php?u=@shareUrl" data-url="@shareUrl" class="custom-soc icon-text ot-share" title="@Messages("widget.share.facebook")">@ViewHelper.iconCodeHtml("facebook")</a>
+      <a href="http://twitter.com/intent/tweet?status=From+@@razorsentinel1+@article.headline+@shareUrl" data-url="@shareUrl" data-via="razorsentinel1" data-text="@article.headline" class="ot-tweet custom-soc icon-text" title="@Messages("widget.share.twitter")">@ViewHelper.iconCodeHtml("twitter")</a>
+      <a href="https://plus.google.com/share?url=@shareUrl" class="custom-soc icon-text ot-pluss" title="@Messages("widget.share.googlePlus")">@ViewHelper.iconCodeHtml("google+")</a>
+    @if(contentImage.isDefined){
+      <a href="http://pinterest.com/pin/create/button/?url=@shareUrl&media=@ViewHelper.contentImageAbsoluteUrl(contentImage.get)&description=@article.headline" data-url="@shareUrl" class="ot-pin custom-soc icon-text" title="@Messages("widget.share.pinterest")">@ViewHelper.iconCodeHtml("pinterest")</a>
+    }
+      <a href="http://www.linkedin.com/shareArticle?mini=true&url=@shareUrl&title=@article.headline" data-url="@shareUrl" class="ot-link custom-soc icon-text" title="@Messages("widget.share.linkedin")">@ViewHelper.iconCodeHtml("linkedin")</a>
+      <a href="mailto:?subject=Check out this article&body=@shareUrl" class="ot-link custom-soc icon-text" title="@Messages("widget.share.email")">@ViewHelper.iconCodeHtml("mail")</a>
+    </div>
+    <div class="clear-float"></div>
+  </div>
+  <div>
+    <a href="javascript:printArticle();" class="small-button">@ViewHelper.iconSpan("print")&nbsp;&nbsp;@Messages("widget.share.print")</a>
+    <a href="@routes.ArticleController.create(article.articleTemplate.id.get)" title="@Messages("article.customize.description")" class="small-button">@ViewHelper.iconSpan("pencil")&nbsp;&nbsp;@Messages("article.customize")</a> 
+    (<a class="show-create-cta" href="#">@Messages("help.whatsThis")</a>)
+  </div>
+  }

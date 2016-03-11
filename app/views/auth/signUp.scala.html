@@ -1,25 +1,22 @@
 @import kipsigman.play.auth.entity.User
 @import b3.vertical.fieldConstructor
 @(form: Form[kipsigman.play.auth.mvc.SignUpForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[User])
-
-@main(Messages("auth.sign.up")) {
-<div class="row">
-  <div class="col-md-6">
-  @b3.form(helper.CSRF(routes.NewsUserController.signUpPost())) {
+@views.html.theme.allegro.layoutFullWidth(Messages("auth.sign.up")) {
+<div class="paragraph-row">
+  <div class="column6">
+    <p>
+      @Messages("auth.already.a.member") <a href="@routes.UserController.signIn(form("successUrl").value)">@Messages("auth.sign.in")</a>
+    </p>
+  @b3.form(helper.CSRF(routes.UserController.signUpPost())) {
     @b3.text(form("firstName"), '_hiddenLabel -> Messages("user.first.name"), 'placeholder -> Messages("user.first.name"))
     @b3.text(form("lastName"), '_hiddenLabel -> Messages("user.last.name"), 'placeholder -> Messages("user.last.name"))
     @b3.text(form("email"), '_hiddenLabel -> Messages("user.email"), 'placeholder -> Messages("user.email"))
     @b3.password(form("password"), '_hiddenLabel -> Messages("user.password"), 'placeholder -> Messages("user.password"))
     @b3.hidden("successUrl", form("successUrl").value)
-    @tags.submitAndCancel(Some(Messages("auth.sign.up")), routes.AppController.index())
+    @views.html.theme.allegro.component.formButtons(routes.SiteController.index(), None, Some(Messages("auth.sign.up")))
   }
+  
   </div>
-  <div class="col-md-6">
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-	@Messages("auth.already.a.member") <a href="@routes.NewsUserController.signIn(form("successUrl").value)">@Messages("auth.sign.in")</a>
-  </div>
+  <div class="column6"></div>
 </div>
 }

@@ -1,6 +1,12 @@
 @import kipsigman.play.auth.entity.User
 @()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@main(Messages("nav.help")) {
-  TODO: Add content
+@views.html.theme.allegro.layoutFullWidth(Messages("nav.help")) {
+<div class="paragraph-row">
+  <div class="column12">
+    <p>
+      Help goes here
+    </p>
+  </div>
+</div><!-- paragraph-row -->
 }

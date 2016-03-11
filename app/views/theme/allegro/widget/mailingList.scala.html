@@ -1,0 +1,9 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(isFirst: Boolean = false)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div id="widget-mailing-list" class="widget">
+  <h3>@Messages("widget.mailingList.title")</h3>
+  <div class="textwidget">
+    Email: <input type="text" name="email" />
+  </div>
+</div><!-- widget-mailing-list -->

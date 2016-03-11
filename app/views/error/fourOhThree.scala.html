@@ -1,7 +1,10 @@
 @import kipsigman.play.auth.entity.User
-@(message: Option[String] = None)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@main(Messages("error.http.403")) {
-  @Messages("error.http.403.description")
-  @message.getOrElse("")
+@views.html.theme.allegro.layoutFullWidth(Messages("error.http.403")) {
+<div class="paragraph-row">
+  <div class="column12">
+    <p>@Messages("error.http.403.description")</p>
+  </div>
+</div>
 }

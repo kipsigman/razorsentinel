@@ -1,0 +1,10 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<!-- BEGIN main-sidebar right -->
+<div class="main-sidebar right">
+  @views.html.theme.allegro.widget.sidebarBanner(true, 300, 250)
+  @views.html.theme.allegro.widget.calendar(false)
+@**  @views.html.theme.allegro.widget.mailingList(false) **@
+</div>
+<!-- END main-sidebar right -->

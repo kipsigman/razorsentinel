@@ -1,0 +1,16 @@
+@import kipsigman.play.auth.entity.User
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<!-- BEGIN footer -->
+<div class="footer">
+  <div class="wrapper">
+    <ul class="right load-responsive" rel="Footer Menu">
+      <li class="menu-item"><a class="navbar-brand" href="@routes.SiteController.index">@Messages("nav.home")</a></li>
+      <li class="menu-item"><a href="@routes.SiteController.about">@Messages("nav.about")</a></li>
+      <li class="menu-item"><a href="@routes.SiteController.contact">@Messages("nav.contact")</a></li>
+      <li class="menu-item"><a href="@routes.SiteController.help">@Messages("nav.help")</a></li>
+    </ul>
+    <a href="@controllers.routes.SiteController.index()" class="logo-footer"><img src="@routes.Assets.at("theme/allegro/images/logo-footer.png")" alt="@Messages("nav.brand")" /></a>
+	<p>@Html(Messages("footer.copyright"))</p>
+  </div>
+</div>
+<!-- END footer -->

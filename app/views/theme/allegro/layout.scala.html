@@ -1,0 +1,80 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(title: String, category: Option[Category] = None, headIncludes: Html = Html(""), jsIncludes: Html = Html(""))(mainContent: Html)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+  <head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>@title</title>
+    
+    <!-- Icons -->
+		<link rel="apple-touch-icon" sizes="57x57" href="@routes.Assets.at("images/icon/apple-touch-icon-57x57.png")">
+		<link rel="apple-touch-icon" sizes="60x60" href="@routes.Assets.at("images/icon/apple-touch-icon-60x60.png")">
+		<link rel="apple-touch-icon" sizes="72x72" href="@routes.Assets.at("images/icon/apple-touch-icon-72x72.png")">
+		<link rel="apple-touch-icon" sizes="76x76" href="@routes.Assets.at("images/icon/apple-touch-icon-76x76.png")">
+		<link rel="apple-touch-icon" sizes="114x114" href="@routes.Assets.at("images/icon/apple-touch-icon-114x114.png")">
+		<link rel="apple-touch-icon" sizes="120x120" href="@routes.Assets.at("images/icon/apple-touch-icon-120x120.png")">
+		<link rel="apple-touch-icon" sizes="144x144" href="@routes.Assets.at("images/icon/apple-touch-icon-144x144.png")">
+		<link rel="apple-touch-icon" sizes="152x152" href="@routes.Assets.at("images/icon/apple-touch-icon-152x152.png")">
+		<link rel="apple-touch-icon" sizes="180x180" href="@routes.Assets.at("images/icon/apple-touch-icon-180x180.png")">
+		<link rel="icon" type="image/png" href="@routes.Assets.at("images/icon/favicon-32x32.png")" sizes="32x32">
+		<link rel="icon" type="image/png" href="@routes.Assets.at("images/icon/android-chrome-192x192.png")" sizes="192x192">
+		<link rel="icon" type="image/png" href="@routes.Assets.at("images/icon/favicon-96x96.png")" sizes="96x96">
+		<link rel="icon" type="image/png" href="@routes.Assets.at("images/icon/favicon-16x16.png")" sizes="16x16">
+		<link rel="mask-icon" href="@routes.Assets.at("images/icon/safari-pinned-tab.svg")" color="#5bbad5">
+    
+    <!-- Styles -->
+    <link rel='stylesheet' href='@controllers.routes.Assets.at("css/bootstrap.min.css")' type='text/css' media='screen' />
+@*    <link rel='stylesheet' href='@controllers.routes.Assets.at("theme/allegro/css/jquery-ui.min.css")' type='text/css' media='screen' />*@
+	  <link rel='stylesheet' id='reset-css'  href='@controllers.routes.Assets.at("theme/allegro/css/reset.css")' type='text/css' media='all' />
+	  <link rel='stylesheet' id='main-stylesheet-css'  href='@controllers.routes.Assets.at("theme/allegro/css/main-stylesheet.css")' type='text/css' media='all' />
+	  <link rel='stylesheet' id='shortcodes-css'  href='@controllers.routes.Assets.at("theme/allegro/css/shortcode.css")' type='text/css' media='all' />
+	  <link rel='stylesheet' id='responsive-css'  href='@controllers.routes.Assets.at("theme/allegro/css/responsive.css")' type='text/css' media='all' />
+	  <link rel='stylesheet' id='datmenu-css-css'  href='@controllers.routes.Assets.at("theme/allegro/css/dat-menu.css")' type='text/css' media='all' />
+    <!--[if lte IE 9]><link rel="stylesheet" type="text/css" href="@controllers.routes.Assets.at("theme/allegro/css/vc_lte_ie9.min.css")" media="screen"><![endif]--><!--[if IE  8]><link rel="stylesheet" type="text/css" href="http://localhost:8888/wp-content/plugins/js_composer/assets/css/vc-ie8.min.css" media="screen"><![endif]--><noscript><style type="text/css"> .wpb_animate_when_almost_visible { opacity: 1; }</style></noscript>
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("fullcalendar-2.6.1/fullcalendar.css")">
+    <link rel="stylesheet" media="screen" href="@controllers.routes.Assets.at("theme/allegro/css/razor-sentinel.css")">
+    @headIncludes
+  </head>
+  <body>
+    <div class="boxed">
+      @views.html.theme.allegro.header(category)
+      <div class="content">
+        <div class="wrapper">
+          @views.html.theme.allegro.component.contentBanner(true, 728, 90)
+          
+          @mainContent
+          
+        </div><!-- wrapper -->
+      </div><!-- content -->
+      @views.html.theme.allegro.footer()
+    </div><!-- boxed -->
+    
+    <!-- BEGIN javascripts -->
+<script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+<script type="text/javascript" src="@controllers.routes.Assets.at("js/bootstrap.min.js")"></script>
+<script type='text/javascript' src='@controllers.routes.Assets.at("theme/allegro/js/modernizr.custom.50878.js")'></script>
+@*<script type='text/javascript' src='@controllers.routes.Assets.at("theme/allegro/js/jquery-ui.min.js")'></script>*@
+<script type='text/javascript' src='@controllers.routes.Assets.at("theme/allegro/js/jquery.infinitescroll.min.js")'></script>
+<script type='text/javascript' src='@controllers.routes.Assets.at("theme/allegro/js/allegro-custom.js")'></script>
+<script type='text/javascript' src='@controllers.routes.Assets.at("theme/allegro/js/theme-scripts.js")'></script>
+<script type='text/javascript' src='@controllers.routes.Assets.at("theme/allegro/js/iscroll.js")'></script>
+<script type='text/javascript' src='@controllers.routes.Assets.at("theme/allegro/js/dat-menu.js")'></script>
+
+<!-- fullcalendar -->
+<script src="@routes.Assets.at("js/moment-with-locales.js")"></script>
+<script src="@routes.Assets.at("fullcalendar-2.6.1/fullcalendar.js")"></script>
+<script src="@routes.Assets.at("fullcalendar-2.6.1/gcal.js")"></script>
+
+<script type="text/javascript" src="@controllers.routes.Assets.at("javascripts/main.js")"></script>
+<script type="text/javascript" src="@controllers.routes.Assets.at("javascripts/widgets.js")"></script>
+<script type="text/javascript" src="@routes.JavaScriptResourceController.configJs"></script>
+<script type="text/javascript" src="@routes.JavaScriptResourceController.messagesJs"></script>
+<script type="text/javascript" src="@routes.JavaScriptResourceController.routesJs"></script>
+@jsIncludes
+    <!-- END javascripts -->
+  </body>
+</html>

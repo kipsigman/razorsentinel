@@ -1,0 +1,13 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(isFirst: Boolean, width: Int, height: Int)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div id="widget-sidebar-banner" class="widget@if(isFirst){ first}">
+  <div class="banner">
+    <a href="#" target="_blank"><img src="@controllers.routes.Assets.at(s"theme/allegro/images/no-banner-${width}x${height}.jpg")" /></a>
+    <a href="@controllers.routes.SiteController.contact" class="ad-link">
+      <span class="icon-text">&#9652;</span>
+      @Messages("widget.banner.advertisement")
+      <span class="icon-text">&#9652;</span>
+    </a>
+  </div>
+</div><!-- widget banner -->

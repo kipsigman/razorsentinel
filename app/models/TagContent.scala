@@ -1,5 +1,7 @@
 package models
 
+import play.api.i18n.Messages
+
 /**
  * Inline edit is done with X-editable: https://vitalets.github.io/x-editable/
  */
@@ -21,12 +23,12 @@ object TagContent {
     
     // Replace Default tag values with Replacements
     tagReplacementSet.foldLeft(initialEditHtml)((str, tagReplacement) => {
-      tagReplacement.inlineEditReplace(str)
+      tagReplacement.replaceWithInlineEdit(str)
     })
   }
 
   private def inlineEditHtml(tagMatch: scala.util.matching.Regex.Match) = {
-    "<a href=\"#\" class=\"field-editable\" data-type=\"text\" data-name=\"" + tagMatch.toString + "\" data-value=\"" + tagMatch.group(1) + "\">" + tagMatch.toString + "</a>"
+    s"""<a href="#" class="article-tag-editable" data-type="text" data-name="${tagMatch.toString}">${tagMatch.group(1)}</a>"""
   }
 }
 
@@ -40,14 +42,20 @@ case class TagReplacement(tag: String, replacement: String) {
   val tagRegex = tagRegexStr.r
 
   def replace(str: String): String = {
-    tagRegex.replaceAllIn(str, replacement)
+    val replaceHtml = s"""${replacement}"""
+    tagRegex.replaceAllIn(str, replaceHtml)
+  }
+  
+  def replaceWithTooltip(str: String): String = {
+    val replaceHtml = s"""<span class="article-tag" data-toggle="tooltip" data-placement="top">${replacement}</span>"""
+    tagRegex.replaceAllIn(str, replaceHtml)
   }
   
   // Replace displayed value for Tag in edit HTML
-  // <a href="#" class="field-editable" data-type="text" data-name="{first}" data-value="first">{first}</a>
-  val inlineEditRegex = (s"""data-value="$placeholderValue">$tagRegexStr</a>""").r
-  def inlineEditReplace(str: String): String = {
-    val editReplacement = s"""data-value="$replacement">$replacement</a>"""
+  // <a href="#" class="field-editable" data-type="text" data-name="{first}">first</a>
+  val inlineEditRegex = (s""">$placeholderValue</a>""").r
+  def replaceWithInlineEdit(str: String): String = {
+    val editReplacement = s""">$replacement</a>"""
     inlineEditRegex.replaceAllIn(str, editReplacement)
   }
   

@@ -1,16 +1,19 @@
 @import kipsigman.play.auth.entity.User
 @()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@main(Messages("nav.contact")) {
-  <div class="row">
-    <div class="col-md-12">
-	  <h1>@Messages("nav.contact")</h1>
-	  <p>
-	    <dl>
-          <dt>@Messages("company.contact.twitter")</dt>
-          <dd><a href="https://twitter.com/razorsentinel1">https://twitter.com/razorsentinel1</a></dd>
-        </dl>
-	  </p>
-    </div>
+@views.html.theme.allegro.layoutFullWidth(Messages("nav.contact")) {
+<div class="paragraph-row">
+  <div class="column12">
+    <h2>@Messages("company.contact.followUs")</h2>
+    <p>
+      <a href="https://twitter.com/razorsentinel1" target="_blank" class="social-icon">@ViewHelper.iconSpan("twitter") <b>Twitter</b></a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="https://www.facebook.com/razorsentinel/" target="_blank" class="social-icon">@ViewHelper.iconSpan("facebook") <b>Facebook</b></a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="#" target="_blank" class="social-icon">@ViewHelper.iconSpan("google+") <b>Google+</b></a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="#" target="_blank" class="social-icon"><span class="icon-text">&#62232;</span> <b>LinkedIn</b></a>
+    </p>
   </div>
+</div><!-- paragraph-row -->
 }

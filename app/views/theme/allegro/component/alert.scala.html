@@ -1,0 +1,6 @@
+@import kipsigman.play.mvc.AlertContext
+@(alertContext: AlertContext, value: String, cssId: Option[String] = None)
+<div@if(cssId.isDefined){ id="@cssId.get"} class="@ViewHelper.alertClasses(alertContext)" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  @Html(value)
+</div>

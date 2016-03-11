@@ -1,0 +1,5 @@
+@import kipsigman.domain.entity.Category
+@(categories: Seq[Category])(implicit messages: Messages)
+@for(category <- categories) {
+  @views.html.theme.allegro.component.categoryLabel(category)
+}

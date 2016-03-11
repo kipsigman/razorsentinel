@@ -1,0 +1,8 @@
+@import kipsigman.domain.entity.Category
+@(outerDiv: Boolean, activeCategory: Option[Category])(implicit request: RequestHeader, messages: Messages)
+@if(outerDiv){<div class="breaking-news">}
+  <span class="the-title">@Messages("widget.breakingNews.title")</span>
+  <ul>
+    <li><a href="http://localhost:8888/2016/02/29/test-post-1/">Test post 1</a></li>
+  </ul>
+@if(outerDiv){</div><!-- breaking-news -->}

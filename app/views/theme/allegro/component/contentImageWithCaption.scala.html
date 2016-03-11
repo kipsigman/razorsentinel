@@ -1,0 +1,15 @@
+@import kipsigman.domain.entity.ContentImage
+@import kipsigman.play.auth.entity.User
+@(contentImage: ContentImage)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+  @defining(contentImage.image){image =>
+<!-- Begin Image @image.id -->
+<div class="wp-caption aligncenter">  
+  <img class="image-border" src="@kipsigman.play.mvc.routes.S3Controller.image(image.filename.get)" width="@image.width" height="@image.height" />
+    @if(image.caption.isDefined) {
+  <p class="wp-caption-text">
+    @image.caption.get
+  </p>
+    }
+</div>
+<!-- End Image @image.id -->
+  }

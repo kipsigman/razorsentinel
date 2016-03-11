@@ -1,0 +1,21 @@
+@import kipsigman.play.mvc.AlertContext
+@import kipsigman.play.auth.entity.User
+@(article: Article, isView: Boolean = true)(implicit request: RequestHeader, messages: Messages, user: Option[User])  
+<div class="paragraph-row">
+  <div class="column3">
+    <h3 class="highlight-title">@Messages("article.highlights.title")</h3>
+    <ul>
+      <li>Eam tation docendi denique ea, ius no novum saepe legere.</li>
+      <li>Homero praesent dissentias his et, mel civibus inimicus te, qui justo pertinacia conclusionemque no. </li>
+      <li> Ea cum quodsi omnium aliquando, mollis ornatus ad sit.</li>
+    </ul>
+  </div>
+  <div class="column9">
+  @if(isView){
+    @Html(article.bodyWithTooltips)
+    @views.html.theme.allegro.component.alert(AlertContext.Info, Messages("article.view.create.alert"), Some("create-article-alert"))
+  } else {
+    @Html(article.bodyInlineEditHtml)
+  }
+  </div>
+</div>

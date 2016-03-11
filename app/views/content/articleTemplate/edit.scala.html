@@ -1,0 +1,70 @@
+@import kipsigman.domain.entity.ContentImage
+@import kipsigman.play.auth.entity.User
+
+@import b3.vertical.fieldConstructor
+@(form: Form[_], contentImages: Seq[ContentImage], tidyBody: Option[String], categoryOptions: Seq[(String, String)], showWarning: Boolean = false)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+
+@headIncludes = {
+<link rel="stylesheet" media="screen" href="@controllers.routes.Assets.at("css/html5imageupload.css")">
+}
+
+@jsIncludes = {
+<script src="@routes.Assets.at("js/html5imageupload.min.js")"></script>
+<script src="@routes.Assets.at("javascripts/content/content-image.js")"></script>
+<script src="@routes.Assets.at("javascripts/content/article-template-edit.js")"></script>
+}
+
+@views.html.deprecated.main(title = Messages("articleTemplate"), headIncludes = headIncludes, jsIncludes = jsIncludes) {
+  @if(showWarning){
+  <div class="row">
+    <div class="col-md-12 alert alert-warning">
+      @Messages("articleTemplate.edit.warning")
+    </div>
+  </div>
+  }
+  @if(form("id").value.isEmpty){
+  <div class="row">
+    <div class="col-md-12 alert alert-info">
+	  <a href="#" class="close" data-dismiss="alert">&times;</a>
+	  @Messages("articleTemplate.create.imageAfterSave")
+    </div>
+  </div>
+  }
+  
+  <div class="row">
+    <div class="col-md-12">
+  @b3.form(helper.CSRF(routes.ArticleTemplateController.save())) {
+    @if(form.hasGlobalErrors) {
+        <ul>
+      @for(error <- form.globalErrors) {
+          <li><span class="text-danger">@error.message</span></li>
+      }
+        </ul>
+    }
+    @b3.hidden("id", form("id").value)
+    @b3.hidden("contentId", form("id").value, 'id -> "contentId")
+    @b3.hidden("contentClass", ArticleTemplate.contentClass.toString, 'id -> "contentClass")
+    @b3.select(form("categories"), options = categoryOptions, '_label -> Messages("categories"), 'multiple -> true)
+    @b3.text(form("headline"), '_label -> Messages("articleTemplate.headline"))
+    
+  @if(form("id").value.isDefined){
+    @for(contentImage <- contentImages){
+      @views.html.content.image(form("id").value.get.toInt, Option(contentImage.image))
+    }
+    @if(contentImages.isEmpty){
+      @views.html.content.image(form("id").value.get.toInt, None)
+    }
+  } else {
+    <p class="text-info">Note: you may add images after initally saving this template</p>
+  }
+    
+    @b3.textarea(form("body"), '_label -> Messages("articleTemplate.body"), 'rows -> 20)
+    
+    @defining(if(form("id").value.isDefined){Option(s"""<a id="tidy-body" href="#" class="btn btn-warning" role="button" data-toggle="tooltip" data-placement="left" title="${Messages("articleTemplate.body.html.tidy.tooltip")}">${Messages("articleTemplate.body.html.tidy")}</a>""")}else{None}) {firstButton =>
+      <div id="tidy-body-content" style="display: none;">@tidyBody.getOrElse("")</div>
+      @views.html.theme.allegro.component.formButtons(routes.ArticleTemplateController.list(), firstButton)
+    }
+  }
+    </div>
+  </div>
+}

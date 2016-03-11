@@ -13,6 +13,6 @@ abstract class BaseController (
   messagesApi: MessagesApi,
   env: Environment[User, CookieAuthenticator])
   (implicit ec: ExecutionContext)
-  extends AuthController(messagesApi, env) with NewsErrorResults {
+  extends AuthController(messagesApi, env) with ErrorResults {
 
 }

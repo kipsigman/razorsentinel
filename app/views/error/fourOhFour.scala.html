@@ -1,6 +1,10 @@
 @import kipsigman.play.auth.entity.User
 @()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@main(Messages("error.http.404")) {
+@views.html.theme.allegro.layoutFullWidth(Messages("error.http.404")) {
+<div class="paragraph-row">
+  <div class="column12">
   <p>@Messages("error.http.404.description")</p>
+  </div>
+</div>
 }

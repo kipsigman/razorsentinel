@@ -1,19 +1,81 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.domain.entity.ContentImage
 @import kipsigman.play.auth.entity.User
+@import kipsigman.play.mvc.AlertContext
 @import services.ContentAuthorizationService
-@import services.ImageService
-@import services.UrlService
-@(article: ArticleInflated, contentAuthorizationService: ContentAuthorizationService, imageService: ImageService)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(category: Category, article: Article, contentImages: Seq[ContentImage], contentAuthorizationService: ContentAuthorizationService)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@contentActions = {
-  @if(contentAuthorizationService.canViewEditLink(article)){
-  	<a href="@routes.ArticleController.edit(article.id.get)" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span> @Messages("action.edit")</a>
-  }else{
-    @if(!article.isOwnedBy(user)){
-    <a href="@routes.ArticleController.create(article.articleTemplateId)" class="btn btn-warning btn-xs" title="@Messages("article.customize.description")"><span class="glyphicon glyphicon-pencil"></span> @Messages("article.customize")</a>
-    }
+@headIncludes = {
+  @if(!article.isPublic) {
+  	<meta name="robots" content="noindex">
   }
 }
-	
-@defining(routes.ArticleController.view(article.category, article.seoAlias).absoluteURL) {viewUrl =>
-  @tags.viewArticleContent(article, viewUrl, contentActions, imageService)  
+@jsIncludes = {
+<script src="@routes.Assets.at("javascripts/article/view.js")"></script>
+}
+
+@views.html.theme.allegro.layout(article.headline, Option(article.category), headIncludes = headIncludes, jsIncludes = jsIncludes) {
+<input id="articleTemplateId" type="hidden" name="articleTemplateId" value="@article.articleTemplate.id.get" />
+<div id="create-cta" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">@Messages("article.create.modal.title")</h4>
+      </div>
+      <div class="modal-body">
+        @Html(Messages("article.create.modal.body", routes.ArticleController.create(article.articleTemplate.id.get)))
+      </div>
+      <div class="modal-footer">
+        <button id="show-tags" class="btn btn-primary">@Messages("article.create.modal.showMeMore")</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="full-width">
+    <div class="article-title">
+      <div class="share-block right">
+      @views.html.article.viewActions(category, article, contentImages.headOption)
+      </div>
+      @views.html.theme.allegro.component.categoryLabel(category)
+      <h1>@Html(article.headlineWithTooltips)</h1>
+      <div class="author">
+        <div class="a-content">
+          <span class="meta">@ViewHelper.displayPublishDate(article.publishDate)</span>
+        </div>
+      </div>
+    </div><!-- article-title -->
+  </div><!-- full-width -->		
+  <div class="main-page left">
+    <div class="single-block">
+      <div class="content-block main left">
+        <div class="block">
+          <div class="block-content post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
+            <p>
+              @views.html.theme.allegro.component.contentImage(contentImages.headOption)
+            </p>
+            <div class="shortcode-content">
+              @views.html.article.body(article, true)
+              <div id="end-article" class="paragraph-row article-title">
+                <div class="column3">
+                  &nbsp;
+                </div>
+                <div class="column9">
+                  <br/>
+                  @views.html.article.viewActions(category, article, contentImages.headOption)
+                </div>
+              </div>
+            </div><!-- shortcode-content -->
+          </div><!-- body/image -->
+          @** @views.html.article.comments(article) **@
+        </div><!-- block -->
+      </div><!-- content-block main left-->
+    </div><!-- single-block -->
+  </div><!-- main-page -->
+  @views.html.theme.allegro.sidebarArticle(article)
+  <div class="clear-float"></div>
+</div><!-- main-content -->
 }

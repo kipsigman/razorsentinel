@@ -2,17 +2,15 @@ package services
 
 import javax.inject.Inject
 import javax.inject.Singleton
-
+import kipsigman.domain.entity.Content
 import kipsigman.play.auth.entity.User
 import org.slf4j.LoggerFactory
 
-import models.Article
 import models.ArticleTemplate
-import models.Content
-import models.NewsRepository
+import models.ModelRepository
 
 @Singleton
-class ContentAuthorizationService @Inject() (newsRepository: NewsRepository) {
+class ContentAuthorizationService @Inject() (modelRepository: ModelRepository) {
   
   private val logger = LoggerFactory.getLogger(this.getClass)
   

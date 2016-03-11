@@ -1,0 +1,8 @@
+@import kipsigman.domain.entity.Image
+@import kipsigman.play.auth.entity.User
+
+@(contentId: Int, imageOption: Option[Image])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+
+<div id="image-@if(imageOption.isDefined){@imageOption.get.id.get}else{primary-new}" class="image-container" data-content-id="@contentId"@if(imageOption.isDefined){ data-image-id="@imageOption.get.id.get"}>
+  @views.html.content.imageDropzone(imageOption)
+</div>

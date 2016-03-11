@@ -1,0 +1,6 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(isFirst: Boolean, excludeIds: Seq[Int])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div id="widget-trending-articles" class="widget@if(isFirst){ first}" data-populate-url="@controllers.routes.WidgetController.trendingArticles(excludeIds)">
+  <h3>@Messages("widget.trendingArticles.title")</h3>
+</div><!-- widget-trending-articles -->

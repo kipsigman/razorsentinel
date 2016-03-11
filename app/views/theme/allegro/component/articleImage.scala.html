@@ -1,0 +1,14 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.domain.entity.ContentImage
+@import kipsigman.play.auth.entity.User
+@(categoryOption: Option[Category], article: Article, contentImageOption: Option[ContentImage], width: Int, height: Int)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+  @defining(contentImageOption.map(_.image).getOrElse(ViewHelper.sampleArticleImage)){image =>
+  
+<!-- Begin Image @image.id -->
+<div class="article-photo">
+  <a href="@ViewHelper.viewArticle(categoryOption, article)" class="hover-effect">
+    <img class="image-border" src="@kipsigman.play.mvc.routes.S3Controller.image(image.filename.get)" width="@width" height="@height" />
+  </a>
+</div>
+<!-- End Image @image.id -->
+  }

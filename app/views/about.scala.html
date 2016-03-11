@@ -1,13 +1,19 @@
 @import kipsigman.play.auth.entity.User
 @()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@main(Messages("nav.about")) {
-  <div class="row">
-    <div class="col-md-12">
-	  <h1>@Messages("nav.about")</h1>
+@views.html.theme.allegro.layoutFullWidth(Messages("nav.about")) {
+<div class="paragraph-row">
+	<div class="column6">
+	  <h2>@Messages("company.about.where")</h2>
 	  <p>
-	  @Messages("company.about.description")
+	  This site started as primary developer <a href="http://www.github.com/kipsigman">Kip Sigman's</a> idea for a sample project to learn programming Java Servlets and Struts sometime around 2001.
+	  Kip has since re-used the concept many times to learn and/or create proof of concept projects for many different languages, frameworks, platforms, etc. He finally decided to turn it into a full fledged project and share it with the world!
 	  </p>
-    </div>
-  </div>
+	  <h2>@Messages("company.about.whatDoWeEat")</h2>
+	  <p>Burritos and lots of Asian food.</p>
+	</div>
+	<div class="column6">
+	  And more blah blah.
+	</div>
+</div>
 }

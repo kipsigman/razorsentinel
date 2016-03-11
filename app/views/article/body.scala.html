@@ -1,0 +1,13 @@
+@import kipsigman.play.mvc.AlertContext
+@import kipsigman.play.auth.entity.User
+@(article: Article, isView: Boolean = true)(implicit request: RequestHeader, messages: Messages, user: Option[User])  
+<div class="paragraph-row">
+  <div class="column12">
+  @if(isView){
+    @Html(article.bodyWithTooltips)
+    @views.html.theme.allegro.component.alert(AlertContext.Info, Messages("article.view.create.alert"), Some("create-article-alert"))
+  } else {
+    @Html(article.bodyInlineEditHtml)
+  }
+  </div>
+</div>

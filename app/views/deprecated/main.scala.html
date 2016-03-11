@@ -1,0 +1,4 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(title: String, category: Option[Category] = None, headIncludes: Html = Html(""), jsIncludes: Html = Html(""))(content: Html)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@views.html.deprecated.layout(title, category, headIncludes, jsIncludes)(content)

@@ -1,43 +1,59 @@
-# Routes
+# Static Assets
+GET     /robots.txt                 controllers.Assets.at(path="/public", file = "robots.txt")
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets-versioned/*file     controllers.Assets.versioned(path="/public", file: Asset)
+GET     /s3assets/images/*filename  kipsigman.play.mvc.S3Controller.image(filename)
+GET     /s3assets/*filename         kipsigman.play.mvc.S3Controller.file(filename)
 
-# Resources
-GET     /robots.txt                      controllers.Assets.at(path="/public", file = "robots.txt")
-GET     /assets/*file                    controllers.Assets.at(path="/public", file)
-GET     /assets-versioned/*file          controllers.Assets.versioned(path="/public", file: Asset)
-GET     /javascriptRoutes                controllers.AppController.javascriptRoutes
-GET     /messages.js                     controllers.AppController.jsMessages
+# JavaScript resources
+GET     /resources/config.js        controllers.JavaScriptResourceController.configJs
+GET     /resources/messages.js      controllers.JavaScriptResourceController.messagesJs
+GET     /resources/routes.js        controllers.JavaScriptResourceController.routesJs
 
 # Auth/User
-GET     /auth/signIn                     controllers.NewsUserController.signIn(successUrl: Option[String] ?= None)
-POST    /auth/signIn                     controllers.NewsUserController.signInPost
-GET     /auth/signOut                    controllers.NewsUserController.signOut
-GET     /auth/signUp                     controllers.NewsUserController.signUp(successUrl: Option[String] ?= None)
-POST    /auth/signUp                     controllers.NewsUserController.signUpPost
-GET     /auth/user                       controllers.NewsUserController.user
+GET     /auth/signIn                     controllers.UserController.signIn(successUrl: Option[String] ?= None)
+POST    /auth/signIn                     controllers.UserController.signInPost
+GET     /auth/signOut                    controllers.UserController.signOut
+GET     /auth/signUp                     controllers.UserController.signUp(successUrl: Option[String] ?= None)
+POST    /auth/signUp                     controllers.UserController.signUpPost
+GET     /auth/user                       controllers.UserController.user
 
-# Public site
-GET     /                                controllers.AppController.index
-GET     /company/about                   controllers.AppController.about
-GET     /company/contact                 controllers.AppController.contact
-GET     /help                            controllers.AppController.help
-GET     /section/:category               controllers.AppController.section(category:kipsigman.domain.entity.Category)
-GET     /section/:category/templates/:id controllers.ArticleTemplateController.view(category:kipsigman.domain.entity.Category, id:Int)
-GET     /section/:category/:seoAlias     controllers.ArticleController.view(category:kipsigman.domain.entity.Category, seoAlias:String)
+# Site pages accessible to anonymous visitors and all Users
+GET     /                           controllers.SiteController.index
+GET     /about                      controllers.SiteController.about
+GET     /contact                    controllers.SiteController.contact
+GET     /help                       controllers.SiteController.help
+GET     /category/:category         controllers.SiteController.category(category:kipsigman.domain.entity.Category, pageIndex:Int ?= 0)
 
-# Content Management
-GET     /content/articles                        controllers.ArticleController.list
-GET     /content/articles/create/:templateId     controllers.ArticleController.create(templateId:Int)
-GET     /content/articles/:id/delete             controllers.ArticleController.delete(id:Int)
-GET     /content/articles/:id/edit               controllers.ArticleController.edit(id:Int)
-GET     /content/articles/:id/own                controllers.ArticleController.own(id:Int)
-GET     /content/articles/:id/preview            controllers.ArticleController.preview(id:Int)
-GET     /content/articles/:id/saveStatus         controllers.ArticleController.saveStatus(id:Int, status:models.Content.Status)
-POST    /content/articles/:id/tag                controllers.ArticleController.saveTag(id:Int)
+# Site Widgets (AJAX loaded)
+GET     /widget/recentArticles            controllers.WidgetController.recentArticles(categoryOption:Option[kipsigman.domain.entity.Category], excludeIds:Seq[Int])
+GET     /widget/trendingArticles          controllers.WidgetController.trendingArticles(excludeIds:Seq[Int])
+GET     /widget/weather                   controllers.WidgetController.weather
 
-GET     /content/templates                       controllers.ArticleTemplateController.list
-GET     /content/templates/category/:category    controllers.ArticleTemplateController.listByCategory(category:kipsigman.domain.entity.Category)
-GET     /content/templates/create                controllers.ArticleTemplateController.create
-GET     /content/templates/:id/edit              controllers.ArticleTemplateController.edit(id:Int)
-POST    /content/templates                       controllers.ArticleTemplateController.save
+# Articles
+GET     /category/:category/:seoAlias         controllers.ArticleController.view(category:kipsigman.domain.entity.Category, seoAlias:String)
+GET     /content/articles                     controllers.ArticleController.list
+GET     /content/articles/create/:templateId  controllers.ArticleController.create(templateId:Int)
+POST    /content/articles/create/:templateId  controllers.ArticleController.createPost(templateId:Int)
+GET     /content/articles/:id/delete          controllers.ArticleController.delete(id:Int)
+GET     /content/articles/:id/edit            controllers.ArticleController.edit(id:Int)
+POST    /content/articles/:id/edit            controllers.ArticleController.editPost(id:Int)
+GET     /content/articles/:id/own             controllers.ArticleController.own(id:Int)
+GET     /content/articles/:id/preview         controllers.ArticleController.preview(id:Int)
+GET     /content/articles/:id/saveStatus      controllers.ArticleController.saveStatus(id:Int, status:kipsigman.domain.entity.Status)
+POST    /content/articles/tag                 controllers.ArticleController.saveTag
 
-# Admin
+# Image editing
+GET     /content/images/:id/dropzone          controllers.ImageController.imageDropzone(id:Int)
+
+# Editor authorization
+GET     /editor/templates                                   controllers.ArticleTemplateController.list
+GET     /editor/templates/category/:category                controllers.ArticleTemplateController.listByCategory(category:kipsigman.domain.entity.Category, pageIndex:Int ?= 0)
+GET     /editor/templates/create                            controllers.ArticleTemplateController.create
+GET     /editor/templates/:id/edit                          controllers.ArticleTemplateController.edit(id:Int)
+POST    /editor/templates                                   controllers.ArticleTemplateController.save
+POST    /editor/templates/:contentId/images                 controllers.ArticleTemplateController.saveNewContentImage(contentId: Int)
+POST    /editor/templates/:contentId/images/:imageId        controllers.ArticleTemplateController.saveContentImage(contentId: Int, imageId: Int)
+POST    /editor/templates/:contentId/images/:imageId/delete controllers.ArticleTemplateController.deleteContentImage(contentId: Int, imageId: Int)
+
+# Administrator authorization

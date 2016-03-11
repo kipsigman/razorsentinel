@@ -1,0 +1,12 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(isFirst: Boolean, categoryOption: Option[Category], excludeIds: Seq[Int])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div id="widget-recent-articles" class="widget@if(isFirst){ first}" data-populate-url="@controllers.routes.WidgetController.recentArticles(categoryOption, excludeIds)">
+  <h3>
+  @if(categoryOption.isDefined){
+    @Messages("widget.recentArticles.category.title", Messages(s"category.name.${categoryOption.get.name}"))
+  }else{
+    @Messages("widget.recentArticles.title")
+  }
+  </h3>
+</div><!-- widget-recent-articles -->

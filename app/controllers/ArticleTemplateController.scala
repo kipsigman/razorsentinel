@@ -8,48 +8,73 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import javax.inject.Inject
 import javax.inject.Singleton
 import kipsigman.domain.entity.Category
-import kipsigman.play.auth.entity.Role
+import kipsigman.domain.entity.ContentImage
+import kipsigman.domain.entity.Role
 import kipsigman.play.auth.entity.User
+import kipsigman.play.service.ImageService
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.mapping
+import play.api.data.Forms.nonEmptyText
+import play.api.data.Forms.number
+import play.api.data.Forms.optional
+import play.api.data.Forms.seq
+import play.api.data.validation.Constraint
+import play.api.data.validation.Invalid
+import play.api.data.validation.Valid
+import play.api.data.validation.ValidationError
 import play.api.i18n.Messages
 import play.api.i18n.MessagesApi
 
 import models.ArticleTemplate
+import models.ModelRepository
 import models.NewsCategoryOptions
-import models.NewsRepository
 import services.ContentAuthorizationService
-import services.ImageService
+import kipsigman.play.service.HtmlService
+import kipsigman.play.service.HtmlValidationResult
 
 @Singleton
 class ArticleTemplateController @Inject() (
   messagesApi: MessagesApi,
   env: Environment[User, CookieAuthenticator],
-  newsRepository: NewsRepository,
-  protected val contentAuthorizationService: ContentAuthorizationService,
+  modelRepository: ModelRepository,
+  contentAuthorizationService: ContentAuthorizationService,
+  htmlService: HtmlService,
   imageService: ImageService)
   (implicit ec: ExecutionContext)
-  extends BaseController(messagesApi, env) with ContentAuthorizationController[ArticleTemplate] {
+  extends ContentController[ArticleTemplate](messagesApi, env, modelRepository, contentAuthorizationService, imageService) {
   
-  protected def findContent(id: Int): Future[Option[ArticleTemplate]] = newsRepository.findArticleTemplate(id)
+  override protected def findContent(id: Int): Future[Option[ArticleTemplate]] = modelRepository.findArticleTemplate(id)
   
   private case class ArticleTemplateData(
     id: Option[Int] = None,
-    category: Category = NewsCategoryOptions.National,
+    categories: Seq[Category] = Seq(NewsCategoryOptions.National),
     headline: String = "",
-    body: String = "",
-    imageCaption: Option[String] = None) {
+    body: String = "") {
     
-    def this(at: ArticleTemplate) = this(at.id, at.category, at.headline, at.body, at.imageCaption)
+    def this(at: ArticleTemplate) = this(at.id, at.categories, at.headline, at.body)
   }
+  
+  val htmlBodyFragmentConstraint: Constraint[String] = 
+    Constraint("constraints.htmlBodyFragment")(bodyFragment => {
+      val validationResult = htmlService.validateBodyFragment(bodyFragment)
+      val errors = validationResult match {
+        case HtmlValidationResult(false, Some(errorMsg)) => Seq(ValidationError(errorMsg))
+        case HtmlValidationResult(false, None) => Seq(ValidationError("articleTemplate.error.body.html"))
+        case HtmlValidationResult(true, _) => Nil
+      }
+      if (errors.isEmpty) {
+        Valid
+      } else {
+        Invalid(errors)
+      }
+  })
     
   private val form = Form[ArticleTemplateData](
     mapping(
       "id" -> optional(number),
-      "category" -> NewsCategoryOptions.formMapping,
+      "categories" -> seq(NewsCategoryOptions.formMapping),
       "headline" -> nonEmptyText,
-      "body" -> nonEmptyText,
-      "imageCaption" -> optional(text)
+      "body" -> nonEmptyText.verifying(htmlBodyFragmentConstraint)
     )(ArticleTemplateData.apply)(ArticleTemplateData.unapply)
   )
   
@@ -57,27 +82,31 @@ class ArticleTemplateController @Inject() (
     NewsCategoryOptions.all.map(cat => cat.name -> Messages(s"category.name.${cat.name}")).toSeq.sortBy(_._2)
 
   def list = UserAwareAction.async { implicit request =>
-    newsRepository.findArticleTemplates(None).map(articleTemplates =>
-      Ok(views.html.articleTemplate.list(articleTemplates, None))
+    modelRepository.findArticleTemplates(None).map(articleTemplates =>
+      Ok(views.html.content.articleTemplate.list(articleTemplates, None))
     )
   }
   
-  def listByCategory(category: Category) = UserAwareAction.async { implicit request =>
-    newsRepository.findArticleTemplates(Option(category)).map(articleTemplates =>
-      Ok(views.html.articleTemplate.list(articleTemplates, Option(category)))
+  def listByCategory(category: Category, pageIndex: Int = 0) = UserAwareAction.async { implicit request =>
+    modelRepository.findArticleTemplates(Option(category)).map(articleTemplates =>
+      Ok(views.html.content.articleTemplate.list(articleTemplates, Option(category)))
     )
   }
 
   def create = SecuredAction(WithRole(Role.Editor)) { implicit request =>
     val theForm = form.fill(ArticleTemplateData())
-    Ok(views.html.articleTemplate.edit(theForm, categoryOptions))
+    val contentImages = Seq()
+    Ok(views.html.content.articleTemplate.edit(theForm, contentImages, None, categoryOptions, false))
   }
 
   def edit(id: Int) = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
-    authorizeEdit(id) map {
-      case Some(articleTemplate) => {
-        val theForm = form.fill(new ArticleTemplateData(articleTemplate))
-        Ok(views.html.articleTemplate.edit(theForm, categoryOptions))
+    authorizeEditWithImages(id) map {
+      case Some(contentWithImages) => {
+        val content = contentWithImages._1
+        val contentImages = contentWithImages._2
+        val theForm = form.fill(new ArticleTemplateData(content))
+        val tidyBody = Option(htmlService.repairBodyFragment(content.body))
+        Ok(views.html.content.articleTemplate.edit(theForm, contentImages, tidyBody, categoryOptions, true))
       }
       case None => NotFound
     }
@@ -85,35 +114,39 @@ class ArticleTemplateController @Inject() (
 
   def save = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
     form.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.articleTemplate.edit(formWithErrors, categoryOptions))),
+      formWithErrors => {
+        val tidyBody = formWithErrors("body").value.map(body => htmlService.repairBodyFragment(body))
+        val id = formWithErrors("id").value
+        val contentImagesFuture = id match {
+          case Some(definedId) => {
+            imageService.findContentImages(ArticleTemplate.contentClass, definedId.toInt)    
+          }
+          case None => Future.successful(Seq())
+        }
+        
+        contentImagesFuture.map(contentImages =>
+          BadRequest(views.html.content.articleTemplate.edit(formWithErrors, contentImages, tidyBody, categoryOptions, false))
+        )
+      },
       data => {
         if(data.id.isDefined) {
           authorizeEdit(data.id.get) flatMap {
             case Some(oldArticleTemplate) => {
-              val articleTemplate = oldArticleTemplate.copy(category = data.category, headline = data.headline, body = data.body, imageCaption = data.imageCaption)
-              newsRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
-                Redirect(routes.ArticleTemplateController.list()).flashing(FlashKey.success -> Messages("action.save.success"))
+              val articleTemplate = oldArticleTemplate.copy(categories = data.categories, headline = data.headline, body = data.body)
+              modelRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
+                Redirect(controllers.routes.ArticleTemplateController.list()).flashing(FlashKey.success -> Messages("action.save.success"))
               )
             }
             case None => Future.successful(notFound)
           }
         } else {
           val userId = request.identity.id.get
-          val articleTemplate = ArticleTemplate(userId = userId, category = data.category, headline = data.headline, body = data.body, imageCaption = data.imageCaption)
-          newsRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
-            Redirect(routes.ArticleTemplateController.list()).flashing(FlashKey.success -> Messages("action.save.success"))
+          val articleTemplate = ArticleTemplate(userId = userId, categories = data.categories, headline = data.headline, body = data.body)
+          modelRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
+            Redirect(controllers.routes.ArticleTemplateController.list()).flashing(FlashKey.success -> Messages("action.save.success"))
           )
         }
       }
     )
-  }
-  
-  def view(category: Category, id: Int) = UserAwareAction.async { implicit request =>
-    newsRepository.findArticleTemplate(id) map {
-      case Some(articleTemplate) => {
-        Ok(views.html.articleTemplate.view(articleTemplate, contentAuthorizationService, imageService))
-      }
-      case None => notFound
-    }
   }
 }

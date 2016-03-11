@@ -1,0 +1,18 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(title: String, category: Option[Category] = None, headIncludes: Html = Html(""), jsIncludes: Html = Html(""))(mainContent: Html)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+
+@views.html.theme.allegro.layout(title, category, headIncludes, jsIncludes) {
+<div class="main-content">
+  <div class="full-width">
+    <div class="block">
+      <div class="block-title" style="background:#9E0000">
+        <h2>@title</h2>
+      </div>
+      <div class="block-content">
+            @mainContent
+      </div><!-- block-content -->
+    </div><!-- block -->
+  </div><!-- full-width-->
+</div><!-- main-content -->
+}

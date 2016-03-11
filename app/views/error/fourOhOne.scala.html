@@ -1,5 +1,10 @@
-@()(implicit request: RequestHeader, messages: Messages)
+@import kipsigman.play.auth.entity.User
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@mainAnonymous(Messages("error.http.401")) {
-  <p>@Messages("error.http.401.description")</p>
+@views.html.theme.allegro.layoutFullWidth(Messages("error.http.401")) {
+<div class="paragraph-row">
+  <div class="column12">
+    <p>@Messages("error.http.401.description")</p>
+  </div>
+</div>
 }

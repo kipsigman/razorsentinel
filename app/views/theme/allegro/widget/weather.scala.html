@@ -1,0 +1,9 @@
+@import kipsigman.play.auth.entity.User
+@(outerDiv: Boolean, weather: Option[Weather], weatherImage: Option[String])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@if(outerDiv){<div class="header-weather">}
+@if(weather.isDefined){
+  <span class="report">@weather.get.tempCelcius&deg;C</span>
+  <img src="@controllers.routes.Assets.at(s"theme/allegro/images/weather/${weatherImage.get}")" />
+  <span class="city"><small>@weather.get.description</small><b>@weather.get.location.displayText</b></span>
+}
+@if(outerDiv){</div><!-- header-weather -->}

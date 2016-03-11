@@ -1,0 +1,145 @@
+/* Color Scheme */
+.header,.breaking-news .the-title,.widget > h3,.button,a.small-button,.marker,.hover-effect,.block-title,#wp-calendar td#today, .small-button, #writecomment p input[type=submit] {
+	background-color: #F26D22;
+}
+
+.list-title, a:hover, a.mobile-menu, .widget .meta a { color: #F26D22; }
+.list-title { border-bottom: 2px solid #F26D22;	}
+
+/* Menu Font */
+.main-menu .the-menu li a, .secondary-menu ul li a { font-family:"Titillium Web", sans-serif; }
+/* Block Titles */
+.list-title { font-family:"Titillium Web", sans-serif; }
+/* Article Titles */
+h1, h2, h3,	h4, h5, h6 { font-family: 'Source Sans Pro', sans-serif; }
+
+.main-menu .the-menu li.menu-item-right {
+  float: right;
+}
+
+.header > p {
+	vertical-align: middle;
+}
+
+.header .header-middle {
+	float: left;
+  display: inline;
+  margin-left: 12px;
+  margin-right: 12px;
+  text-align: right;
+  vertical-align: middle;
+}
+
+.header .header-addons {
+	margin-bottom: 10px;
+  margin-top: 10px;
+  vertical-align: middle;
+}
+
+.header > .wrapper {
+	padding: 10px 0px;
+}
+
+.header .header-middle .header-weather {
+  display: block;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  line-height: 100%;
+  vertical-align: baseline;
+}
+
+.header .header-middle .header-weather .report {
+  display: inline-block;
+  font-size: 26px;
+  font-weight: bold;
+  vertical-align: baseline;
+  line-height: 100%;
+}
+
+.header .header-middle .header-weather .city small {
+  display: block;
+  -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+  filter: alpha(opacity=70);
+  opacity: 0.7;
+}
+
+.header .header-middle .header-weather .city {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: bold;
+  vertical-align: baseline;
+  line-height: 100%;
+  text-align: left;
+}
+
+.header .header-middle .header-weather img {
+  display: inline-block;
+  vertical-align: baseline;
+  margin: 0px 3px -2px 3px;
+}
+
+.dialog-modal {
+  z-index: 10000
+}
+
+/* fullcalendar */
+.fc h2 {
+  font-size: 17px;
+  font-weight: bold;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+/* Articles */
+a.article-tag-editable {
+	color: #337ab7;
+	font-weight: bold;
+}
+
+.tooltip-inner {
+	background-color: #337ab7;
+}
+.tooltip-inner a {
+  color: #fff;
+}
+
+/* Selected Typography from Bootstrap 3 */
+.text-danger {
+  color: #a94442;
+}
+.text-info {
+  color: #31708f;
+}
+.text-primary {
+  color: #337ab7;
+}
+.text-success {
+  color: #3c763d;
+}
+.text-warning {
+  color: #8a6d3b;
+}
+
+.text-theme {
+  color: #F26D22;
+}
+
+.btn-theme {
+  color: #ffffff;
+  background-color: #F26D22;
+  border-color: #d43f3a;
+}
+.btn-theme:focus,
+.btn-theme.focus {
+  color: #fff;
+  background: #232323;
+}
+.btn-theme:hover {
+  color: #fff;
+  background: #232323;
+}
+.btn-theme:active,
+.btn-theme.active,
+.open > .dropdown-toggle.btn-theme {
+  color: #fff;
+  background: #232323;
+}

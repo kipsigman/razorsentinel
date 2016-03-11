@@ -1,0 +1,9 @@
+@(onCancelURI: Call, firstButton: Option[String] = None, submitLabel: Option[String] = None)(implicit request: RequestHeader, messages: Messages)
+@import b3.vertical.fieldConstructor
+
+@firstButton.map {button =>
+  @Html(button)
+}.getOrElse {
+}
+<button type="submit" class="btn btn-primary" role="button">@submitLabel.getOrElse(Messages("action.save"))</button>
+<a href="@onCancelURI" class="btn btn-default" role="button">@Messages("action.cancel")</a>

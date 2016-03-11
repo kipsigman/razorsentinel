@@ -1,0 +1,16 @@
+@import kipsigman.domain.entity.Image
+@import kipsigman.play.auth.entity.User
+
+@(imageOption: Option[Image])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div class="dropzone"
+  @if(imageOption.isDefined){
+     id="dropzone-@imageOption.get.id.get"
+     data-image="@kipsigman.play.mvc.routes.S3Controller.image(imageOption.get.filename.get)"
+     data-editstart="true"
+  }
+     data-width="890"
+     data-height="395"
+     data-resize="true"
+     style="width: 890px; height: 395px;">
+  <input type="file" name="thumb" />
+</div>

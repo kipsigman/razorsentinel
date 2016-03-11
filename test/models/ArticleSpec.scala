@@ -1,41 +1,41 @@
 package models
 
+import org.scalatest.Finders
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
 
-import kipsigman.play.auth.entity.Role
-import kipsigman.play.auth.entity.User
-import models.Content.Status
+import kipsigman.domain.entity.IllegalStatusChangeException
+import kipsigman.domain.entity.Status
 
 class ArticleSpec extends WordSpec with Matchers with TestData {
   
   "status changes" should {
     "allow Deleted from any status" in {
-      article.delete(editor).status shouldBe Status.Deleted
+      article.updateStatus(Status.Deleted)(editor).status shouldBe Status.Deleted
     }
     "allow Public from Draft" in {
-      article.publishPublic(editor).status shouldBe Status.Public
+      article.updateStatus(Status.Public)(editor).status shouldBe Status.Public
     }
     "allow Unlisted from Draft" in {
-      article.publishUnlisted(editor).status shouldBe Status.Unlisted
+      article.updateStatus(Status.Unlisted)(editor).status shouldBe Status.Unlisted
     }
     "allow Public from Unlisted" in {
-      article.publishUnlisted(editor).publishPublic(editor).status shouldBe Status.Public
+      article.updateStatus(Status.Unlisted)(editor).updateStatus(Status.Public)(editor).status shouldBe Status.Public
     }
     "allow Unlisted from Public" in {
-      article.publishPublic(editor).publishUnlisted(editor).status shouldBe Status.Unlisted
+      article.updateStatus(Status.Public)(editor).updateStatus(Status.Unlisted)(editor).status shouldBe Status.Unlisted
     }
     "allow Draft from Unlisted" in {
-      article.publishUnlisted(editor).revertToDraft(editor).status shouldBe Status.Draft
+      article.updateStatus(Status.Unlisted)(editor).updateStatus(Status.Draft)(editor).status shouldBe Status.Draft
     }
     "allow Draft from Public" in {
-      article.publishPublic(editor).revertToDraft(editor).status shouldBe Status.Draft
+      article.updateStatus(Status.Public)(editor).updateStatus(Status.Draft)(editor).status shouldBe Status.Draft
     }
     "not allow any status change from Deleted" in {
-      val deletedArticle = article.delete(editor)
-      an [IllegalStatusChangeException] should be thrownBy deletedArticle.publishPublic(editor) 
-      an [IllegalStatusChangeException] should be thrownBy deletedArticle.publishUnlisted(editor)
-      an [IllegalStatusChangeException] should be thrownBy deletedArticle.revertToDraft(editor)
+      val deletedArticle = article.updateStatus(Status.Deleted)(editor)
+      an [IllegalStatusChangeException] should be thrownBy deletedArticle.updateStatus(Status.Public)(editor) 
+      an [IllegalStatusChangeException] should be thrownBy deletedArticle.updateStatus(Status.Unlisted)(editor)
+      an [IllegalStatusChangeException] should be thrownBy deletedArticle.updateStatus(Status.Draft)(editor)
     }
   }
   

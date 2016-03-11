@@ -1,19 +1,19 @@
-package models
+package services
 
+import org.scalatest.Finders
 import org.scalatest.Matchers
 import org.scalatest.WordSpec
 import org.scalatest.mock.MockitoSugar
 
-import kipsigman.play.auth.entity.User
+import kipsigman.domain.entity.Status
+import models._
 
-import services.ContentAuthorizationService
-
-class ContentAuthorizationServiceSpec extends WordSpec with Matchers with MockitoSugar with TestData {
+class ContentAuthorizationServiceSpec extends WordSpec with Matchers with MockitoSugar with models.TestData {
   val draftEntity: Article = article
-  val publishedEntity: Article = article.publishUnlisted
+  val publishedEntity: Article = article.updateStatus(Status.Unlisted)
   
-  val newsRepository: NewsRepository = mock[NewsRepository]
-  val contentAuthorizationService = new ContentAuthorizationService(newsRepository)
+  val modelRepository: ModelRepository = mock[ModelRepository]
+  val contentAuthorizationService = new ContentAuthorizationService(modelRepository)
   
   "canView" should {
     "return true if published" in {

@@ -1,0 +1,10 @@
+@import kipsigman.play.auth.entity.User
+@(t: Throwable)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+
+@views.html.theme.allegro.layoutFullWidth(Messages("error.http.500")) {
+<div class="paragraph-row">
+  <div class="column12">
+    <p>@Messages("error.http.500.description")</p>
+  </div>
+</div>
+}
