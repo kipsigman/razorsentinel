@@ -68,7 +68,7 @@
                 <div class="column9">
                   <div style="display:inline">
                   <a id="save-btn" href="#" class="btn btn-primary">@Messages("action.save")</a>
-                  <a href="@ViewHelper.viewArticle(None, article)" class="btn btn-default" target="_blank">@Messages("action.view")</a>
+                  <a href="@ViewHelper.viewArticle(None, article)" class="btn btn-default">@Messages("action.view")</a>
   @article.status match {
     case Status.Deleted => {@* Included for exhaustive match, Deleted articles aren't editable *@}
     case Status.Draft => {
