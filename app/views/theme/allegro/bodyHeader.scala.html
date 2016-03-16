@@ -69,11 +69,7 @@
   </div><!-- header main menu -->
   <div class="secondary-menu">
     <div class="wrapper">
-      <ul class="load-responsive" rel="@Messages("nav.menu.secondary")">
-  @for(category <- NewsCategoryOptions.allSorted) {
-        <li class="menu-item menu-item-type-taxonomy menu-item-object-category"><a href="@routes.SiteController.category(category)">@Messages(s"category.name.${category.name}")</a></li>  
-  }
-      </ul>
+      @views.html.component.categoriesList(NewsCategoryOptions.allSorted, "load-responsive", Messages("nav.menu.categories"), "menu-item menu-item-type-taxonomy menu-item-object-category")
     </div>
   </div><!-- header secondary menu -->
 </div><!-- header -->

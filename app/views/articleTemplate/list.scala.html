@@ -1,0 +1,36 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@import kipsigman.domain.entity.Status
+@import services.AdService
+@(twis: Seq[ArticleTemplateWithImages], category: Option[Category])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
+
+@views.html.theme.allegro.layoutFullWidth(Messages("content.templates.list.title")) {
+<div class="paragraph-row">
+  <div class="column12">
+     @views.html.component.categoriesLabels(NewsCategoryOptions.allSorted, routes.ArticleTemplateController.listByCategory, Option(routes.ArticleTemplateController.list))
+  </div>
+</div>
+<div class="paragraph-row">
+  <div class="column12">
+    <p>
+      <a href="@routes.ArticleTemplateController.create" class="btn btn-sm btn-default">@Messages("articleTemplate.create")</a>
+    </p>
+  </div>
+</div>
+  @for(twi <- twis) {
+<div class="paragraph-row">
+  <div class="column9">
+    <h2>
+      @twi.articleTemplate.headline
+      @views.html.component.statusLabel(twi.articleTemplate.status)
+    </h2>
+    @views.html.component.categoriesLabels(twi.articleTemplate.categories, routes.ArticleTemplateController.listByCategory)
+    <p>@Html(twi.articleTemplate.bodyTeaser(250))</p>
+  </div>
+  <div class="column3">
+    <a href="@routes.ArticleTemplateController.edit(twi.articleTemplate.id.get)" class="btn btn-sm btn-default">@Messages("action.edit")</a>
+    <a href="@routes.ArticleController.create(twi.articleTemplate.id.get)" class="btn btn-sm btn-default">@Messages("article.create")</a>
+  </div>
+</div>
+  }
+}

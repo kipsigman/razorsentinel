@@ -6,7 +6,7 @@ import play.api.i18n.Messages
  * Inline edit is done with X-editable: https://vitalets.github.io/x-editable/
  */
 object TagContent {
-  private val tagRegex = """\{([\w]*)\}""".r
+  private val tagRegex = """\{([\w\s/-]*)\}""".r
   private val neighborTagsRegex = """\}([\s]+)\{""".r
   
   def tags(content: String): Set[String] = {

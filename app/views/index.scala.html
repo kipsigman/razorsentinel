@@ -1,5 +1,6 @@
 @import kipsigman.play.auth.entity.User
-@(awis: Seq[ArticleWithImages])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@import services.AdService
+@(awis: Seq[ArticleWithImages], templateIds: Set[Int])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 
 @views.html.theme.allegro.layout(Messages("nav.brand"), None) {  
 <div class="main-content">
@@ -10,23 +11,8 @@
           <div class="block-title">
             <h2>@Messages(s"category.name.${NewsCategoryOptions.TopStories.name}")</h2>
           </div><!-- block-title -->
-          <div class="block-content">   
-  @for(awi <- awis) {
-            <div class="article-big has-post-thumbnail hentry">
-              @views.html.theme.allegro.component.articleImage(None, awi.article, awi.contentImages.headOption, 210, 140)
-              <div class="article-content">
-                <h2>
-                  <a href="@ViewHelper.viewArticle(None, awi.article)">@awi.article.headline</a>
-                  <span class="meta"></span>
-                </h2>
-                <span class="meta"></span>
-                <p>@Html(awi.article.bodyTeaser(300))</p>
-                <span class="meta">
-                  <a href="@ViewHelper.viewArticle(None, awi.article)" class="more">@Messages("action.view.more")@ViewHelper.iconSpan("triangle-right")</a>
-                </span>
-              </div>
-            </div>
-  }
+          <div class="block-content">
+            @views.html.component.mainArticles(None, awis)
           </div><!-- block-content -->
         </div><!-- block -->
       </div><!-- content-block main left -->

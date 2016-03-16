@@ -26,8 +26,6 @@ trait ModelRepository {
   
   def findArticleTemplates(categoryOption: Option[Category] = None): Future[Seq[ArticleTemplate]]
   
-  def findPublishedArticleTemplatesByCategory(category: Category)(implicit userOption: Option[User]): Future[Seq[ArticleTemplate]]
-
   def saveArticleTemplate(articleTemplate: ArticleTemplate)(implicit userOption: Option[User]): Future[ArticleTemplate]
   
   def updateArticleTemplateStatus(id: Int, status: Status)(implicit userOption: Option[User]): Future[ArticleTemplate]

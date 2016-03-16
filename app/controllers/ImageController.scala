@@ -11,6 +11,7 @@ import kipsigman.play.auth.entity.User
 import play.api.i18n.MessagesApi
 
 import models.ModelRepository
+import services.AdService
 
 @Singleton
 class ImageController @Inject() (
@@ -18,12 +19,12 @@ class ImageController @Inject() (
   env: Environment[User, CookieAuthenticator],
   modelRepository: ModelRepository,
   imageService: ImageService)
-  (implicit ec: ExecutionContext)
+  (implicit ec: ExecutionContext, adService: AdService)
   extends BaseController(messagesApi, env) {
   
   def imageDropzone(id: Int) = SecuredAction.async {implicit request =>
     imageService.findImage(id) map {
-      case Some(image) => Ok(views.html.content.imageDropzone(Option(image)))
+      case Some(image) => Ok(views.html.component.imageDropzone(Option(image)))
       case None => notFound
     }
   }

@@ -15,6 +15,7 @@ case class Article(
     articleTemplate: ArticleTemplate,
     status: Status = Status.Draft,
     tagReplacements: Set[TagReplacement] = Set(),
+    author: Option[String] = None,
     publishDate: Option[LocalDateTime] = None) extends ArticleContent[Article] {
   
   override lazy val userIdOption: Option[Int] = userId

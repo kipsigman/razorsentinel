@@ -18,6 +18,7 @@ import play.api.mvc.RequestHeader
 import play.api.mvc.Result
 
 import models._
+import services.AdService
 import services.ContentAuthorizationService
 
 @Singleton
@@ -27,7 +28,7 @@ class SiteController @Inject() (
   modelRepository: ModelRepository,
   contentAuthorizationService: ContentAuthorizationService,
   imageService: ImageService
-  )(implicit ec: ExecutionContext)
+  )(implicit ec: ExecutionContext, adService: AdService)
   extends ArticleContentController(messagesApi, env, modelRepository, contentAuthorizationService, imageService) {
   
   def about = UserAwareAction {implicit request =>
@@ -46,18 +47,18 @@ class SiteController @Inject() (
     modelRepository.findPublishedArticlesByCategory(NewsCategoryOptions.TopStories, PageFilter(0, 10)).flatMap(page =>
       articlesWithImages(page.items).map(itemsWithImages => {
         val pageWithImages = Page(itemsWithImages, page.pageFilter, page.hasNext)
-        Ok(views.html.index(pageWithImages.items))
+        Ok(views.html.index(pageWithImages.items, templateIds(page.items)))
       })
     )
   }
   
   def category(category: Category, pageIndex: Int = 0) = UserAwareAction.async {implicit request =>
-    modelRepository.findPublishedArticlesByCategory(category, PageFilter(pageIndex, 10)).flatMap(page =>
+    modelRepository.findPublishedArticlesByCategory(category, PageFilter(pageIndex, 10)).flatMap(page => {
       articlesWithImages(page.items).map(itemsWithImages => {
         val pageWithImages = Page(itemsWithImages, page.pageFilter, page.hasNext)
-        Ok(views.html.category(category, pageWithImages))
+        Ok(views.html.category(category, pageWithImages, templateIds(page.items)))
       })
-    )
+    })
   }
   
 }

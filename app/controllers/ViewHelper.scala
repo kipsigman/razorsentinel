@@ -348,5 +348,5 @@ object ViewHelper {
     
   def contentImageAbsoluteUrl(contentImage: ContentImage)(implicit request: RequestHeader) =
     imageAbsoluteUrl(contentImage.image)
-
+  
 }

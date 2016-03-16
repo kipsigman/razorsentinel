@@ -22,6 +22,8 @@ import play.api.mvc.Call
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 
+import services.AdService
+
 @Singleton
 class UserController @Inject() (
   config: Config,
@@ -32,7 +34,7 @@ class UserController @Inject() (
   credentialsProvider: CredentialsProvider,
   avatarService: AvatarService,
   passwordHasher: PasswordHasher,
-  clock: Clock)(implicit ec: ExecutionContext) 
+  clock: Clock)(implicit ec: ExecutionContext, protected val adService: AdService) 
   extends kipsigman.play.auth.mvc.UserController(
     config,
     messagesApi,

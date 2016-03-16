@@ -24,10 +24,13 @@ import play.api.data.validation.Valid
 import play.api.data.validation.ValidationError
 import play.api.i18n.Messages
 import play.api.i18n.MessagesApi
+import play.api.mvc.RequestHeader
 
 import models.ArticleTemplate
+import models.ArticleTemplateWithImages
 import models.ModelRepository
 import models.NewsCategoryOptions
+import services.AdService
 import services.ContentAuthorizationService
 import kipsigman.play.service.HtmlService
 import kipsigman.play.service.HtmlValidationResult
@@ -40,18 +43,32 @@ class ArticleTemplateController @Inject() (
   contentAuthorizationService: ContentAuthorizationService,
   htmlService: HtmlService,
   imageService: ImageService)
-  (implicit ec: ExecutionContext)
+  (implicit ec: ExecutionContext, adService: AdService)
   extends ContentController[ArticleTemplate](messagesApi, env, modelRepository, contentAuthorizationService, imageService) {
   
   override protected def findContent(id: Int): Future[Option[ArticleTemplate]] = modelRepository.findArticleTemplate(id)
+  
+  private def articleTemplatesWithImages(articleTemplates: Seq[ArticleTemplate])
+    (implicit request: RequestHeader, user: Option[User]): Future[Seq[ArticleTemplateWithImages]] = {
+    
+    val articleTemplateIds = articleTemplates.map(_.id.get).toSet
+    for {
+      contentImages <- imageService.findContentImages(ArticleTemplate.contentClass, articleTemplateIds)
+    } yield {
+      articleTemplates.map(articleTemplate => 
+        ArticleTemplateWithImages(articleTemplate, contentImages.filter(_.contentId == articleTemplate.id.get))
+      )
+    }
+  }
   
   private case class ArticleTemplateData(
     id: Option[Int] = None,
     categories: Seq[Category] = Seq(NewsCategoryOptions.National),
     headline: String = "",
-    body: String = "") {
+    body: String = "",
+    author: String = "") {
     
-    def this(at: ArticleTemplate) = this(at.id, at.categories, at.headline, at.body)
+    def this(at: ArticleTemplate) = this(at.id, at.categories, at.headline, at.body, at.author)
   }
   
   val htmlBodyFragmentConstraint: Constraint[String] = 
@@ -74,7 +91,8 @@ class ArticleTemplateController @Inject() (
       "id" -> optional(number),
       "categories" -> seq(NewsCategoryOptions.formMapping),
       "headline" -> nonEmptyText,
-      "body" -> nonEmptyText.verifying(htmlBodyFragmentConstraint)
+      "body" -> nonEmptyText.verifying(htmlBodyFragmentConstraint),
+      "author" -> nonEmptyText
     )(ArticleTemplateData.apply)(ArticleTemplateData.unapply)
   )
   
@@ -82,21 +100,26 @@ class ArticleTemplateController @Inject() (
     NewsCategoryOptions.all.map(cat => cat.name -> Messages(s"category.name.${cat.name}")).toSeq.sortBy(_._2)
 
   def list = UserAwareAction.async { implicit request =>
-    modelRepository.findArticleTemplates(None).map(articleTemplates =>
-      Ok(views.html.content.articleTemplate.list(articleTemplates, None))
+    modelRepository.findArticleTemplates(None).flatMap(articleTemplates =>
+      articleTemplatesWithImages(articleTemplates).map(twis => {
+        Ok(views.html.articleTemplate.list(twis, None))
+      })
     )
   }
   
   def listByCategory(category: Category, pageIndex: Int = 0) = UserAwareAction.async { implicit request =>
-    modelRepository.findArticleTemplates(Option(category)).map(articleTemplates =>
-      Ok(views.html.content.articleTemplate.list(articleTemplates, Option(category)))
+    val categoryOption = Option(category)
+    modelRepository.findArticleTemplates(categoryOption).flatMap(articleTemplates =>
+      articleTemplatesWithImages(articleTemplates).map(twis => {
+        Ok(views.html.articleTemplate.list(twis, categoryOption))
+      })
     )
   }
 
   def create = SecuredAction(WithRole(Role.Editor)) { implicit request =>
     val theForm = form.fill(ArticleTemplateData())
     val contentImages = Seq()
-    Ok(views.html.content.articleTemplate.edit(theForm, contentImages, None, categoryOptions, false))
+    Ok(views.html.articleTemplate.edit(theForm, contentImages, None, categoryOptions, false))
   }
 
   def edit(id: Int) = SecuredAction(WithRole(Role.Editor)).async { implicit request =>
@@ -106,7 +129,7 @@ class ArticleTemplateController @Inject() (
         val contentImages = contentWithImages._2
         val theForm = form.fill(new ArticleTemplateData(content))
         val tidyBody = Option(htmlService.repairBodyFragment(content.body))
-        Ok(views.html.content.articleTemplate.edit(theForm, contentImages, tidyBody, categoryOptions, true))
+        Ok(views.html.articleTemplate.edit(theForm, contentImages, tidyBody, categoryOptions, true))
       }
       case None => NotFound
     }
@@ -125,14 +148,14 @@ class ArticleTemplateController @Inject() (
         }
         
         contentImagesFuture.map(contentImages =>
-          BadRequest(views.html.content.articleTemplate.edit(formWithErrors, contentImages, tidyBody, categoryOptions, false))
+          BadRequest(views.html.articleTemplate.edit(formWithErrors, contentImages, tidyBody, categoryOptions, false))
         )
       },
       data => {
         if(data.id.isDefined) {
           authorizeEdit(data.id.get) flatMap {
             case Some(oldArticleTemplate) => {
-              val articleTemplate = oldArticleTemplate.copy(categories = data.categories, headline = data.headline, body = data.body)
+              val articleTemplate = oldArticleTemplate.copy(categories = data.categories, headline = data.headline, body = data.body, author = data.author)
               modelRepository.saveArticleTemplate(articleTemplate).map(savedArticleTemplate =>
                 Redirect(controllers.routes.ArticleTemplateController.list()).flashing(FlashKey.success -> Messages("action.save.success"))
               )

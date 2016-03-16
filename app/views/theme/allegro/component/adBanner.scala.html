@@ -1,0 +1,17 @@
+@import kipsigman.play.auth.entity.User
+@import models.AdBanner
+@import services.AdService
+@(style: AdBanner.Style)(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
+@defining(adService.getBanner(style)){banner =>
+  @if(style == AdBanner.Style.Leaderboard){
+<div class="ad-banner">
+  <a href="@controllers.routes.SiteController.contact" class="ad-link top">@ViewHelper.iconSpan("triangle-down")@Messages("widget.banner.advertisement")@ViewHelper.iconSpan("triangle-down")</a>
+  <a href="@controllers.routes.AdController.click(banner.id.get)" target="_blank"><img src="@controllers.routes.AdController.image(banner.id.get)" width="@style.width" height="@style.height" /></a>
+</div><!-- ad-banner -->
+  } else {
+<div class="banner">
+  <a href="@controllers.routes.AdController.click(banner.id.get)" target="_blank"><img src="@controllers.routes.AdController.image(banner.id.get)" width="@style.width" height="@style.height" /></a>
+  <a href="@controllers.routes.SiteController.contact" class="ad-link">@ViewHelper.iconSpan("triangle-up")@Messages("widget.banner.advertisement")@ViewHelper.iconSpan("triangle-up")</a>
+</div>
+  }
+}

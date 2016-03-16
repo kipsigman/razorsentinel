@@ -1,9 +1,10 @@
 @import kipsigman.domain.entity.Category
 @import kipsigman.domain.entity.Status
 @import kipsigman.play.auth.entity.User
-@(awis: Seq[ArticleWithImages])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@import services.AdService
+@(awis: Seq[ArticleWithImages])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 
-@views.html.theme.allegro.layout(Messages("content.articles.list.title")) {  
+@views.html.theme.allegro.layout(Messages("content.articles.list.title")) {
 <div class="main-content">
   <div class="main-page left">
     <div class="single-block">
@@ -19,34 +20,34 @@
               <div class="article-content">
                 <h2><a href="@ViewHelper.viewArticle(None, awi.article)">@awi.article.headline</a>
                   <span class="meta">
-                    @views.html.theme.allegro.component.statusLabel(awi.article.status)
+                    @views.html.component.statusLabel(awi.article.status)
                   </span>
                 </h2>
-                @views.html.theme.allegro.component.categoriesLabels(awi.article.categories)
+                @views.html.component.categoriesLabels(awi.article.categories, routes.SiteController.category)
                 <p>@Html(awi.article.bodyTeaser(250))</p>
                 <span class="meta">
-                  <a href="@ViewHelper.viewArticle(None, awi.article)" class="more">@Messages("action.view")</a>
-                  <a href="@routes.ArticleController.edit(awi.article.id.get)" class="more">@Messages("action.edit")</a>
+                  <a href="@ViewHelper.viewArticle(None, awi.article)" class="btn btn-sm btn-theme">@Messages("action.view")</a>
+                  <a href="@routes.ArticleController.edit(awi.article.id.get)" class="btn btn-sm btn-default">@Messages("action.edit")</a>
     @awi.article.status match {
       case Status.Deleted => {@* Included for exhaustive match, Deleted articles aren't editable *@}
       case Status.Draft => {
-                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Unlisted)" class="more">@Messages("content.status.publish")</a>
-        @if(user.isDefined && user.get.isEditor) {  
-                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Public)" class="more">@Messages("content.status.public")</a>
+                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Unlisted)" class="btn btn-sm btn-default">@Messages("content.status.publish")</a>
+        @if(user.isDefined && user.get.isEditor) {
+                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Public)" class="btn btn-sm btn-default">@Messages("content.status.public")</a>
         }
       }
       case Status.Public => {
-                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Draft)" class="more">@Messages("content.status.revertToDraft")</a>
-                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Unlisted)" class="more">@Messages("content.status.unlisted")</a>
+                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Draft)" class="btn btn-sm btn-default">@Messages("content.status.revertToDraft")</a>
+                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Unlisted)" class="btn btn-sm btn-default">@Messages("content.status.unlisted")</a>
       }
       case Status.Unlisted => {
-                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Draft)" class="more">@Messages("content.status.revertToDraft")</a>
+                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Draft)" class="btn btn-sm btn-default">@Messages("content.status.revertToDraft")</a>
       @if(user.isDefined && user.get.isEditor) {
-                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Public)" class="more">@Messages("content.status.public")</a>
+                  <a href="@routes.ArticleController.saveStatus(awi.article.id.get, Status.Public)" class="btn btn-sm btn-default">@Messages("content.status.public")</a>
         }
       }
     }
-                  <a href="@routes.ArticleController.delete(awi.article.id.get)" class="more btn-danger action-delete">@Messages("action.delete")</a>
+                  <a href="@routes.ArticleController.delete(awi.article.id.get)" class="btn btn-sm btn-danger action-delete">@Messages("action.delete")</a>
                 </span>
               </div>
             </div>

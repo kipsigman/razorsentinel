@@ -7,8 +7,8 @@ import play.api.Environment
 
 import models.ModelRepository
 import models.slick.ModelRepositorySlick
+import services.AdService
 import services.ContentAuthorizationService
-import kipsigman.play.service.HtmlService
 
 class AppModule(
     environment: Environment,
@@ -18,7 +18,7 @@ class AppModule(
     val config = configuration.underlying
     bind(classOf[Config]).toInstance(config)
     bind(classOf[ModelRepository]).to(classOf[ModelRepositorySlick])
+    bind(classOf[AdService])
     bind(classOf[ContentAuthorizationService])
-    bind(classOf[HtmlService])
   }
 }

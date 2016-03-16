@@ -2,6 +2,7 @@ package models
 
 import kipsigman.domain.entity.Category
 import kipsigman.domain.entity.Content.ContentClass
+import kipsigman.domain.entity.ContentImage
 import kipsigman.domain.entity.Role
 import kipsigman.domain.entity.Status
 import kipsigman.play.auth.entity.User
@@ -12,7 +13,8 @@ case class ArticleTemplate(
     status: Status = Status.Draft,
     categories: Seq[Category] = Seq(NewsCategoryOptions.National),
     headline: String = "",
-    body: String = "") extends ArticleContent[ArticleTemplate] {
+    body: String = "",
+    author: String = "") extends ArticleContent[ArticleTemplate] {
   
   override lazy val userIdOption: Option[Int] = Option(userId)
   
@@ -28,3 +30,5 @@ case class ArticleTemplate(
 object ArticleTemplate {
   val contentClass: ContentClass = new ContentClass("ArticleTemplate")
 }
+
+case class ArticleTemplateWithImages(articleTemplate: ArticleTemplate, contentImages: Seq[ContentImage])

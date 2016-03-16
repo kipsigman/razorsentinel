@@ -1,0 +1,23 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@(categoryOption: Option[Category], awis: Seq[ArticleWithImages])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+
+@for(awi <- awis) {
+<div class="article-big has-post-thumbnail hentry">
+  @views.html.theme.allegro.component.articleImage(categoryOption, awi.article, awi.contentImages.headOption, 210, 140)
+  <div class="article-content">
+    <h2>
+      <a href="@ViewHelper.viewArticle(categoryOption, awi.article)">@awi.article.headline</a>
+      <span class="meta"></span>
+    </h2>
+    <span class="meta"></span>
+    <p>@Html(awi.article.bodyTeaser(300))</p>
+    <span class="meta">
+      <a href="@ViewHelper.viewArticle(categoryOption, awi.article)" class="btn btn-sm btn-theme">@Messages("action.view.more") @ViewHelper.iconSpan("triangle-right")</a>
+  @if(awi.article.isOwnedBy(user)) {
+      <a href="@routes.ArticleController.edit(awi.article.id.get)" class="btn btn-sm btn-default">@Messages("action.edit")</a>
+  }
+    </span>
+  </div>
+</div>
+}

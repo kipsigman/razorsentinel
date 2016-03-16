@@ -1,0 +1,44 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@import services.AdService
+@(title: String, headIncludes: Html = Html(""))(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<head>
+  <!-- Meta -->
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>@title</title>
+  
+  <!-- Icons -->
+  <link rel="apple-touch-icon" sizes="57x57" href="@routes.Assets.at("images/icon/apple-touch-icon-57x57.png")">
+  <link rel="apple-touch-icon" sizes="60x60" href="@routes.Assets.at("images/icon/apple-touch-icon-60x60.png")">
+  <link rel="apple-touch-icon" sizes="72x72" href="@routes.Assets.at("images/icon/apple-touch-icon-72x72.png")">
+  <link rel="apple-touch-icon" sizes="76x76" href="@routes.Assets.at("images/icon/apple-touch-icon-76x76.png")">
+  <link rel="apple-touch-icon" sizes="114x114" href="@routes.Assets.at("images/icon/apple-touch-icon-114x114.png")">
+  <link rel="apple-touch-icon" sizes="120x120" href="@routes.Assets.at("images/icon/apple-touch-icon-120x120.png")">
+  <link rel="apple-touch-icon" sizes="144x144" href="@routes.Assets.at("images/icon/apple-touch-icon-144x144.png")">
+  <link rel="apple-touch-icon" sizes="152x152" href="@routes.Assets.at("images/icon/apple-touch-icon-152x152.png")">
+  <link rel="apple-touch-icon" sizes="180x180" href="@routes.Assets.at("images/icon/apple-touch-icon-180x180.png")">
+  <link rel="icon" type="image/png" href="@routes.Assets.at("images/icon/favicon-32x32.png")" sizes="32x32">
+  <link rel="icon" type="image/png" href="@routes.Assets.at("images/icon/android-chrome-192x192.png")" sizes="192x192">
+  <link rel="icon" type="image/png" href="@routes.Assets.at("images/icon/favicon-96x96.png")" sizes="96x96">
+  <link rel="icon" type="image/png" href="@routes.Assets.at("images/icon/favicon-16x16.png")" sizes="16x16">
+  <link rel="mask-icon" href="@routes.Assets.at("images/icon/safari-pinned-tab.svg")" color="#5bbad5">
+  
+  <!-- Styles: Third party -->
+  <link rel='stylesheet' href='@controllers.routes.Assets.at("css/bootstrap.css")' type='text/css' media='screen' />
+  <link rel="stylesheet" href="@routes.Assets.at("fullcalendar-2.6.1/fullcalendar.css")" media="screen" >
+  
+  <!-- Styles: Allegro Theme -->
+  <link rel='stylesheet' id='reset-css'  href='@controllers.routes.Assets.at("theme/allegro/css/reset.css")' type='text/css' media='all' />
+  <link rel='stylesheet' id='main-stylesheet-css'  href='@controllers.routes.Assets.at("theme/allegro/css/main-stylesheet.css")' type='text/css' media='all' />
+  <link rel='stylesheet' id='shortcode-css' href='@controllers.routes.Assets.at("theme/allegro/css/shortcode.css")' type='text/css' media='all' />
+  <link rel='stylesheet' id='responsive-css' href='@controllers.routes.Assets.at("theme/allegro/css/responsive.css")' type='text/css' media='all' />
+  <link rel='stylesheet' id='datmenu-css-css' href='@controllers.routes.Assets.at("theme/allegro/css/dat-menu.css")' type='text/css' media='all' />
+  <!--[if lte IE 9]><link rel="stylesheet" type="text/css" href="@controllers.routes.Assets.at("theme/allegro/css/vc_lte_ie9.min.css")" media="screen"><![endif]-->
+
+  <!-- Styles: Custom -->
+  <link rel="stylesheet" href="@controllers.routes.Assets.versioned("css/allegro-custom.css")" media="screen"/>
+  <link rel="stylesheet" href="@controllers.routes.Assets.versioned("css/main.css")" media="screen"/>
+  @headIncludes
+</head>

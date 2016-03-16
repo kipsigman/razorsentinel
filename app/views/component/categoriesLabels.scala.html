@@ -1,0 +1,6 @@
+@import kipsigman.domain.entity.Category
+@(categories: Seq[Category], link: (Category, Int) => Call, allLink: Option[() => Call] = None)(implicit messages: Messages)
+@if(allLink.isDefined){<a class="label label-default" href="@allLink.get()">@Messages("category.name.all")</a>}
+@for(category <- categories) {
+  @views.html.component.categoryLabel(category, link)
+}

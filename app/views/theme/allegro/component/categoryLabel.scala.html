@@ -1,3 +1,0 @@
-@import kipsigman.domain.entity.Category
-@(category: Category)(implicit messages: Messages)
-<a class="label label-default" href="@controllers.routes.SiteController.category(category, 0)">@Messages(s"category.name.${category.name}")</a>

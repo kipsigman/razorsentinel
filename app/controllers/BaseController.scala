@@ -9,10 +9,12 @@ import play.api.i18n.MessagesApi
 import kipsigman.play.auth.entity.User
 import kipsigman.play.auth.mvc.AuthController
 
+import services.AdService
+
 abstract class BaseController (
   messagesApi: MessagesApi,
   env: Environment[User, CookieAuthenticator])
-  (implicit ec: ExecutionContext)
+  (implicit ec: ExecutionContext, protected val adService: AdService)
   extends AuthController(messagesApi, env) with ErrorResults {
 
 }

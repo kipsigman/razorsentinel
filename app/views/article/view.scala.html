@@ -2,8 +2,8 @@
 @import kipsigman.domain.entity.ContentImage
 @import kipsigman.play.auth.entity.User
 @import kipsigman.play.mvc.AlertContext
-@import services.ContentAuthorizationService
-@(category: Category, article: Article, contentImages: Seq[ContentImage], contentAuthorizationService: ContentAuthorizationService)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@import services.AdService
+@(category: Category, article: Article, contentImages: Seq[ContentImage])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 
 @headIncludes = {
   @if(!article.isPublic) {
@@ -11,7 +11,7 @@
   }
 }
 @jsIncludes = {
-<script src="@routes.Assets.at("javascripts/article/view.js")"></script>
+<script src="@routes.Assets.versioned("javascripts/article/view.js")"></script>
 }
 
 @views.html.theme.allegro.layout(article.headline, Option(article.category), headIncludes = headIncludes, jsIncludes = jsIncludes) {
@@ -38,12 +38,15 @@
   <div class="full-width">
     <div class="article-title">
       <div class="share-block right">
-      @views.html.article.viewActions(category, article, contentImages.headOption)
+      @views.html.article.component.viewActions(category, article, contentImages.headOption)
       </div>
-      @views.html.theme.allegro.component.categoryLabel(category)
+      @views.html.component.categoryLabel(category, routes.SiteController.category)
       <h1>@Html(article.headlineWithTooltips)</h1>
       <div class="author">
         <div class="a-content">
+  @if(article.author.isDefined){
+          <span>By <b>@article.author.get</b></span>
+  }
           <span class="meta">@ViewHelper.displayPublishDate(article.publishDate)</span>
         </div>
       </div>
@@ -58,19 +61,19 @@
               @views.html.theme.allegro.component.contentImage(contentImages.headOption)
             </p>
             <div class="shortcode-content">
-              @views.html.article.body(article, true)
+              @views.html.article.component.body(article, true)
               <div id="end-article" class="paragraph-row article-title">
                 <div class="column3">
                   &nbsp;
                 </div>
                 <div class="column9">
                   <br/>
-                  @views.html.article.viewActions(category, article, contentImages.headOption)
+                  @views.html.article.component.viewActions(category, article, contentImages.headOption)
                 </div>
               </div>
             </div><!-- shortcode-content -->
           </div><!-- body/image -->
-          @** @views.html.article.comments(article) **@
+          @** @views.html.article.component.comments(article) **@
         </div><!-- block -->
       </div><!-- content-block main left-->
     </div><!-- single-block -->

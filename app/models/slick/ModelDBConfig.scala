@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 
 import kipsigman.domain.entity.Category
 import kipsigman.domain.entity.IdEntity
+import kipsigman.domain.entity.LifecycleEntity
 import kipsigman.domain.entity.Status
 import kipsigman.domain.repository.slick.SlickRepository
 import play.api.libs.json.Json
@@ -43,8 +44,9 @@ trait ModelDBConfig extends SlickRepository {
     def categories = column[Seq[Category]]("categories")
     def headline = column[String]("headline")
     def body = column[String]("body")
+    def author = column[String]("author")
     
-    def * = (id.?, userId, status, categories, headline, body) <> ((ArticleTemplate.apply _).tupled, ArticleTemplate.unapply)
+    def * = (id.?, userId, status, categories, headline, body, author) <> ((ArticleTemplate.apply _).tupled, ArticleTemplate.unapply)
   }
   
   val articleTemplateTableQuery = TableQuery[ArticleTemplateTable]
@@ -56,13 +58,16 @@ trait ModelDBConfig extends SlickRepository {
     articleTemplateId: Int,
     status: Status,
     tagReplacements: Set[TagReplacement],
-    publishDate: Option[LocalDateTime]) extends IdEntity {
+    author: Option[String],
+    publishDate: Option[LocalDateTime]) extends LifecycleEntity[ArticleRow] {
     
-    def this(entity: Article) = this(entity.id, entity.userId, entity.articleTemplate.id.get, entity.status, entity.tagReplacements, entity.publishDate)
+    def this(entity: Article) = this(entity.id, entity.userId, entity.articleTemplate.id.get, entity.status, entity.tagReplacements, entity.author, entity.publishDate)
     
     def toEntity(articleTemplate: ArticleTemplate): Article = {
-      Article(id, userId, articleTemplate, status, tagReplacements, publishDate) 
+      Article(id, userId, articleTemplate, status, tagReplacements, author, publishDate) 
     }
+    
+    override protected def updateStatusCopy(newStatus: Status): ArticleRow = copy(status = newStatus)
   }
     
   class ArticleTable(tag: Tag) extends IdTable[ArticleRow](tag, "article") {
@@ -98,9 +103,10 @@ trait ModelDBConfig extends SlickRepository {
     def articleTemplateId = column[Int]("article_template_id")
     def status = column[Status]("status")
     def tagReplacements = column[Set[TagReplacement]]("tag_replacements")
+    def author = column[Option[String]]("author")
     def publishDate = column[Option[LocalDateTime]]("publish_date")
     
-    def * = (id.?, userIdOption, articleTemplateId, status, tagReplacements, publishDate) <> (ArticleRow.tupled, ArticleRow.unapply)
+    def * = (id.?, userIdOption, articleTemplateId, status, tagReplacements, author, publishDate) <> (ArticleRow.tupled, ArticleRow.unapply)
   }
   
   val articleTableQuery = TableQuery[ArticleTable]

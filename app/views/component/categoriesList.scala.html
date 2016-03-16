@@ -1,0 +1,7 @@
+@import kipsigman.domain.entity.Category
+@(categories: Seq[Category], ulClasses: String, ulRel: String, liClasses: String)(implicit messages: Messages)
+<ul class="@ulClasses" rel="@ulRel">
+  @for(category <- categories) {
+  <li class="@liClasses"><a href="@routes.SiteController.category(category)">@Messages(s"category.name.${category.name}")</a></li>  
+  }
+</ul>

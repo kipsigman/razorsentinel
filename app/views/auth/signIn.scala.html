@@ -1,6 +1,7 @@
 @import kipsigman.play.auth.entity.User
+@import services.AdService
 @import b3.vertical.fieldConstructor
-@(form: Form[kipsigman.play.auth.mvc.SignInForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(form: Form[kipsigman.play.auth.mvc.SignInForm.Data])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 @views.html.theme.allegro.layoutFullWidth(Messages("auth.sign.in")) {
 <div class="paragraph-row">
   <div class="column6">
@@ -12,7 +13,7 @@
     @b3.password(form("password"), '_hiddenLabel -> Messages("user.password"), 'placeholder -> Messages("user.password"))
     @b3.checkbox(form("rememberMe"), '_text -> Messages("auth.remember.me"), 'checked -> true)
     @b3.hidden("successUrl", form("successUrl").value)
-    @views.html.theme.allegro.component.formButtons(routes.SiteController.index(), None, Some(Messages("auth.sign.in")))
+    @views.html.component.formButtons(routes.SiteController.index(), None, Some(Messages("auth.sign.in")))
   }
   
   </div>

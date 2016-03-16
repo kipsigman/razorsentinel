@@ -5,7 +5,11 @@ import kipsigman.play.auth.mvc.DefaultErrorResults
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 
+import services.AdService
+
 trait ErrorResults extends DefaultErrorResults {
+  implicit protected val adService: AdService
+  
   override protected def notAuthenticatedView(implicit request: RequestHeader, user: Option[User]): Html =
     views.html.error.fourOhOne()
   

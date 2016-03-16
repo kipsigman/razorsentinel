@@ -48,18 +48,24 @@ class WeatherService @Inject() (
   )(Weather.apply _)
   
   
-  def getWeather(location: String): Future[Weather] = {
+  def getWeather(location: String): Future[Option[Weather]] = {
     val weatherServiceUrl = s"http://api.worldweatheronline.com/free/v2/weather.ashx?key=${weatherApiKey}&q=${location}&num_of_days=1&includeLocation=yes&date=today&format=json"
     
     ws.url(weatherServiceUrl).get().map(response => {
       val json = response.json
-      json.as[Weather]
+      logger.debug(s"json=$json")
+      val error = json \ "data" \ "error"
+      if(error.toOption.isDefined) {
+        None
+      } else {
+        Option(json.as[Weather])  
+      }
     })  
   }
   
-  def getWeatherByLocation(location: Location): Future[Weather] = getWeather(location.urlEncoded)
+  def getWeatherByLocation(location: Location): Future[Option[Weather]] = getWeather(location.urlEncoded)
   
-  def getWeatherByIp(ipAddress: String): Future[Weather] = getWeather(ipAddress)
+  def getWeatherByIp(ipAddress: String): Future[Option[Weather]] = getWeather(ipAddress)
   
   def codeToImage(weatherCode: Int): String = {
     val (image, description) = weatherCode match {

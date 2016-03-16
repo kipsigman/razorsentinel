@@ -5,7 +5,7 @@
   <div class="column12">
   @if(isView){
     @Html(article.bodyWithTooltips)
-    @views.html.theme.allegro.component.alert(AlertContext.Info, Messages("article.view.create.alert"), Some("create-article-alert"))
+    @views.html.component.alert(AlertContext.Info, Messages("article.view.create.alert"), Some("create-article-alert"))
   } else {
     @Html(article.bodyInlineEditHtml)
   }

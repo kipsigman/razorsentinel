@@ -1,5 +1,0 @@
-@import kipsigman.domain.entity.Category
-@import kipsigman.play.auth.entity.User
-@(categories: Seq[Category], selected: Option[Category], link: (Category, Int) => Call, allLink: Option[() => Call] = None)(implicit messages: Messages)
-@if(allLink.isDefined){<a class="label @if(selected.isEmpty){label-primary}else{label-info}" href="@allLink.get()">@Messages("category.name.all")</a>}
-@for(category <- categories) {@categoryButton(category, (selected.isDefined && selected.get == category), link) }

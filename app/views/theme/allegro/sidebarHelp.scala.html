@@ -1,6 +1,7 @@
 @import kipsigman.domain.entity.Category
 @import kipsigman.play.auth.entity.User
-@(helpTopic: String)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@import services.AdService
+@(helpTopic: String)(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 <!-- BEGIN main-sidebar right -->
 <div class="main-sidebar right">
   @views.html.theme.allegro.widget.help(true, helpTopic)

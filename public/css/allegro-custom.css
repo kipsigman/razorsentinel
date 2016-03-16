@@ -1,28 +1,45 @@
 /* Color Scheme */
 .header,.breaking-news .the-title,.widget > h3,.button,a.small-button,.marker,.hover-effect,.block-title,#wp-calendar td#today, .small-button, #writecomment p input[type=submit] {
-	background-color: #F26D22;
+  background-color: #F26D22;
 }
 
 .list-title, a:hover, a.mobile-menu, .widget .meta a { color: #F26D22; }
-.list-title { border-bottom: 2px solid #F26D22;	}
+.list-title { border-bottom: 2px solid #F26D22; }
 
 /* Menu Font */
 .main-menu .the-menu li a, .secondary-menu ul li a { font-family:"Titillium Web", sans-serif; }
 /* Block Titles */
 .list-title { font-family:"Titillium Web", sans-serif; }
 /* Article Titles */
-h1, h2, h3,	h4, h5, h6 { font-family: 'Source Sans Pro', sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Source Sans Pro', sans-serif; }
 
-.main-menu .the-menu li.menu-item-right {
-  float: right;
+
+/* shortcode.css */
+.paragraph-row {
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
+/* main-stylesheet.css */
+a {
+  color: #337ab7;
+}
+
+.article-title h1 {
+  margin-top: 10px;
+}
+
+.block-content p {
+  font-size: 14px;
+}
+
+/* Nav header/menus */
 .header > p {
-	vertical-align: middle;
+  vertical-align: middle;
 }
 
 .header .header-middle {
-	float: left;
+  float: left;
   display: inline;
   margin-left: 12px;
   margin-right: 12px;
@@ -31,13 +48,13 @@ h1, h2, h3,	h4, h5, h6 { font-family: 'Source Sans Pro', sans-serif; }
 }
 
 .header .header-addons {
-	margin-bottom: 10px;
+  margin-bottom: 10px;
   margin-top: 10px;
   vertical-align: middle;
 }
 
 .header > .wrapper {
-	padding: 10px 0px;
+  padding: 10px 0px;
 }
 
 .header .header-middle .header-weather {
@@ -78,68 +95,6 @@ h1, h2, h3,	h4, h5, h6 { font-family: 'Source Sans Pro', sans-serif; }
   margin: 0px 3px -2px 3px;
 }
 
-.dialog-modal {
-  z-index: 10000
-}
-
-/* fullcalendar */
-.fc h2 {
-  font-size: 17px;
-  font-weight: bold;
-  font-family: 'Source Sans Pro', sans-serif;
-}
-
-/* Articles */
-a.article-tag-editable {
-	color: #337ab7;
-	font-weight: bold;
-}
-
-.tooltip-inner {
-	background-color: #337ab7;
-}
-.tooltip-inner a {
-  color: #fff;
-}
-
-/* Selected Typography from Bootstrap 3 */
-.text-danger {
-  color: #a94442;
-}
-.text-info {
-  color: #31708f;
-}
-.text-primary {
-  color: #337ab7;
-}
-.text-success {
-  color: #3c763d;
-}
-.text-warning {
-  color: #8a6d3b;
-}
-
-.text-theme {
-  color: #F26D22;
-}
-
-.btn-theme {
-  color: #ffffff;
-  background-color: #F26D22;
-  border-color: #d43f3a;
-}
-.btn-theme:focus,
-.btn-theme.focus {
-  color: #fff;
-  background: #232323;
-}
-.btn-theme:hover {
-  color: #fff;
-  background: #232323;
-}
-.btn-theme:active,
-.btn-theme.active,
-.open > .dropdown-toggle.btn-theme {
-  color: #fff;
-  background: #232323;
+.main-menu .the-menu li.menu-item-right {
+  float: right;
 }

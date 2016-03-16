@@ -4,7 +4,8 @@
 @import kipsigman.domain.entity.Status
 @import kipsigman.play.auth.entity.User
 @import kipsigman.play.mvc.AlertContext
-@(article: Article, contentImages: Seq[ContentImage], form: Form[_])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@import services.AdService
+@(article: Article, contentImages: Seq[ContentImage], form: Form[_])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 
 @headIncludes = {
 <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
@@ -12,13 +13,13 @@
 
 @jsIncludes = {
 <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-<script src="@routes.Assets.at("javascripts/modal.js")"></script>
-<script src="@routes.Assets.at("javascripts/article/edit-functions.js")"></script>
-<script src="@routes.Assets.at("javascripts/article/edit.js")"></script>
+<script src="@routes.Assets.versioned("javascripts/modal.js")"></script>
+<script src="@routes.Assets.versioned("javascripts/article/edit-functions.js")"></script>
+<script src="@routes.Assets.versioned("javascripts/article/edit.js")"></script>
 }
   
 @views.html.theme.allegro.layout(Messages("article.edit"), Option(article.category), headIncludes = headIncludes, jsIncludes = jsIncludes) {
-  @views.html.theme.allegro.component.modal("save-response-modal", "", None, None)
+  @views.html.component.modal("save-response-modal", "", None, None)
   @b3.form(helper.CSRF(routes.ArticleController.editPost(article.id.get)), 'id -> "save-article-form") {
     @b3.hidden("articleId", article.id.get, 'id -> "articleId")
     @b3.hidden("articleTemplateId", article.articleTemplate.id.get, 'id -> "articleTemplateId")
@@ -27,16 +28,20 @@
     <div class="article-title">
   @if(user.isEmpty){
     @defining(Option(routes.ArticleController.own(article.id.get).url)){successUrl =>
-      @views.html.theme.allegro.component.alert(AlertContext.Error, Messages("article.anonymous.danger", routes.UserController.signIn(successUrl).url, routes.UserController.signUp(successUrl).url))
+      @views.html.component.alert(AlertContext.Error, Messages("article.anonymous.danger", routes.UserController.signIn(successUrl).url, routes.UserController.signUp(successUrl).url))
     }
   }
-      @views.html.theme.allegro.component.categoriesLabels(article.categories)
+      @views.html.component.categoriesLabels(article.categories, routes.SiteController.category)
       <h1>@Html(article.headlineInlineEditHtml)</h1>
-      <h3>@views.html.theme.allegro.component.statusLabel(article.status)</h3>
+      <h3>@views.html.component.statusLabel(article.status)</h3>
       <div class="author">
         <div class="a-content">
+          <span>
+            <div class="form-inline">
+              By @b3.text(form("author")) (@Messages("form.optional"))
+            </div>
+          </span>
           <span class="meta">
-            <b>@Messages("article.publishDate"):</b>
             <div class="form-inline">
               @b3.radio(form("publishDateFixed"), options = ArticleForms.publishDateFixedOptions)
               @b3.date(form("publishDate"))
@@ -55,7 +60,7 @@
               @views.html.theme.allegro.component.contentImage(contentImages.headOption)
             </p>
             <div class="shortcode-content">
-              @views.html.article.body(article, false)
+              @views.html.article.component.body(article, false)
               <div class="paragraph-row article-title">
                 <div class="column3">
                   &nbsp;

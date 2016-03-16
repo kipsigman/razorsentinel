@@ -17,6 +17,7 @@ import models.Article
 import models.ArticleTemplate
 import models.ArticleWithImages
 import models.ModelRepository
+import services.AdService
 import services.ContentAuthorizationService
 
 abstract class ArticleContentController (
@@ -25,7 +26,7 @@ abstract class ArticleContentController (
   modelRepository: ModelRepository,
   contentAuthorizationService: ContentAuthorizationService,
   imageService: ImageService)
-  (implicit ec: ExecutionContext) 
+  (implicit ec: ExecutionContext, adService: AdService) 
   extends ContentController[Article](messagesApi, env, modelRepository, contentAuthorizationService, imageService) {
   
   override protected def findContent(id: Int): Future[Option[Article]] = modelRepository.findArticle(id)
@@ -42,4 +43,6 @@ abstract class ArticleContentController (
       )
     }
   }
+  
+  protected def templateIds(articles: Seq[Article]): Set[Int] = articles.map(_.articleTemplate.id.get).toSet
 }

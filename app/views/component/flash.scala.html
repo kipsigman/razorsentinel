@@ -1,0 +1,4 @@
+@(flash: Flash)
+@for(keyValue <- flash.data) {
+  views.html.component.alert(keyValue._1, keyValue._2)
+}

@@ -22,6 +22,7 @@ import play.api.mvc.RequestHeader
 import play.api.mvc.Result
 
 import models.ModelRepository
+import services.AdService
 import services.ContentAuthorizationService
 
 abstract class ContentController[T <: Content[T]] (
@@ -30,7 +31,7 @@ abstract class ContentController[T <: Content[T]] (
   modelRepository: ModelRepository,
   contentAuthorizationService: ContentAuthorizationService,
   imageService: ImageService)
-  (implicit ec: ExecutionContext) 
+  (implicit ec: ExecutionContext, adService: AdService) 
   extends BaseController(messagesApi, env) {
   
   protected def findContent(id: Int): Future[Option[T]]

@@ -26,6 +26,7 @@ import models.ArticleTemplate
 
 import models.ModelRepository
 import models.NewsCategoryOptions
+import services.AdService
 import services.ContentAuthorizationService
 import services.WeatherService
 
@@ -38,32 +39,42 @@ class WidgetController @Inject() (
   modelRepository: ModelRepository,
   contentAuthorizationService: ContentAuthorizationService,
   imageService: ImageService,
-  weatherService: WeatherService
-  )(implicit ec: ExecutionContext)
+  weatherService: WeatherService,
+  playEnvironment: play.api.Environment
+  )(implicit ec: ExecutionContext, adService: AdService)
   extends ArticleContentController(messagesApi, env, modelRepository, contentAuthorizationService, imageService) {
   
-  def recentArticles(categoryOption: Option[Category], excludeIds: Seq[Int], maxResults: Int = 3) = UserAwareAction.async {implicit request =>
+  def recentArticles(categoryOption: Option[Category], excludeTemplateIds: Seq[Int], maxResults: Int = 3) = UserAwareAction.async {implicit request =>
     val category = categoryOption.getOrElse(NewsCategoryOptions.TopStories)
     modelRepository.findPublishedArticlesByCategory(category, PageFilter(0, maxResults + 1)).flatMap(page => {
-      val articles = page.items.filterNot(article => excludeIds.contains(article.id.get)).sortBy(_.id).reverse.take(maxResults)
+      val articles = page.items.filterNot(article => excludeTemplateIds.contains(article.articleTemplate.id.get)).sortBy(_.id).reverse.take(maxResults)
       articlesWithImages(articles).map(items => Ok(views.html.theme.allegro.widget.articles(categoryOption, items)))
     })
   }
 
-  def trendingArticles(excludeIds: Seq[Int], maxResults: Int = 3) = UserAwareAction.async {implicit request =>
+  def trendingArticles(excludeTemplateIds: Seq[Int], maxResults: Int = 3) = UserAwareAction.async {implicit request =>
     val category = NewsCategoryOptions.TopStories
     modelRepository.findPublishedArticlesByCategory(category, PageFilter(0, maxResults + 1)).flatMap(page => {
-      val articles = page.items.filterNot(article => excludeIds.contains(article.id.get)).sortBy(_.id).reverse.take(maxResults)
+      val articles = page.items.filterNot(article => excludeTemplateIds.contains(article.articleTemplate.id.get)).sortBy(_.id).reverse.take(maxResults)
       articlesWithImages(articles).map(items => Ok(views.html.theme.allegro.widget.articles(Option(category), items)))
     })
   }
   
   def weather = UserAwareAction.async {implicit request =>
-    val ip = request.request.remoteAddress
-    val location = Location("Denver", "CO", None, "United States", None, None)
-    weatherService.getWeatherByLocation(location).map(weather => {
-      val weatherImage = weatherService.codeToImage(weather.code)
-      Ok(views.html.theme.allegro.widget.weather(false, Option(weather), Option(weatherImage)))
-    })
+    
+    // Get weather. For dev uses sample location as IP is localhost
+    val weatherOptionFuture = 
+      if(playEnvironment.mode == play.api.Mode.Dev) {
+        val location = kipsigman.domain.entity.Location("Boulder", "CO", Option("80301"), "United States", None, None)
+        weatherService.getWeatherByLocation(location)
+      } else {
+        val ip = request.request.remoteAddress
+        weatherService.getWeatherByIp(ip)
+      }
+    
+    weatherOptionFuture.map(weatherOption => {
+      val weatherImageOption = weatherOption.map(weather => weatherService.codeToImage(weather.code))
+      Ok(views.html.theme.allegro.widget.weather(false, weatherOption, weatherImageOption))
+    })  
   }
 }

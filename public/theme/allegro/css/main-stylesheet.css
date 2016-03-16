@@ -41,7 +41,7 @@ body {
 
 .dat-menu-setup {
 	background-color: #665140;
-	background-image: url(../images/photo-3.jpg)!important;
+	/*background-image: url(../images/photo-3.jpg)!important;*/
 }
 
 
@@ -1189,7 +1189,6 @@ a:focus {
 	display: block;
 	margin-right: 300px;
 	margin-bottom: 20px;
-	margin-top: 10px;
 	line-height: 100%;
 }
 
@@ -2324,7 +2323,7 @@ a.hover-effect:hover .cover i:before {
 	position: relative;
 }
 
-.footer ul li:after {
+.footer ul.slash-seperator li:after {
 	display: block;
 	content: '/';
 	position: absolute;

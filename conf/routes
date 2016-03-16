@@ -10,6 +10,10 @@ GET     /resources/config.js        controllers.JavaScriptResourceController.con
 GET     /resources/messages.js      controllers.JavaScriptResourceController.messagesJs
 GET     /resources/routes.js        controllers.JavaScriptResourceController.routesJs
 
+# Advertisement
+GET     /ad/:id/image               controllers.AdController.image(id:Int)
+GET     /ad/:id/click               controllers.AdController.click(id:Int)
+
 # Auth/User
 GET     /auth/signIn                     controllers.UserController.signIn(successUrl: Option[String] ?= None)
 POST    /auth/signIn                     controllers.UserController.signInPost
@@ -21,9 +25,9 @@ GET     /auth/user                       controllers.UserController.user
 # Site pages accessible to anonymous visitors and all Users
 GET     /                           controllers.SiteController.index
 GET     /about                      controllers.SiteController.about
+GET     /category/:category         controllers.SiteController.category(category:kipsigman.domain.entity.Category, pageIndex:Int ?= 0)
 GET     /contact                    controllers.SiteController.contact
 GET     /help                       controllers.SiteController.help
-GET     /category/:category         controllers.SiteController.category(category:kipsigman.domain.entity.Category, pageIndex:Int ?= 0)
 
 # Site Widgets (AJAX loaded)
 GET     /widget/recentArticles            controllers.WidgetController.recentArticles(categoryOption:Option[kipsigman.domain.entity.Category], excludeIds:Seq[Int])

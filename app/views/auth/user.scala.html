@@ -1,6 +1,7 @@
 @import kipsigman.play.auth.entity.User
+@import services.AdService
 @import b3.vertical.fieldConstructor
-@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 @views.html.theme.allegro.layoutFullWidth(Messages("user.profile")) {
 <div class="paragraph-row">
   <div class="column6">

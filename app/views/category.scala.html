@@ -1,8 +1,9 @@
 @import kipsigman.domain.entity.Category
 @import kipsigman.domain.entity.Page
 @import kipsigman.play.auth.entity.User
+@import services.AdService
 @import services.StringService
-@(category: Category, page: Page[ArticleWithImages])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(category: Category, page: Page[ArticleWithImages], templateIds: Set[Int])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 
 @defining(Messages(s"category.name.${category.name}")) {categoryDisplayName =>
   @views.html.theme.allegro.layout(s"$categoryDisplayName - ${Messages("nav.brand")}", Option(category)) {  
@@ -15,29 +16,14 @@
             <h2>@categoryDisplayName</h2>
           </div><!-- block-title -->
           <div class="block-content">   
-  @for(awi <- page.items) {
-            <div class="article-big has-post-thumbnail hentry">
-              @views.html.theme.allegro.component.articleImage(Option(category), awi.article, awi.contentImages.headOption, 210, 140)
-              <div class="article-content">
-                <h2>
-                  <a href="@ViewHelper.viewArticle(category, awi.article)">@awi.article.headline</a>
-                  <span class="meta"></span>
-                </h2>
-                <span class="meta"></span>
-                <p>@Html(awi.article.bodyTeaser(300))</p>
-                <span class="meta">
-                  <a href="@ViewHelper.viewArticle(category, awi.article)" class="more">@Messages("action.view.more")@ViewHelper.iconSpan("triangle-right")</a>
-                </span>
-              </div>
-            </div>
-  }
-            @views.html.theme.allegro.component.pagination(page, (pageIndex: Int) => controllers.routes.SiteController.category(category, pageIndex))
+            @views.html.component.mainArticles(Option(category), page.items)
+            @views.html.component.pagination(page, (pageIndex: Int) => controllers.routes.SiteController.category(category, pageIndex))
           </div><!-- block-content -->
         </div><!-- block -->
       </div><!-- content-block main left -->
     </div><!-- single-block -->
   </div><!-- main-page left -->
-  @views.html.theme.allegro.sidebarCategory(category)
+  @views.html.theme.allegro.sidebarCategory(category, templateIds)
   <div class="clear-float"></div>
 </div><!-- main-content -->
   }

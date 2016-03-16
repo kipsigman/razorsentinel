@@ -3,14 +3,25 @@
 <!-- BEGIN footer -->
 <div class="footer">
   <div class="wrapper">
-    <ul class="right load-responsive" rel="Footer Menu">
+    <ul class="right slash-seperator load-responsive" rel="Footer Menu">
       <li class="menu-item"><a class="navbar-brand" href="@routes.SiteController.index">@Messages("nav.home")</a></li>
       <li class="menu-item"><a href="@routes.SiteController.about">@Messages("nav.about")</a></li>
       <li class="menu-item"><a href="@routes.SiteController.contact">@Messages("nav.contact")</a></li>
       <li class="menu-item"><a href="@routes.SiteController.help">@Messages("nav.help")</a></li>
     </ul>
-    <a href="@controllers.routes.SiteController.index()" class="logo-footer"><img src="@routes.Assets.at("theme/allegro/images/logo-footer.png")" alt="@Messages("nav.brand")" /></a>
-	<p>@Html(Messages("footer.copyright"))</p>
+@***<a href="@controllers.routes.SiteController.index()" class="logo-footer"><img src="@routes.Assets.at("images/logo.png")" alt="@Messages("nav.brand")" /></a>***@
+	  <p>@Html(Messages("footer.copyright"))</p>
+	  
+	  <ul class="left load-responsive" rel="Footer Menu">
+      <li class="menu-item"><a href="https://www.facebook.com/razorsentinel/" class="custom-soc icon-text" title="@Messages("widget.share.facebook")">@ViewHelper.iconCodeHtml("facebook")</a></li>
+      <li class="menu-item"><a href="https://twitter.com/razorsentinel1" class="custom-soc icon-text" title="@Messages("widget.share.twitter")">@ViewHelper.iconCodeHtml("twitter")</a></li>
+      <li class="menu-item"><a href="https://plus.google.com/115818740727456290010" class="custom-soc icon-text" title="@Messages("widget.share.googlePlus")">@ViewHelper.iconCodeHtml("google+")</a></li>
+@*
+      <li class="menu-item"><a href="#" class="custom-soc icon-text" title="@Messages("widget.share.linkedin")">@ViewHelper.iconCodeHtml("linkedin")</a></li>
+*@
+    </ul>
+	  @views.html.component.categoriesList(NewsCategoryOptions.allSorted, "right slash-seperator load-responsive", Messages("nav.menu.categories"), "menu-item")
+    
   </div>
 </div>
 <!-- END footer -->

@@ -1,4 +1,20 @@
-# General Errors
+# General: Actions
+action.cancel=Cancel
+action.close=Close
+action.create=Create
+action.delete=Delete
+action.delete.confirm=Are you sure you want to delete this?
+action.delete.success=Item deleted
+action.edit=Edit
+action.find.error.notFound={0} with id {2} not found
+action.preview=Preview
+action.save=Save
+action.save.success=Item saved
+action.share.email=Email
+action.view=View
+action.view.more=More
+
+# General: Errors
 error=Error
 error.email=Valid email required
 error.http.401=401 Authentication Required
@@ -11,7 +27,13 @@ error.http.500=Aww sh*t!
 error.http.500.description=Somebody properly f'd something up. Despite this being an HTTP 500 error (server), we're still going to blame you (client).
 error.required=This field is required
 
-# Sections
+# General: Forms
+form.optional=Optional
+form.required=Required
+
+# Nav/Layout
+footer.copyright=&copy; 2016 Razor Sentinel. All rights reserved.
+header.brand.description=The world's finest news source
 nav.about=About
 nav.brand=The Razor Sentinel
 nav.contact=Contact
@@ -21,17 +43,49 @@ nav.content.templates=Templates
 nav.help=Help
 nav.home=Home
 nav.menu.main=Main Menu
-nav.menu.secondary=Categories
+nav.menu.categories=Categories
 nav.toggle=Toggle navigation
 
-header.brand.description=The world's finest news source
-footer.copyright=&copy; 2016 Razor Sentinel. All rights reserved.
+# Auth/User
+auth.sign.in=Sign In
+auth.sign.in.error.invalid=Invalid login credentials
+auth.sign.out=Sign Out
+auth.sign.up=Sign Up
+auth.already.a.member=Already a member?
+auth.not.a.member=Not a member?
+auth.remember.me=Remember my login on this computer
+auth.or.use.social=Or use your existing account on one of the following services to sign in:
+auth.access.denied=Access denied
+user.avatar=Avatar
+user.error.exists=There already exists a user with this email
+user.first.name=First name
+user.last.name=Last name
+user.email=Email
+user.password=Password
+user.profile=Profile
+user.roles=Roles
 
+# Company pages
+company.about.openSource=Open Source
+company.about.openSource.description=View the <a href="https://github.com/kipsigman/razorsentinel">source code</a> on <a href="https://github.com">Github</a>.
+company.about.where=Where did we come from?
+company.about.whatDoWeEat=And what do we eat?
+company.contact.advertising=Advertising
+company.contact.advertising.description=If you're interested in advertising on this site, contact us via email: advertising_at_razorsentinel.com.
+company.contact.email=Email
+company.contact.facebook=Facebook
+company.contact.followUs=Follow us
+company.contact.twitter=Twitter
+
+# Help
+help=Help
+help.body=Help coming soon!
 help.topic.editArticle.title=How to create/edit an article
 help.topic.manageArticles.title=How to manage articles
 help.topic.manageTemplates.title=How to manage templates
 help.whatsThis=What's this?
 
+# Widgets
 widget.banner.advertisement=Advertisement
 widget.calendar.title=Calendar
 widget.calendar.dayOfWeek.sun=Sun
@@ -58,72 +112,10 @@ widget.share.socialMedia=Social media
 widget.share.title=Share this article
 widget.trendingArticles.title=Trending
 
-# Company pages
-company.about.where=Where did we come from?
-company.about.whatDoWeEat=And what do we eat?
-company.contact.email=Email
-company.contact.facebook=Facebook
-company.contact.followUs=Follow us
-company.contact.twitter=Twitter
 
-help.personalization=Personalization
-
-
-# Generic actions
-action.cancel=Cancel
-action.close=Close
-action.create=Create
-action.delete=Delete
-action.delete.confirm=Are you sure you want to delete this?
-action.delete.success=Item deleted
-action.edit=Edit
-action.find.error.notFound={0} with id {2} not found
-action.preview=Preview
-action.save=Save
-action.save.success=Item saved
-action.share.email=Email
-action.view=View
-action.view.more=More
-
-# Entity
-entity.find.error.notFound={0} with id {1} not found
-
-# Content
-content.articles.list.title=Manage Articles
-content.templates.list.title=Manage Templates
-content.error.unauthorized=You are not authorized to modify this content
-content.status=Status
-content.status.deleted=Deleted
-content.status.draft=Draft
-content.status.draft.description=Not viewable by other visitors, not listed, and not indexed by search engines
-content.status.public=Public
-content.status.public.description=Published, listed on site, indexed by search engines
-content.status.unlisted=Unlisted
-content.status.unlisted.description=Published and viewable by sharing but not listed on site and not indexed by search engines
-content.status.revertToDraft=Revert to Draft
-content.status.publish=Publish
-content.status.save.success=Status updated
-
-categories=Categories
-category=Category
-category.error.invalid=Invalid Category
-category.more=More
-category.name.all=All
-category.name.arts=Arts
-category.name.business=Business
-category.name.entertainment=Entertainment
-category.name.food=Food
-category.name.health=Health
-category.name.local=Local
-category.name.national=National
-category.name.science-and-technology=Science & Tech
-category.name.sports=Sports
-category.name.top-stories=Top Stories
-category.name.travel=Travel
-category.name.world=World
-
-
-# Article & Template
+#############
+# Entities/Content
+#############
 article=Article
 article.anonymous.danger=You are not signed in. You can personalize and publish an article anonymously, but you won't be able to edit it later.<br/> To manage your articles, you must <a href='{0}'><strong>Sign In</strong></a> or <a href='{1}'><strong>Sign Up</strong></a>.
 article.body=Body
@@ -150,34 +142,48 @@ article.templateId=Template ID
 article.view.create.alert=Start crafting your article by clicking on the "Customize" button or any of the inline tooltips
 
 articleTemplate=Article Template
+articleTemplate.author.default=Default Author
 articleTemplate.body=Body
 articleTemplate.body.html.tidy=Tidy Body HTML
 articleTemplate.body.html.tidy.tooltip=Clean up and correct errors in the body HTML
-articleTemplate.create=New Template
+articleTemplate.create=Create New Template
 articleTemplate.create.imageAfterSave=After initially saving this Article Template you will be able to add images
 articleTemplate.edit=Edit Template
 articleTemplate.edit.warning=Editing a template will affect existing articles based on that template. You may edit content and insert/remove existing tags. If you wish to add new tags, create a new replacement template and disable this one.
 articleTemplate.headline=Headline
 articleTemplate.id=ID
 articleTemplate.tags=Tags
+categories=Categories
+category=Category
+category.error.invalid=Invalid Category
+category.more=More
+category.name.all=All
+category.name.arts=Arts
+category.name.business=Business
+category.name.entertainment=Entertainment
+category.name.food=Food
+category.name.health=Health
+category.name.local=Local
+category.name.national=National
+category.name.science-and-technology=Science & Tech
+category.name.sports=Sports
+category.name.top-stories=Top Stories
+category.name.travel=Travel
+category.name.world=World
 
-# Auth
-auth.sign.in=Sign In
-auth.sign.in.error.invalid=Invalid login credentials
-auth.sign.out=Sign Out
-auth.sign.up=Sign Up
-auth.already.a.member=Already a member?
-auth.not.a.member=Not a member?
-auth.remember.me=Remember my login on this computer
-auth.or.use.social=Or use your existing account on one of the following services to sign in:
-auth.access.denied=Access denied
+content.articles.list.title=Manage Articles
+content.templates.list.title=Manage Templates
+content.error.unauthorized=You are not authorized to modify this content
+content.status=Status
+content.status.deleted=Deleted
+content.status.draft=Draft
+content.status.draft.description=Not viewable by other visitors, not listed, and not indexed by search engines
+content.status.public=Public
+content.status.public.description=Published, listed on site, indexed by search engines
+content.status.unlisted=Unlisted
+content.status.unlisted.description=Published and viewable by sharing but not listed on site and not indexed by search engines
+content.status.revertToDraft=Revert to Draft
+content.status.publish=Publish
+content.status.save.success=Status updated
 
-# User
-user.avatar=Avatar
-user.error.exists=There already exists a user with this email
-user.first.name=First name
-user.last.name=Last name
-user.email=Email
-user.password=Password
-user.profile=Profile
-user.roles=Roles
+entity.find.error.notFound={0} with id {1} not found

@@ -40,6 +40,7 @@ function getFormData() {
   // Get other form data
   formData.articleId = getArticleId();
   formData.articleTemplateId = getArticleTemplateId();
+  formData.author = $('#author')[0].value;
   formData.publishDate = $('#publishDate')[0].value;
   formData.publishDateFixed = $('input[name=publishDateFixed]:checked').val();
   

@@ -1,5 +1,6 @@
 @import kipsigman.play.auth.entity.User
-@()(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@import services.AdService
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 
 @views.html.theme.allegro.layoutFullWidth(Messages("nav.contact")) {
 <div class="paragraph-row">
@@ -10,10 +11,14 @@
       &nbsp;&nbsp;&nbsp;&nbsp;
       <a href="https://www.facebook.com/razorsentinel/" target="_blank" class="social-icon">@ViewHelper.iconSpan("facebook") <b>Facebook</b></a>
       &nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="#" target="_blank" class="social-icon">@ViewHelper.iconSpan("google+") <b>Google+</b></a>
+      <a href="https://plus.google.com/115818740727456290010" target="_blank" class="social-icon">@ViewHelper.iconSpan("google+") <b>Google+</b></a>
       &nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="#" target="_blank" class="social-icon"><span class="icon-text">&#62232;</span> <b>LinkedIn</b></a>
+@*
+      <a href="#" target="_blank" class="social-icon"><span class="icon-text">&#62232;</span> <b>Linkedin</b></a>
+*@
     </p>
+    <h2>@Messages("company.contact.advertising")</h2>
+    <p>@Messages("company.contact.advertising.description")</p>
   </div>
 </div><!-- paragraph-row -->
 }

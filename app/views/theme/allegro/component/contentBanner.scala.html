@@ -1,7 +1,0 @@
-@import kipsigman.domain.entity.Category
-@import kipsigman.play.auth.entity.User
-@(outerDiv: Boolean, width: Int, height: Int)(implicit request: RequestHeader, messages: Messages, user: Option[User])
-@if(outerDiv){<div class="ad-banner">}
-  <a href="@controllers.routes.SiteController.contact" class="ad-link top"><span class="icon-text">&#9662;</span>@Messages("widget.banner.advertisement")<span class="icon-text">&#9662;</span></a>
-  <a href="#" target="_blank"><img src="@controllers.routes.Assets.at(s"theme/allegro/images/no-banner-${width}x${height}.jpg")" /></a>
-@if(outerDiv){</div><!-- ad-banner -->}

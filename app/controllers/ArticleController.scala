@@ -17,11 +17,7 @@ import kipsigman.play.data.forms.JavaTimeFormatters
 import kipsigman.play.mvc.AjaxHelper
 import kipsigman.play.service.ImageService
 import play.api.data.Form
-import play.api.data.Forms.boolean
-import play.api.data.Forms.mapping
-import play.api.data.Forms.nonEmptyText
-import play.api.data.Forms.number
-import play.api.data.Forms.optional
+import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.MessagesApi
 import play.api.mvc.BodyParsers
@@ -32,6 +28,7 @@ import models.Article
 import models.ArticleTemplate
 import models.ModelRepository
 import models.TagReplacement
+import services.AdService
 import services.ContentAuthorizationService
 
 @Singleton
@@ -41,16 +38,17 @@ class ArticleController @Inject() (
   modelRepository: ModelRepository,
   contentAuthorizationService: ContentAuthorizationService,
   imageService: ImageService)
-  (implicit ec: ExecutionContext) 
+  (implicit ec: ExecutionContext, adService: AdService) 
   extends ArticleContentController(messagesApi, env, modelRepository, contentAuthorizationService, imageService) {
   
   import ArticleForms._
   
   def create(articleTemplateId: Int) = UserAwareAction.async { implicit request =>
+    val userOption = request.identity
     modelRepository.findArticleTemplate(articleTemplateId) flatMap {
       case Some(articleTemplate) => {
         imageService.findContentImages(ArticleTemplate.contentClass, articleTemplate.id.get).map(contentImages => {
-          val article = Article(userId = request.identity.flatMap(_.id), articleTemplate = articleTemplate)
+          val article = Article(userId = userOption.flatMap(_.id), articleTemplate = articleTemplate, author = Option(articleTemplate.author))
           val theForm = createArticleDataForm(article)
           Ok(views.html.article.create(article, contentImages, theForm))    
         })
@@ -190,7 +188,7 @@ class ArticleController @Inject() (
     modelRepository.findArticle(id) flatMap {
       case Some(article) => {
         imageService.findContentImages(ArticleTemplate.contentClass, article.articleTemplate.id.get).map(contentImages => {
-          Ok(views.html.article.view(category, article, contentImages, contentAuthorizationService))
+          Ok(views.html.article.view(category, article, contentImages))
         })
       }
       case None => Future.successful(notFound)
@@ -221,6 +219,7 @@ object ArticleForms {
   case class ArticleData(
     articleId: Option[Int],
     articleTemplateId: Int,
+    author: Option[String],
     publishDate: LocalDate,
     publishDateFixed: Boolean)
 
@@ -228,6 +227,7 @@ object ArticleForms {
     mapping(
       "articleId" -> optional(number),
       "articleTemplateId" -> number,
+      "author" -> optional(text),
       "publishDate" -> JavaTimeFormatters.localDateMapping,
       "publishDateFixed" -> boolean
     )(ArticleData.apply)(ArticleData.unapply)
@@ -251,7 +251,7 @@ object ArticleForms {
   }
   
   def createArticleData(article: Article): ArticleData = {
-    ArticleData(article.id, article.articleTemplate.id.get, article.publishDate.map(_.toLocalDate).getOrElse(LocalDate.now()), article.publishDate.isDefined)
+    ArticleData(article.id, article.articleTemplate.id.get, article.author, article.publishDate.map(_.toLocalDate).getOrElse(LocalDate.now()), article.publishDate.isDefined)
   }
   
   def createArticleDataForm(article: Article): Form[ArticleData] = {
@@ -268,7 +268,7 @@ object ArticleForms {
       }
     
     // Save Article and redirect to edit page
-    article.copy(publishDate = newPublishDate)
+    article.copy(author = articleData.author, publishDate = newPublishDate)
   }
   
   def bindTags(article: Article, articleTemplate: ArticleTemplate, formData: Map[String, Seq[String]]): Article = {

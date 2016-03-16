@@ -10,6 +10,7 @@ import slick.driver.JdbcProfile
 import kipsigman.domain.entity.Category
 import kipsigman.domain.entity.Content
 import kipsigman.domain.entity.IdEntity
+import kipsigman.domain.entity.LifecycleEntity
 import kipsigman.domain.entity.Page
 import kipsigman.domain.entity.PageFilter
 import kipsigman.domain.entity.Status
@@ -26,9 +27,10 @@ class ModelRepositorySlick @Inject() (
   override protected val dbConfig: DatabaseConfig[JdbcProfile] = dbConfigProvider.get[JdbcProfile]
   
   private def articleResults(q: Query[ArticleTable, ArticleRow, Seq]): Future[Seq[Article]] = {
-    db.run(q.withArticleTemplate.result).map(joinSeq =>
+    val articlesFuture = db.run(q.withArticleTemplate.result).map(joinSeq =>
       joinSeq.map(join => join._1.toEntity(join._2))
     )
+    filterNotDeleted(articlesFuture)
   }
   
   override def findArticle(id: Int): Future[Option[Article]] = {
@@ -38,7 +40,7 @@ class ModelRepositorySlick @Inject() (
   
   override def findArticlesByUser(user: User): Future[Seq[Article]] = {
     val q = articleTableQuery.filter(_.userIdOption === user.id).sortBy(_.id.asc)
-    articleResults(q).map(_.filter(a => a.status != Status.Deleted))
+    articleResults(q)
   }
   
   override def findPublishedArticlesByCategory(category: Category, pageFilter: PageFilter)(implicit userOption: Option[User]): Future[Page[Article]] = {
@@ -92,20 +94,11 @@ class ModelRepositorySlick @Inject() (
   
   override def findArticleTemplates(categoryOption: Option[Category] = None): Future[Seq[ArticleTemplate]] = {
     val q = articleTemplateTableQuery.sortBy(_.headline.asc)
-    db.run(q.result).map(entities =>
+    filterNotDeleted(db.run(q.result)).map(entities =>
       categoryOption match {
         case Some(category) => entities.filter(at => at.isMemberOf(category)) 
         case None => entities
       }  
-    )
-  }
-  
-  override def findPublishedArticleTemplatesByCategory(category: Category)(implicit userOption: Option[User]): Future[Seq[ArticleTemplate]] = {
-    val q = articleTemplateTableQuery.sortBy(_.headline.asc)
-    db.run(q.result).map(entities =>
-      entities.filter(entity => 
-        entity.categories.contains(category) && (entity.isPublic || (entity.isUnlisted && entity.isOwnedBy(userOption)))
-      )  
     )
   }
   

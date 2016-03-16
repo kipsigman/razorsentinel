@@ -8,6 +8,8 @@ import kipsigman.play.auth.entity.User
 import kipsigman.play.auth.mvc.DefaultAuthErrorHandler
 import play.api.i18n.MessagesApi
 
+import services.AdService
+
 @Singleton
-class ErrorHandler @Inject() (messagesApi: MessagesApi, env: Environment[User, CookieAuthenticator])
+class ErrorHandler @Inject() (messagesApi: MessagesApi, env: Environment[User, CookieAuthenticator])(implicit protected val adService: AdService)
   extends DefaultAuthErrorHandler(messagesApi, env) with ErrorResults
