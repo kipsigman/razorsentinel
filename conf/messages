@@ -7,6 +7,8 @@ action.delete.confirm=Are you sure you want to delete this?
 action.delete.success=Item deleted
 action.edit=Edit
 action.find.error.notFound={0} with id {2} not found
+action.hide=Hide
+action.post=Post
 action.preview=Preview
 action.save=Save
 action.save.success=Item saved
@@ -170,7 +172,10 @@ category.name.sports=Sports
 category.name.top-stories=Top Stories
 category.name.travel=Travel
 category.name.world=World
-
+comment.notAuthenticated=<a href="{0}">Sign In</a> or <a href="{1}">Sign Up</a> to join the discussion
+comment.list.title={0} Comments
+comment.reply=Reply
+comment.reply.notAuthenticated=<a href="{0}">Sign In</a> or <a href="{1}">Sign Up</a> to reply
 content.articles.list.title=Manage Articles
 content.templates.list.title=Manage Templates
 content.error.unauthorized=You are not authorized to modify this content

@@ -2,7 +2,12 @@
 @import services.AdService
 @(awis: Seq[ArticleWithImages], templateIds: Set[Int])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 
-@views.html.theme.allegro.layout(Messages("nav.brand"), None) {  
+@jsIncludes = {
+<!-- Sets Mixpanel user, restricted to login success page as it's only necessary one time per user -->
+<script src="@routes.Assets.versioned("javascripts/mixpanel-user.js")"></script>
+}
+
+@views.html.theme.allegro.layout(Messages("nav.brand"), None, jsIncludes = jsIncludes) {  
 <div class="main-content">
   <div class="main-page left">
     <div class="single-block">

@@ -69,8 +69,26 @@ $(document).ready(function() {
 //    }
 //  });
   
+  $('.show-comment-reply').click(function() {
+    event.preventDefault();
+    var commentId = $(this).data("comment-id");
+    var commentReplyFormCssId = "#comment-reply-" + commentId;
+    $(commentReplyFormCssId).show();
+  });
+  $('.hide-comment-reply').click(function() {
+    event.preventDefault();
+    var commentId = $(this).data("comment-id");
+    var commentReplyFormCssId = "#comment-reply-" + commentId;
+    $(commentReplyFormCssId).hide();
+  });
+  
   
   // Initialization
+  
+  // Hide comment reply forms
+  $(".comment-respond").hide();
+  
+  // Tag tooltips
   $(articleTagClass).tooltip({
     html: true,
     placement: 'bottom',
@@ -78,5 +96,6 @@ $(document).ready(function() {
     title: '<a href="' + createArticleUrl() + '">' + messages("action.edit") + '</a>'
   });
   
+  // Hide Create Article alert
   $(createArticleAlertCssId).hide();
 });

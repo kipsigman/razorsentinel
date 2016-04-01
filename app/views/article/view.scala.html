@@ -3,7 +3,7 @@
 @import kipsigman.play.auth.entity.User
 @import kipsigman.play.mvc.AlertContext
 @import services.AdService
-@(category: Category, article: Article, contentImages: Seq[ContentImage])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
+@(category: Category, article: Article, contentImages: Seq[ContentImage], comments: Seq[ArticleCommentGroup])(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
 
 @headIncludes = {
   @if(!article.isPublic) {
@@ -47,7 +47,7 @@
   @if(article.author.isDefined){
           <span>By <b>@article.author.get</b></span>
   }
-          <span class="meta">@ViewHelper.displayPublishDate(article.publishDate)</span>
+          <span class="meta">@ViewHelper.displayDate(article.publishDate)</span>
         </div>
       </div>
     </div><!-- article-title -->
@@ -73,7 +73,7 @@
               </div>
             </div><!-- shortcode-content -->
           </div><!-- body/image -->
-          @** @views.html.article.component.comments(article) **@
+          @views.html.article.component.comments(category, article, comments)
         </div><!-- block -->
       </div><!-- content-block main left-->
     </div><!-- single-block -->

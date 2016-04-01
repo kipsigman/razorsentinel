@@ -1,5 +1,5 @@
 /* Color Scheme */
-.header,.breaking-news .the-title,.widget > h3,.button,a.small-button,.marker,.hover-effect,.block-title,#wp-calendar td#today, .small-button, #writecomment p input[type=submit] {
+.header,.breaking-news .the-title,.widget > h3,.button,a.small-button,.marker,.hover-effect,.block-title,#wp-calendar td#today, .small-button {
   background-color: #F26D22;
 }
 
@@ -97,4 +97,54 @@ a {
 
 .main-menu .the-menu li.menu-item-right {
   float: right;
+}
+
+.comment-form {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  margin: 20px auto;
+}
+
+.comment-form p {
+  display: block;
+  position: relative;
+}
+
+.comment-form p textarea,
+.comment-form p input[type=text] {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 10px;
+  display: block;
+  background: #fff;
+  font-size: 13px;
+  border: 1px solid #d3d3d3;
+  font-family: 'Arial';
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+}
+
+.comment-form p textarea:focus,
+.comment-form p input[type=text]:focus {
+  border: 1px solid #bababa;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.05);
+}
+
+.comment-form p textarea {
+  height: 100px;
+}
+
+.comment-form p label {
+  display: block;
+  position: absolute;
+  left: -120px;
+  white-space: nowrap;
+  line-height: 30px;
+  width: 100px;
+  text-align: right;
+  top: 2px;
+  color: #6b6b6b;
 }

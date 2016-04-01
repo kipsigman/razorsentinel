@@ -9,6 +9,7 @@ GET     /s3assets/*filename         kipsigman.play.mvc.S3Controller.file(filenam
 GET     /resources/config.js        controllers.JavaScriptResourceController.configJs
 GET     /resources/messages.js      controllers.JavaScriptResourceController.messagesJs
 GET     /resources/routes.js        controllers.JavaScriptResourceController.routesJs
+GET     /resources/user.js          controllers.JavaScriptResourceController.userJs
 
 # Advertisement
 GET     /ad/:id/image               controllers.AdController.image(id:Int)
@@ -35,17 +36,19 @@ GET     /widget/trendingArticles          controllers.WidgetController.trendingA
 GET     /widget/weather                   controllers.WidgetController.weather
 
 # Articles
-GET     /category/:category/:seoAlias         controllers.ArticleController.view(category:kipsigman.domain.entity.Category, seoAlias:String)
-GET     /content/articles                     controllers.ArticleController.list
-GET     /content/articles/create/:templateId  controllers.ArticleController.create(templateId:Int)
-POST    /content/articles/create/:templateId  controllers.ArticleController.createPost(templateId:Int)
-GET     /content/articles/:id/delete          controllers.ArticleController.delete(id:Int)
-GET     /content/articles/:id/edit            controllers.ArticleController.edit(id:Int)
-POST    /content/articles/:id/edit            controllers.ArticleController.editPost(id:Int)
-GET     /content/articles/:id/own             controllers.ArticleController.own(id:Int)
-GET     /content/articles/:id/preview         controllers.ArticleController.preview(id:Int)
-GET     /content/articles/:id/saveStatus      controllers.ArticleController.saveStatus(id:Int, status:kipsigman.domain.entity.Status)
-POST    /content/articles/tag                 controllers.ArticleController.saveTag
+GET     /category/:category/articles/:id/comments controllers.ArticleController.comments(category:kipsigman.domain.entity.Category, id:Int)
+POST    /category/:category/articles/:id/comments controllers.ArticleController.commentPost(category:kipsigman.domain.entity.Category, id:Int)
+GET     /category/:category/:seoAlias             controllers.ArticleController.view(category:kipsigman.domain.entity.Category, seoAlias:String)
+GET     /content/articles                         controllers.ArticleController.list
+GET     /content/articles/create/:templateId      controllers.ArticleController.create(templateId:Int)
+POST    /content/articles/create/:templateId      controllers.ArticleController.createPost(templateId:Int)
+GET     /content/articles/:id/delete              controllers.ArticleController.delete(id:Int)
+GET     /content/articles/:id/edit                controllers.ArticleController.edit(id:Int)
+POST    /content/articles/:id/edit                controllers.ArticleController.editPost(id:Int)
+GET     /content/articles/:id/own                 controllers.ArticleController.own(id:Int)
+GET     /content/articles/:id/preview             controllers.ArticleController.preview(id:Int)
+GET     /content/articles/:id/saveStatus          controllers.ArticleController.saveStatus(id:Int, status:kipsigman.domain.entity.Status)
+POST    /content/articles/tag                     controllers.ArticleController.saveTag
 
 # Image editing
 GET     /content/images/:id/dropzone          controllers.ImageController.imageDropzone(id:Int)

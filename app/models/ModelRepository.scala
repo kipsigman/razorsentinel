@@ -17,10 +17,14 @@ trait ModelRepository {
   def findPublishedArticlesByCategory(category: Category, pageFilter: PageFilter)(implicit userOption: Option[User]): Future[Page[Article]]
 
   def saveArticle(article: Article)(implicit userOption: Option[User]): Future[Article]
-
+  
   def addTagReplacement(id: Int, tagReplacement: TagReplacement)(implicit userOption: Option[User]): Future[Article]
   
   def updateArticleStatus(id: Int, status: Status)(implicit userOption: Option[User]): Future[Article]
+  
+  def findArticleComments(articleId: Int): Future[Seq[ArticleCommentGroup]]
+  
+  def saveArticleComment(articleComment: ArticleComment)(implicit userOption: Option[User]): Future[ArticleComment]
 
   def findArticleTemplate(id: Int): Future[Option[ArticleTemplate]]
   

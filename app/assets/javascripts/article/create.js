@@ -1,8 +1,7 @@
 $(document).ready(function() {
   $(saveButtonId).click(function() {
     event.preventDefault();
-    console.log("saveHandler");
-
+    
     var saveArticleForm = $('#save-article-form');
     
     // Add hidden inputs for tags

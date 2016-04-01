@@ -3,19 +3,24 @@ package controllers
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.ZoneId
+import java.util.Locale
 
 import kipsigman.domain.entity.Category
 import kipsigman.domain.entity.ContentImage
 import kipsigman.domain.entity.Image
+import kipsigman.play.auth.entity.User
 import kipsigman.play.mvc.AlertContext
 import kipsigman.play.mvc.AlertContext._
 import play.api.mvc.Call
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
+import org.slf4j.LoggerFactory
 
 import models._
 
 object ViewHelper {
+  private val logger = LoggerFactory.getLogger(this.getClass)
   
   val sampleArticleImage = Image(Some(0), "image/jpeg", 890, 395)
   
@@ -205,7 +210,7 @@ object ViewHelper {
     case "bookmarks"           => "&#128209;"
     case "open-book"           => "&#128214;"
     case "play"                => "&#9654;"
-    case "paus"                => "&#8214;"
+    case "pause"                => "&#8214;"
     case "record"              => "&#9679;"
     case "stop"                => "&#9632;"
     case "ff"                  => "&#9193;"
@@ -323,10 +328,28 @@ object ViewHelper {
 
   def iconSpan(name: String): Html = Html(s"""<span class="icon-text">${iconCode(name)}</span>""")
   
-  private val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-  def displayPublishDate(publishDate: Option[LocalDateTime]): String = {
-    val theDate = publishDate.getOrElse(LocalDateTime.now())
-    formatter.format(theDate)
+  private def dateFormatter(locale: Locale, zoneId: ZoneId) = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale).withZone(zoneId)
+  private def dateTimeFormatter(locale: Locale, zoneId: ZoneId) = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT).withLocale(locale).withZone(zoneId)
+  
+  /**
+   * TODO: Format in user's timezone
+   */
+  def displayDate(dateTimeOption: Option[LocalDateTime])(implicit request: RequestHeader, userOption: Option[User]): String = {
+    val locale = request.acceptLanguages.head.toLocale
+    val zoneId = ZoneId.systemDefault()
+    logger.info(s"locale=$locale, zoneId=$zoneId")
+    val dateTime = dateTimeOption.getOrElse(LocalDateTime.now())
+    dateFormatter(locale, zoneId).format(dateTime)
+  }
+  
+  /**
+   * TODO: Format in user's timezone
+   */
+  def displayDateTime(dateTime: LocalDateTime)(implicit request: RequestHeader, userOption: Option[User]): String = {
+    val locale = request.acceptLanguages.head.toLocale
+    val zoneId = ZoneId.systemDefault()
+    logger.info(s"locale=$locale, zoneId=$zoneId")
+    dateTimeFormatter(locale, zoneId).format(dateTime)
   }
   
   def viewArticle(category: Category, article: Article)(implicit request: RequestHeader): Call =

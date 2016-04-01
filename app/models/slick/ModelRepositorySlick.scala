@@ -15,11 +15,14 @@ import kipsigman.domain.entity.Page
 import kipsigman.domain.entity.PageFilter
 import kipsigman.domain.entity.Status
 import kipsigman.play.auth.entity.User
+import kipsigman.play.auth.UserService
+
 import models._
 
 @Singleton()
 class ModelRepositorySlick @Inject() (
-  dbConfigProvider: DatabaseConfigProvider)
+  dbConfigProvider: DatabaseConfigProvider,
+  userService: UserService)
   (implicit protected val ec: ExecutionContext) extends ModelRepository with ModelDBConfig {
   
   import driver.api._
@@ -30,7 +33,10 @@ class ModelRepositorySlick @Inject() (
     val articlesFuture = db.run(q.withArticleTemplate.result).map(joinSeq =>
       joinSeq.map(join => join._1.toEntity(join._2))
     )
-    filterNotDeleted(articlesFuture)
+    // articlesFuture.foreach(articles => println(s"articles(all)=${articles.size}"))
+    val activeFutureSeq = filterActive(articlesFuture)
+    // activeFutureSeq.foreach(articles => println(s"articles(active)=${articles.size}"))
+    activeFutureSeq
   }
   
   override def findArticle(id: Int): Future[Option[Article]] = {
@@ -88,13 +94,48 @@ class ModelRepositorySlick @Inject() (
     }
   }
   
+  private def articleCommentResults(q: Query[ArticleCommentTable, ArticleCommentRow, Seq]): Future[Seq[ArticleComment]] = {
+    val futureSeqRow = db.run(q.result)
+    futureSeqRow.flatMap(rows => {
+      val seqFutureEntity: Seq[Future[ArticleComment]] = rows.map(row =>
+        userService.find(row.userId).map(userOption => 
+          row.toEntity(userOption.get)
+        )
+      )
+      
+      Future.sequence(seqFutureEntity)  
+    })
+  }
+  
+  override def findArticleComments(articleId: Int): Future[Seq[ArticleCommentGroup]] = {
+    val q = articleCommentTableQuery.filter(_.articleId === articleId).sortBy(_.id.asc)
+    articleCommentResults(q).map(seq => {
+      val parents = seq.filter(_.parentId.isEmpty)
+      val children = seq.filter(_.parentId.isDefined)
+      parents.map(parent =>
+        ArticleCommentGroup(parent, children.filter(_.parentId.get == parent.id.get))
+      )
+    })
+  }
+  
+  override def saveArticleComment(articleComment: ArticleComment)(implicit userOption: Option[User]): Future[ArticleComment] = {
+    val row = new ArticleCommentRow(articleComment)
+    if (row.isPersisted) {
+      db.run(articleCommentTableQuery.insertOrUpdate(row)).map(_ => articleComment)
+    } else {
+      db.run((articleCommentTableQuery returning articleCommentTableQuery.map(_.id)) += row).map(id =>
+        articleComment.copy(id = Some(id))
+      )
+    }
+  }
+  
   override def findArticleTemplate(id: Int): Future[Option[ArticleTemplate]] = {
     db.run(articleTemplateTableQuery.filter(_.id === id).result).map(_.headOption)
   }
   
   override def findArticleTemplates(categoryOption: Option[Category] = None): Future[Seq[ArticleTemplate]] = {
     val q = articleTemplateTableQuery.sortBy(_.headline.asc)
-    filterNotDeleted(db.run(q.result)).map(entities =>
+    filterActive(db.run(q.result)).map(entities =>
       categoryOption match {
         case Some(category) => entities.filter(at => at.isMemberOf(category)) 
         case None => entities

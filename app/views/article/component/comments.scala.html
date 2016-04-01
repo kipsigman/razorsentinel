@@ -1,47 +1,21 @@
+@import kipsigman.domain.entity.Category
 @import kipsigman.play.auth.entity.User
-@(article: Article)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@import b3.vertical.fieldConstructor
+@(category: Category, article: Article, commentGroups: Seq[ArticleCommentGroup])(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-<!-- Begin comments -->
-<div class="block-title">
-  <a href="#respond" class="right">Write a comment</a>
-  <h2>No Comments</h2>
+<div id="comments" class="block-title">
+  <h2>@Messages("comment.list.title", commentGroups.size)</h2>
 </div>
 <div class="block-content">
+  @views.html.article.component.commentForm(category, article, None)
   <div class="comment-block">
-    <div class="no-comment-block">
-      <span class="icon-text big-icon">&#59168;</span>
-      <b>No Comments Yet!</b>
-      <p>Let me tell You a sad story ! There are no comments yet, but You can be first one to comment this article.</p>
-      <a href="#respond" class="icon-link"><span class="icon-text">&#59154;</span>Write a comment</a>
-    </div>
+    <ol class="comments" >
+  @for(commentGroup <- commentGroups) {
+      <li class="comment byuser comment-author-admin bypostauthor even thread-even depth-1">
+    @views.html.article.component.commentGroup(category, article, commentGroup)
+      </li>
+  }
+    </ol>
+    <div class="comments-pager"></div>
   </div>
 </div>
-<div class="block-title">
-  <a href="#comments" class="right">View comments</a>
-  <h2>Write a comment</h2>
-</div>
-<div class="block-content">
-  <div id="writecomment">
-    <a href="#" name="respond"></a>
-    <div id="respond" class="comment-respond">
-      <h3 id="reply-title" class="comment-reply-title"><small><a rel="nofollow" id="cancel-comment-reply-link" href="/2016/02/29/test-post-1/#respond" style="display:none;">Click here to cancel reply.</a></small></h3>
-      <form action="http://localhost:8888/wp-comments-post.php" method="post" id="writecomment" class="comment-form">
-        <p>Your e-mail address will not be published.<br/>Required fields are marked<span class="required">*</span></p>
-        <p class="contact-form-message">
-          <label for="c_message">Comment<span class="required">*</span></label>
-          <textarea name="comment" id="comment" placeholder="Your message.."></textarea>
-        </p>
-        <p class="contact-form-user">
-          <label for="c_name">Nickname<span class="required">*</span></label>
-          <input type="text" placeholder="Nickname.." name="author" id="author">
-        </p>
-        <p class="contact-form-email"><label for="c_email">E-mail<span class="required">*</span></label><input type="text" placeholder="E-mail.." name="email" id="email"></p>
-        <p class="contact-form-webside"><label for="c_webside">Website</label><input type="text" placeholder="Website.." name="url" id="url"></p>
-        <p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post a Comment" /> <input type='hidden' name='comment_post_ID' value='33' id='comment_post_ID' />
-          <input type='hidden' name='comment_parent' id='comment_parent' value='0' />
-        </p>
-      </form>
-    </div><!-- comment-respond -->
-  </div><!-- write-comment -->
-</div><!-- block-content -->
-<!-- End comments -->

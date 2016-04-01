@@ -8,9 +8,11 @@ import kipsigman.domain.entity.IdEntity
 import kipsigman.domain.entity.LifecycleEntity
 import kipsigman.domain.entity.Status
 import kipsigman.domain.repository.slick.SlickRepository
+import kipsigman.play.auth.entity.User
 import play.api.libs.json.Json
 
 import models.Article
+import models.ArticleComment
 import models.ArticleTemplate
 import models.NewsCategoryOptions
 import models.TagReplacement
@@ -115,5 +117,38 @@ trait ModelDBConfig extends SlickRepository {
     // specify mapping of relationship to address
     def withArticleTemplate = q.join(articleTemplateTableQuery).on(_.articleTemplateId === _.id)
   }
+  
+  case class ArticleCommentRow(
+    id: Option[Int],
+    articleId: Int,
+    parentId: Option[Int],
+    userId: Int,
+    createDateTime: LocalDateTime,
+    body: String) extends IdEntity {
+    
+    def this(entity: ArticleComment) = 
+      this(entity.id, entity.articleId, entity.parentId, entity.user.id.get, entity.createDateTime, entity.body)
+    
+    def toEntity(user: User): ArticleComment = {
+      ArticleComment(id, articleId, parentId, user, createDateTime, body) 
+    }
+  }
+  
+  class ArticleCommentTable(tag: Tag) extends IdTable[ArticleCommentRow](tag, "article_comment") {
+    implicit val localDateTimeColumnType = MappedColumnType.base[LocalDateTime, Timestamp](
+      localDateTime => Timestamp.valueOf(localDateTime),
+      timestamp => timestamp.toLocalDateTime()
+    )
+    
+    def articleId = column[Int]("article_id")
+    def parentId = column[Option[Int]]("parent_id")
+    def userId = column[Int]("user_id")
+    def createDateTime = column[LocalDateTime]("create_date_time")
+    def body = column[String]("body")
+    
+    def * = (id.?, articleId, parentId, userId, createDateTime, body) <> (ArticleCommentRow.tupled, ArticleCommentRow.unapply)
+  }
+  
+  val articleCommentTableQuery = TableQuery[ArticleCommentTable]
   
 }

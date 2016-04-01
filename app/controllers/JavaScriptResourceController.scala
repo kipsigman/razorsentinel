@@ -10,6 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import jsmessages.JsMessagesFactory
 import kipsigman.play.auth.entity.User
+import kipsigman.play.auth.mvc.AuthJavaScriptResourceController
 import play.api.i18n.MessagesApi
 import play.api.routing.JavaScriptReverseRoute
 
@@ -21,7 +22,7 @@ class JavaScriptResourceController @Inject() (
   env: Environment[User, CookieAuthenticator],
   protected val config: Config,
   protected val jsMessagesFactory: JsMessagesFactory
-  )(implicit ec: ExecutionContext, adService: AdService) extends BaseController(messagesApi, env) with kipsigman.play.mvc.JavaScriptResourceController {
+  )(implicit ec: ExecutionContext, protected val adService: AdService) extends AuthJavaScriptResourceController(messagesApi, env) with ErrorResults {
   
   override protected def javaScriptReverseRoutes: Seq[JavaScriptReverseRoute] = Seq(
     controllers.routes.javascript.Assets.at,

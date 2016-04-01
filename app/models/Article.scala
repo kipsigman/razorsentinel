@@ -10,13 +10,13 @@ import kipsigman.domain.entity.Status
 import services.StringService
 
 case class Article(
-    id: Option[Int] = None,
-    userId: Option[Int],
-    articleTemplate: ArticleTemplate,
-    status: Status = Status.Draft,
-    tagReplacements: Set[TagReplacement] = Set(),
-    author: Option[String] = None,
-    publishDate: Option[LocalDateTime] = None) extends ArticleContent[Article] {
+  id: Option[Int] = None,
+  userId: Option[Int],
+  articleTemplate: ArticleTemplate,
+  status: Status = Status.Draft,
+  tagReplacements: Set[TagReplacement] = Set(),
+  author: Option[String] = None,
+  publishDate: Option[LocalDateTime] = None) extends ArticleContent[Article] {
   
   override lazy val userIdOption: Option[Int] = userId
   

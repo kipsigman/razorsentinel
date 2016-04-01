@@ -1,0 +1,38 @@
+@import kipsigman.domain.entity.Category
+@import kipsigman.play.auth.entity.User
+@import helper._
+@import b3.vertical.fieldConstructor
+@(category: Category, article: Article, parentId: Option[Int])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div@if(parentId.isDefined){ id="comment-reply-@parentId.get" class="comment-respond"}>
+  @if(parentId.isDefined){
+    @*<a rel="nofollow" href="#" class="hide-comment-reply" data-comment-id="@parentId.get">@ViewHelper.iconSpan("minus") @Messages("action.hide")</a>*@
+  }
+  
+  @if(user.isDefined){
+    @form(CSRF(routes.ArticleController.commentPost(category, article.id.get)), 'class -> "comment-form") {
+    
+      @b3.hidden("articleId", article.id.get)
+      @if(parentId.isDefined){
+        @b3.hidden("parentId", parentId.get)
+      }
+      @b3.hidden("userId", user.get.id.get)
+    <p class="contact-form-message">
+      <label for="c_body">Comment<span class="required">*</span></label>
+      <textarea name="body" required="required"></textarea>
+    </p>           
+    <p class="form-submit">
+      <button class="btn btn-sm btn-theme" type="submit">@Messages("action.post")</button>
+    </p>
+    }
+  }else{
+    <p>
+    @defining(Option(s"${request.uri}#comments")){successUrlOption =>
+      @if(parentId.isDefined){
+      @Html(Messages("comment.reply.notAuthenticated", routes.UserController.signIn(successUrlOption), routes.UserController.signUp(successUrlOption)))
+      }else{
+      @Html(Messages("comment.notAuthenticated", routes.UserController.signIn(successUrlOption), routes.UserController.signUp(successUrlOption)))
+      }
+    }
+    </p>
+  }
+</div><!-- .comment-respond -->

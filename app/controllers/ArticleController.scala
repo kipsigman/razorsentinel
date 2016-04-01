@@ -1,6 +1,7 @@
 package controllers
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -25,6 +26,7 @@ import play.api.mvc.RequestHeader
 import play.api.mvc.Result
 
 import models.Article
+import models.ArticleComment
 import models.ArticleTemplate
 import models.ModelRepository
 import models.TagReplacement
@@ -42,6 +44,38 @@ class ArticleController @Inject() (
   extends ArticleContentController(messagesApi, env, modelRepository, contentAuthorizationService, imageService) {
   
   import ArticleForms._
+  
+  // TODO: Implement
+  def comments(category: Category, id: Int) = UserAwareAction.async { implicit request =>
+    modelRepository.findArticleComments(id).map(articleComments =>
+      Ok
+    )
+  }
+  
+  // TODO: Implement
+  def commentPost(category: Category, articleId: Int) = SecuredAction(WithRole(Role.Member)).async { implicit request =>
+    findContent(articleId) flatMap {
+      case Some(article) => {
+        commentDataForm.bindFromRequest.fold(
+          formWithErrors => {
+            logger.debug(s"commentPost: validation fail: ${formWithErrors.errors}")
+            Future(BadRequest("Bad data"))
+          },
+          data => {
+            logger.debug("commentPost: validation pass")
+            val articleComment = data.toArticleComment(request.identity)
+            for {
+              savedArticleComment <- modelRepository.saveArticleComment(articleComment)
+            } yield {
+              val redirectUrl = s"${controllers.routes.ArticleController.view(category, article.seoAlias).url}#comments"
+              Redirect(redirectUrl)
+            }
+          }
+        )
+      }
+      case None => Future(notFound)
+    }
+  }
   
   def create(articleTemplateId: Int) = UserAwareAction.async { implicit request =>
     val userOption = request.identity
@@ -187,8 +221,10 @@ class ArticleController @Inject() (
   private def viewById(category: Category, id: Int)(implicit request: RequestHeader, userOption: Option[User]): Future[Result] = {
     modelRepository.findArticle(id) flatMap {
       case Some(article) => {
-        imageService.findContentImages(ArticleTemplate.contentClass, article.articleTemplate.id.get).map(contentImages => {
-          Ok(views.html.article.view(category, article, contentImages))
+        imageService.findContentImages(ArticleTemplate.contentClass, article.articleTemplate.id.get).flatMap(contentImages => {
+          modelRepository.findArticleComments(article.id.get).map(comments => {
+            Ok(views.html.article.view(category, article, contentImages, comments))  
+          })
         })
       }
       case None => Future.successful(notFound)
@@ -231,6 +267,22 @@ object ArticleForms {
       "publishDate" -> JavaTimeFormatters.localDateMapping,
       "publishDateFixed" -> boolean
     )(ArticleData.apply)(ArticleData.unapply)
+  )
+  
+  case class CommentData(
+    articleId: Int,
+    parentId: Option[Int],
+    body: String) {
+    
+    def toArticleComment(user: User): ArticleComment = ArticleComment(articleId = articleId, parentId = parentId, user = user, body = body)
+  }
+    
+  val commentDataForm = Form[CommentData](
+    mapping(
+      "articleId" -> number,
+      "parentId" -> optional(number),
+      "body" -> nonEmptyText
+    )(CommentData.apply)(CommentData.unapply)
   )
   
   case class TagData(

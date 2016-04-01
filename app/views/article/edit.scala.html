@@ -27,8 +27,8 @@
   <div class="full-width">
     <div class="article-title">
   @if(user.isEmpty){
-    @defining(Option(routes.ArticleController.own(article.id.get).url)){successUrl =>
-      @views.html.component.alert(AlertContext.Error, Messages("article.anonymous.danger", routes.UserController.signIn(successUrl).url, routes.UserController.signUp(successUrl).url))
+    @defining(Option(routes.ArticleController.own(article.id.get).url)){successUrlOption =>
+      @views.html.component.alert(AlertContext.Error, Messages("article.anonymous.danger", routes.UserController.signIn(successUrlOption), routes.UserController.signUp(successUrlOption)))
     }
   }
       @views.html.component.categoriesLabels(article.categories, routes.SiteController.category)
