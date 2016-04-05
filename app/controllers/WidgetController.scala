@@ -68,7 +68,11 @@ class WidgetController @Inject() (
         val location = kipsigman.domain.entity.Location("Boulder", "CO", Option("80301"), "United States", None, None)
         weatherService.getWeatherByLocation(location)
       } else {
-        val ip = request.request.remoteAddress
+        val ip = request.headers.get("X-Forwarded-For") match {
+          case Some(header) => header.split(",").head
+          case None => request.remoteAddress
+        }
+        
         weatherService.getWeatherByIp(ip)
       }
     

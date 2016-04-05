@@ -1,17 +1,16 @@
-@import kipsigman.domain.entity.Category
 @import kipsigman.play.auth.entity.User
 @import helper._
 @import b3.vertical.fieldConstructor
-@(category: Category, article: Article, parentId: Option[Int])(implicit request: RequestHeader, messages: Messages, user: Option[User])
-<div@if(parentId.isDefined){ id="comment-reply-@parentId.get" class="comment-respond"}>
+@(articleId: Int, parentId: Option[Int])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+<div@if(parentId.isDefined){ id="comment-reply-@parentId.get" class="comment-form-wrapper comment-respond"}else{ id="comment-new" class="comment-form-wrapper"}>
   @if(parentId.isDefined){
     @*<a rel="nofollow" href="#" class="hide-comment-reply" data-comment-id="@parentId.get">@ViewHelper.iconSpan("minus") @Messages("action.hide")</a>*@
   }
   
   @if(user.isDefined){
-    @form(CSRF(routes.ArticleController.commentPost(category, article.id.get)), 'class -> "comment-form") {
+    @form(CSRF(routes.ArticleController.commentPost), 'class -> "comment-form") {
     
-      @b3.hidden("articleId", article.id.get)
+      @b3.hidden("articleId", articleId)
       @if(parentId.isDefined){
         @b3.hidden("parentId", parentId.get)
       }
@@ -21,7 +20,7 @@
       <textarea name="body" required="required"></textarea>
     </p>           
     <p class="form-submit">
-      <button class="btn btn-sm btn-theme" type="submit">@Messages("action.post")</button>
+      <button class="btn btn-sm btn-theme comment-submit" type="submit">@Messages("action.post")</button>
     </p>
     }
   }else{

@@ -1,5 +1,5 @@
 /* Color Scheme */
-.header,.breaking-news .the-title,.widget > h3,.button,a.small-button,.marker,.hover-effect,.block-title,#wp-calendar td#today, .small-button {
+.header,.breaking-news .the-title,.widget > h3,.button,a.small-button,.marker,.hover-effect,.block-title,#wp-calendar td#today,.small-button {
   background-color: #F26D22;
 }
 
@@ -31,6 +31,9 @@ a {
 
 .block-content p {
   font-size: 14px;
+}
+.block-title a:hover {
+  color: #fff;
 }
 
 /* Nav header/menus */
@@ -99,6 +102,10 @@ a {
   float: right;
 }
 
+.comment-form-wrapper {
+	margin: 20px auto;
+	border-bottom: 1px dotted #ccc;
+}
 .comment-form {
   display: block;
   width: 100%;

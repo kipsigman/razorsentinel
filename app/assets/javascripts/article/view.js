@@ -1,5 +1,6 @@
 $(document).ready(function() {
   // Properties
+  // ----------
   var articleTagClass = ".article-tag";
   var createCtaCssId = '#create-cta';
   var createArticleAlertCssId = '#create-article-alert';
@@ -7,6 +8,7 @@ $(document).ready(function() {
   
   
   // Functions
+  // ---------
   function createArticleUrl() {
     var articleTemplateId = $('#articleTemplateId')[0].value;
     return routes.controllers.ArticleController.create(articleTemplateId).url;  
@@ -34,9 +36,9 @@ $(document).ready(function() {
     }
   }
   
-  
+
   // Handlers
-  
+  // --------
   // "Show me more" button in Create CTA
   $('#show-tags').click(function() {
     $(createCtaCssId).modal('hide');
@@ -69,25 +71,9 @@ $(document).ready(function() {
 //    }
 //  });
   
-  $('.show-comment-reply').click(function() {
-    event.preventDefault();
-    var commentId = $(this).data("comment-id");
-    var commentReplyFormCssId = "#comment-reply-" + commentId;
-    $(commentReplyFormCssId).show();
-  });
-  $('.hide-comment-reply').click(function() {
-    event.preventDefault();
-    var commentId = $(this).data("comment-id");
-    var commentReplyFormCssId = "#comment-reply-" + commentId;
-    $(commentReplyFormCssId).hide();
-  });
-  
   
   // Initialization
-  
-  // Hide comment reply forms
-  $(".comment-respond").hide();
-  
+  // --------------
   // Tag tooltips
   $(articleTagClass).tooltip({
     html: true,

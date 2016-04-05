@@ -1,8 +1,10 @@
 package controllers
 
-import java.time.LocalDateTime
+import java.time.Duration
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.LocalDateTime
+import java.time.Period
 import java.time.ZoneId
 import java.util.Locale
 
@@ -12,6 +14,7 @@ import kipsigman.domain.entity.Image
 import kipsigman.play.auth.entity.User
 import kipsigman.play.mvc.AlertContext
 import kipsigman.play.mvc.AlertContext._
+import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
@@ -350,6 +353,19 @@ object ViewHelper {
     val zoneId = ZoneId.systemDefault()
     logger.info(s"locale=$locale, zoneId=$zoneId")
     dateTimeFormatter(locale, zoneId).format(dateTime)
+  }
+  
+  def displayDateTimeDuration(dateTime: LocalDateTime)(implicit request: RequestHeader, messages: Messages, userOption: Option[User]): String = {
+    val now = LocalDateTime.now()
+    val duration = Duration.between(dateTime, now)
+    
+    if(duration.toDays() > 0) {
+      messages.apply("duration.days", duration.toDays())
+    } else if(duration.toHours() > 0) {
+      messages.apply("duration.hours", duration.toHours())
+    } else {
+      messages.apply("duration.minutes", duration.toMinutes())
+    }
   }
   
   def viewArticle(category: Category, article: Article)(implicit request: RequestHeader): Call =

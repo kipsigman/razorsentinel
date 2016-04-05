@@ -1,5 +1,5 @@
 @import kipsigman.play.auth.entity.User
-@(comment: ArticleComment, replyId: Int)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(comment: ArticleComment)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 <div class="commment-content" id="comment-@comment.id.get">
   <div class="user-avatar">
     <img src="@comment.user.avatarURL.getOrElse(routes.Assets.at("theme/allegro/images/avatar-100x100.jpg"))" class="setborder" alt="@comment.displayUserName" />
@@ -8,11 +8,14 @@
     @comment.displayUserName
     <span class="marker">Author</span>
   </strong>
-  <span class="time-stamp">@ViewHelper.displayDateTime(comment.createDateTime)</span>
+  <span class="time-stamp">
+@*    @ViewHelper.displayDateTime(comment.createDateTime) *@
+    @ViewHelper.displayDateTimeDuration(comment.createDateTime)
+  </span>
   <div class="comment-text">
     <p>@comment.body</p>
   </div>
-  <a rel="nofollow" href="#comment-reply-@replyId" class="show-comment-reply"  data-comment-id="@replyId">
+  <a rel="nofollow" href="#comment-reply-@comment.replyId" class="show-comment-reply"  data-comment-id="@comment.replyId">
     @ViewHelper.iconSpan("reply") @Messages("comment.reply")
   </a>
 </div>

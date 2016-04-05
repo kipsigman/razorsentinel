@@ -1,5 +1,5 @@
 if (config.analytics.enable) {
-  if (user) {
+  if (typeof user != 'undefined') {
     mixpanel.identify(user.id);
     mixpanel.people.set({
       "$first_name": user.firstName,

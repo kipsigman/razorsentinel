@@ -27,6 +27,8 @@ class JavaScriptResourceController @Inject() (
   override protected def javaScriptReverseRoutes: Seq[JavaScriptReverseRoute] = Seq(
     controllers.routes.javascript.Assets.at,
     controllers.routes.javascript.WidgetController.weather,
+    controllers.routes.javascript.ArticleController.comment,
+    controllers.routes.javascript.ArticleController.commentPost,
     controllers.routes.javascript.ArticleController.create,
     controllers.routes.javascript.ArticleController.createPost,
     controllers.routes.javascript.ArticleController.edit,

@@ -1,14 +1,13 @@
-@import kipsigman.domain.entity.Category
 @import kipsigman.play.auth.entity.User
-@(category: Category, article: Article, commentGroup: ArticleCommentGroup)(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(articleId: Int, commentGroup: ArticleCommentGroup)(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
-@views.html.article.component.comment(commentGroup.parent, commentGroup.parentId)
+@views.html.article.component.comment(commentGroup.parent)
 
-<ul class="children">
+<ul id="comment-children-@commentGroup.parent.id" class="children">
 @for(childComment <- commentGroup.children) {
   <li class="comment">
-    @views.html.article.component.comment(childComment, commentGroup.parentId)
+    @views.html.article.component.comment(childComment)
   </li>
 }
 </ul><!-- .children -->
-@views.html.article.component.commentForm(category, article, Option(commentGroup.parentId))
+@views.html.article.component.commentForm(articleId, commentGroup.parent.id)

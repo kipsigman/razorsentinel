@@ -27,6 +27,7 @@ import play.api.mvc.Result
 
 import models.Article
 import models.ArticleComment
+import models.ArticleCommentGroup
 import models.ArticleTemplate
 import models.ModelRepository
 import models.TagReplacement
@@ -52,29 +53,36 @@ class ArticleController @Inject() (
     )
   }
   
-  // TODO: Implement
-  def commentPost(category: Category, articleId: Int) = SecuredAction(WithRole(Role.Member)).async { implicit request =>
-    findContent(articleId) flatMap {
-      case Some(article) => {
-        commentDataForm.bindFromRequest.fold(
-          formWithErrors => {
-            logger.debug(s"commentPost: validation fail: ${formWithErrors.errors}")
-            Future(BadRequest("Bad data"))
-          },
-          data => {
-            logger.debug("commentPost: validation pass")
-            val articleComment = data.toArticleComment(request.identity)
-            for {
-              savedArticleComment <- modelRepository.saveArticleComment(articleComment)
-            } yield {
-              val redirectUrl = s"${controllers.routes.ArticleController.view(category, article.seoAlias).url}#comments"
-              Redirect(redirectUrl)
-            }
-          }
-        )
+  def comment(articleId: Int, commentId: Int) = UserAwareAction.async { implicit request =>
+    modelRepository.findArticleComment(commentId) map {
+      case Some(articleComment) => {
+         val content = articleComment.parentId match {
+           case Some(parentId) => views.html.article.component.comment(articleComment)
+           case None => views.html.article.component.commentGroup(articleComment.articleId, ArticleCommentGroup(articleComment, Seq()))
+         }
+        Ok(content)
       }
-      case None => Future(notFound)
+      case None => notFound
     }
+  }
+  
+  def commentPost = SecuredAction(WithRole(Role.Member)).async(BodyParsers.parse.urlFormEncoded) {implicit request =>
+    logger.debug(s"commentPostAjax")
+    commentDataForm.bindFromRequest.fold(
+      formWithErrors => {
+        logger.debug(s"commentPost: validation fail: ${formWithErrors.errors}")
+        Future(BadRequest("Bad data"))
+      },
+      data => {
+        logger.debug("commentPost: validation pass")
+        val articleComment = data.toArticleComment(request.identity)
+        for {
+          savedArticleComment <- modelRepository.saveArticleComment(articleComment)
+        } yield {
+          AjaxHelper.entitySaveSuccessResult(savedArticleComment)
+        }
+      }
+    )
   }
   
   def create(articleTemplateId: Int) = UserAwareAction.async { implicit request =>
@@ -122,7 +130,7 @@ class ArticleController @Inject() (
       case Some(article) => {
         imageService.findContentImages(ArticleTemplate.contentClass, article.articleTemplate.id.get).map(contentImages => {
           val theForm = createArticleDataForm(article)
-          Ok(views.html.article.edit(article, contentImages, theForm))    
+          Ok(views.html.article.edit(article, contentImages, theForm))
         })
       }
       case None => Future.successful(notFound)
@@ -141,7 +149,7 @@ class ArticleController @Inject() (
             logger.debug("Form success: " + articleData)
             val preparedArticle = bind(article, article.articleTemplate, articleData, request.body)
             modelRepository.saveArticle(preparedArticle).map(savedArticle =>
-              AjaxHelper.entitySaveSuccessResult(savedArticle)
+              AjaxHelper.entitySaveSuccessResult(savedArticle.id.get)
             )
           }
         )
@@ -209,7 +217,7 @@ class ArticleController @Inject() (
             for {
               savedArticle <- modelRepository.addTagReplacement(article.id.get, TagReplacement(tagData.name, tagData.value))
             } yield {
-              AjaxHelper.entitySaveSuccessResult(savedArticle)
+              AjaxHelper.entitySaveSuccessResult(savedArticle.id.get)
             }  
           }
           case None => Future.successful(AjaxHelper.entityNotFoundResult(Article.getClass, tagData.articleId))

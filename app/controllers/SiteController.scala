@@ -31,8 +31,13 @@ class SiteController @Inject() (
   )(implicit ec: ExecutionContext, adService: AdService)
   extends ArticleContentController(messagesApi, env, modelRepository, contentAuthorizationService, imageService) {
   
+  
   def about = UserAwareAction {implicit request =>
     Ok(views.html.about())
+  }
+  
+  def app = UserAwareAction {implicit request =>
+    Ok(views.html.app())
   }
   
   def contact = UserAwareAction {implicit request =>

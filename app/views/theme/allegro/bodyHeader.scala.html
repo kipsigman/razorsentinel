@@ -52,6 +52,9 @@
             <li class="menu-item"><a href="@routes.ArticleController.list">@Messages("nav.content.articles")</a></li>
     @if(u.isEditor) {
             <li class="menu-item"><a href="@routes.ArticleTemplateController.list()">@Messages("nav.content.templates")</a></li>
+    }
+    @if(u.isAdministrator) {
+            <li class="menu-item"><a href="@routes.SiteController.app()">@Messages("nav.app")</a></li>
     }        
           </ul>
         </li>

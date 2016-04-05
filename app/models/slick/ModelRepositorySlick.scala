@@ -107,11 +107,21 @@ class ModelRepositorySlick @Inject() (
     })
   }
   
+  override def findArticleComment(id: Int)(implicit userOption: Option[User]): Future[Option[ArticleComment]] = {
+    val q = articleCommentTableQuery.filter(_.id === id)
+    articleCommentResults(q).map(_.headOption)
+  }
+  
   override def findArticleComments(articleId: Int): Future[Seq[ArticleCommentGroup]] = {
     val q = articleCommentTableQuery.filter(_.articleId === articleId).sortBy(_.id.asc)
     articleCommentResults(q).map(seq => {
-      val parents = seq.filter(_.parentId.isEmpty)
+      // List parents createDateTime desc
+      val parents = seq.filter(_.parentId.isEmpty).reverse
+      
+      // Children are createDateTime asc
       val children = seq.filter(_.parentId.isDefined)
+      
+      // Group
       parents.map(parent =>
         ArticleCommentGroup(parent, children.filter(_.parentId.get == parent.id.get))
       )

@@ -12,6 +12,7 @@
 }
 @jsIncludes = {
 <script src="@routes.Assets.versioned("javascripts/article/view.js")"></script>
+<script src="@routes.Assets.versioned("javascripts/article/comments.js")"></script>
 }
 
 @views.html.theme.allegro.layout(article.headline, Option(article.category), headIncludes = headIncludes, jsIncludes = jsIncludes) {
@@ -73,7 +74,7 @@
               </div>
             </div><!-- shortcode-content -->
           </div><!-- body/image -->
-          @views.html.article.component.comments(category, article, comments)
+          @views.html.article.component.comments(article.id.get, comments)
         </div><!-- block -->
       </div><!-- content-block main left-->
     </div><!-- single-block -->

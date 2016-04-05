@@ -16,6 +16,12 @@ action.share.email=Email
 action.view=View
 action.view.more=More
 
+# General: Duration
+duration.days={0}d ago
+duration.hours={0}h ago
+duration.minutes={0}m ago
+duration.months={0} months ago
+
 # General: Errors
 error=Error
 error.email=Valid email required
@@ -37,6 +43,7 @@ form.required=Required
 footer.copyright=&copy; 2016 Razor Sentinel. All rights reserved.
 header.brand.description=The world's finest news source
 nav.about=About
+nav.app=App
 nav.brand=The Razor Sentinel
 nav.contact=Contact
 nav.content=Manage Content
@@ -174,6 +181,7 @@ category.name.travel=Travel
 category.name.world=World
 comment.notAuthenticated=<a href="{0}">Sign In</a> or <a href="{1}">Sign Up</a> to join the discussion
 comment.list.title={0} Comments
+comment.post=Post Comment
 comment.reply=Reply
 comment.reply.notAuthenticated=<a href="{0}">Sign In</a> or <a href="{1}">Sign Up</a> to reply
 content.articles.list.title=Manage Articles

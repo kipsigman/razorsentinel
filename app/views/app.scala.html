@@ -1,0 +1,18 @@
+@import kipsigman.play.auth.entity.User
+@import services.AdService
+@()(implicit request: RequestHeader, messages: Messages, user: Option[User], adService: AdService)
+
+@views.html.theme.allegro.layoutFullWidth(Messages("nav.app")) {
+<div class="paragraph-row">
+  <div class="column12">
+    <p>
+      <ul>
+        <li>Remote Address: @request.remoteAddress</li>
+        <li>Headers: @request.headers</li>
+        <li>X-Forwarded-For: @request.headers.get("X-Forwarded-For")</li>
+      </ul>
+    
+    </p>
+  </div>
+</div><!-- paragraph-row -->
+}

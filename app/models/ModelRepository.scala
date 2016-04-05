@@ -22,6 +22,8 @@ trait ModelRepository {
   
   def updateArticleStatus(id: Int, status: Status)(implicit userOption: Option[User]): Future[Article]
   
+  def findArticleComment(id: Int)(implicit userOption: Option[User]): Future[Option[ArticleComment]]
+  
   def findArticleComments(articleId: Int): Future[Seq[ArticleCommentGroup]]
   
   def saveArticleComment(articleComment: ArticleComment)(implicit userOption: Option[User]): Future[ArticleComment]

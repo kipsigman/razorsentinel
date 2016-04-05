@@ -1,18 +1,18 @@
-@import kipsigman.domain.entity.Category
 @import kipsigman.play.auth.entity.User
 @import b3.vertical.fieldConstructor
-@(category: Category, article: Article, commentGroups: Seq[ArticleCommentGroup])(implicit request: RequestHeader, messages: Messages, user: Option[User])
+@(articleId: Int, commentGroups: Seq[ArticleCommentGroup])(implicit request: RequestHeader, messages: Messages, user: Option[User])
 
 <div id="comments" class="block-title">
+  <a rel="nofollow" href="#comment-new" class="right show-comment-new">@Messages("comment.post")</a>
   <h2>@Messages("comment.list.title", commentGroups.size)</h2>
 </div>
 <div class="block-content">
-  @views.html.article.component.commentForm(category, article, None)
+  @views.html.article.component.commentForm(articleId, None)
   <div class="comment-block">
     <ol class="comments" >
   @for(commentGroup <- commentGroups) {
-      <li class="comment byuser comment-author-admin bypostauthor even thread-even depth-1">
-    @views.html.article.component.commentGroup(category, article, commentGroup)
+      <li class="comment">
+    @views.html.article.component.commentGroup(articleId, commentGroup)
       </li>
   }
     </ol>
